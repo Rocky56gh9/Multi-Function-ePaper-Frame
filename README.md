@@ -36,8 +36,11 @@ scp /[path to script]/[image name].bmp [piusername]@[piip]:/[path to where you a
 ssh-keygen -R {RPi-IP-Address}
 
 # Set Up Crontab Jobs
-0 7-21 * * * /usr/bin/python3 /[path to script]/showerthoughts.py
-15 7-21 * * * /usr/bin/python3 /[path to script]/weatherstation.py
-30 7-21 * * * /usr/bin/python3 /[path to script]/dadjokes.py
-45 7-21 * * * /usr/bin/python3 /[path to script]/horoscope.py
-0 22 * * * /usr/bin/python3 /[path to script]/sleep.py
+1. From the terminal, enter the command **crontab -e**
+2. At the bottom of the file, enter each of these as an individual line.
+
+ 0 7-21 * * * /usr/bin/python3 /[path to script]/showerthoughts.py
+ 15 7-21 * * * /usr/bin/python3 /[path to script]/weatherstation.py
+ 30 7-21 * * * /usr/bin/python3 /[path to script]/dadjokes.py
+ 45 7-21 * * * /usr/bin/python3 /[path to script]/horoscope.py
+ 0 22 * * * /usr/bin/python3 /[path to script]/sleep.py
