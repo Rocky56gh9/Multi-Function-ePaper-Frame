@@ -28,8 +28,12 @@ python [test script]
 nano [real script]
 Code:
 
-# Copy image files to Raspberry Pi
+# Handy Commands
+1. Copy images from local machine to RaspberryPi:
 scp /[path to script]/[image name].bmp [piusername]@[piip]:/[path to where you are housing scripts]
+
+2. Clear SSH key from local machine:
+ssh-keygen -R {RPi-IP-Address}
 
 # Set Up Crontab Jobs
 0 7-21 * * * /usr/bin/python3 /[path to script]/showerthoughts.py
