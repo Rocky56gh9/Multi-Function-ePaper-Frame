@@ -4,9 +4,10 @@ A DIY project resulting in an e-paper display built into a picture frame that us
 This project was my first attempt at any kind of python coding project. I saw a YouTube video about someone building a unit to display Shower Thoughts from Reddit, so I decided to take the plunge and try to create it myself. I really struggled to follow the instructions from that video series, and the equipment from the project would not even work with my setup for whatever reason. After initially giving up, I decided to try again and by chance, chose a larger screen which ended up working. The project is entirely self-taught using ChatGPT 4 (premium subscription). It took about 5 weeks and lots of trial and error but I eventually got it to work. As I got more comfortable, I continued to iterate, eventually adding all of the additional functionality shown here. I recognize that the code is not elegant, and the same variables/functionality differ between the different scripts, but they all function. I may in the future get around to trying to make the code more elegant and consistent, but in case anyone wants to try this build, hopefully this works for you!
 
 # Equipment List
-1. Raspberry Pi Zero WH (for later copies of the project, I am using a Raspberry Pi Zero 2 W, but the headers are sold separately and you need to install them manually).
-2. [Waveshare 7.5" Tri-Color e-Paper Display with HAT Module](https://amzn.to/48PiB8I)
-3. 
+1. Option 1: [Raspberry Pi Zero WH](https://amzn.to/4aOmxIN) - This is an older version of the RPi, but the headers are already installed, so it's good to go out of the box. Slower than the Zero 2 W (below) but perfectly fine for this project.
+2. Option 2: [Raspberry Pi Zero 2 W](https://amzn.to/3SdooQ2), [GPIO Pins (x2) and Installation Module](https://amzn.to/3vwNxfP) - For later versions of the project, I am using a Raspberry Pi Zero 2 W, which is notably faster, but the headers are sold separately and you need to install them manually. I found it to be quite easy to do so.
+3. 4. [Waveshare 7.5" Tri-Color e-Paper Display with HAT Module](https://amzn.to/48PiB8I)
+5. [5x7 Matted Desktop Picture Frame](https://amzn.to/3tJUklN) for housing the screen for display
 
 # New Build Guide
 1. Configure your SD card for the RaspberryPi. I used the Raspberry Pi installer on MacOS. Through that UI, give your unit a name (which is how it will appear on your network), then assign an ID and unique password. For ease of use later, also add your network SSID and password. On the second tab, be sure to enable enable SSH.
