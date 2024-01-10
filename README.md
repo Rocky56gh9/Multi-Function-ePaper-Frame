@@ -1,7 +1,12 @@
 # multimode-epaper-frame
-A DIY project resulting in an e-paper display built into a picture frame that uses an API from Reddit to pull and display Dad Jokes and Shower Thoughts, an API from OpenWeather to display a weather station, and web scraping to display a daily horoscope. Also includes a sleep image for the display for overnight hours.
+A DIY project resulting in an e-paper display built into a picture frame that uses an API from Reddit to pull and display Shower Thoughts and Dad Jokes, an API from OpenWeather to display a weather station, and web scraping (from USA Today) to display a daily horoscope. Also includes a sleep image for the display for overnight hours. This can likley be adapted to other screens, but you'll need to work out the code changes. My build used a Raspberry Pi Zero WH and Waveshare 7.5"(B) tri-color e-paper display.
+
+This project was my first attempt at any kind of python coding project. I saw a YouTube video about someone building a unit to display Shower Thoughts from Reddit, so I decided to take the plunge and try to create it myself. I really struggled to follow the instructions from that video series, and the equipment from the project would not even work with my setup for whatever reason. After initially giving up, I decided to try again and by chance, chose a larger screen which ended up working. The project is entirely self-taught using ChatGPT 4 (premium subscription). It took about 5 weeks and lots of trial and error but I eventually got it to work. As I got more comfortable, I continued to iterate, eventually adding all of the additional functionality shown here. I recognize that the code is not elegant, and the same variables/functionality differ between the different scripts, but they all function. I may in the future get around to trying to make the code more elegant and consistent, but in case anyone wants to try this build, hopefully this works for you!
 
 # Equipment List
+1. Raspberry Pi Zero WH (for later copies of the project, I am using a Raspberry Pi Zero 2 W, but the headers are sold separately and you need to install them manually).
+2. Waveshare 7.5"(B) tri-color display
+3. 
 
 # New Build Guide
 1. Configure your SD card for the RaspberryPi. I used the Raspberry Pi installer on MacOS. Through that UI, give your unit a name (which is how it will appear on your network), then assign an ID and unique password. For ease of use later, also add your network SSID and password. On the second tab, be sure to enable enable SSH.
