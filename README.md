@@ -42,7 +42,7 @@ The overall cost for the project is about $150 USD.
 **Test the Screen**
 Once you've done all of this, you're ready to see if everything is installed correctly. Run the test script for the specific screen.<br>
 1. From the home prompt, enter **cd e-Paper/RaspberryPi_JetsonNano/python/examples**<br>
-2. Run **python epd_7in5b_test.py**<br>
+2. Run **python epd_7in5b_V2.py**<br>
 
 If the script runs and you see the series of test images run, you should be good to proceed!
 
