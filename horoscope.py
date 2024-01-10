@@ -96,7 +96,7 @@ def resize_image(image, target_width, target_height):
     new_height = int(original_height * ratio)
     return image.resize((new_width, new_height), Image.ANTIALIAS)
 
-def draw_on_display(scorpion_image, horoscope_text, epd):
+def draw_on_display(zodiac_image, horoscope_text, epd):
     # Existing configuration
     header_font_path = '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
     header_font_size = 50
@@ -128,10 +128,10 @@ def draw_on_display(scorpion_image, horoscope_text, epd):
     font = ImageFont.truetype(font_path, font_size)
     lines = wrap_text(horoscope_text, font, max_chars_per_line * font.getsize('W')[0])  # using width of max_chars_per_line
 
-    # Scorpion Image Configuration
+    # Zodiac Image Configuration
     image_width = epd.width // 3
     image_y_position = 190  # Adjust this value to change the Y position of the image
-    scorpion_resized = resize_image(scorpion_image, image_width, epd.height - image_y_position)
+    zodiac_resized = resize_image(zodiac_image, image_width, epd.height - image_y_position)
 
     # Calculating available width and height for the horoscope text
     text_start_x = image_width
@@ -157,8 +157,8 @@ def draw_on_display(scorpion_image, horoscope_text, epd):
     date_draw = draw_red if date_color == "red" else draw_black
     date_draw.text((date_x, date_y_position), current_date, font=date_font, fill=0)
 
-    # Scorpion Image
-    image_red.paste(scorpion_resized, (0, image_y_position))
+    # Zodiac Image
+    image_red.paste(zodiac_resized, (0, image_y_position))
 
     # Horoscope Text
     text_y = text_start_y
@@ -179,12 +179,12 @@ def main():
         epd = epd7in5b_V2.EPD()
         epd.init()
 
-        # Load and resize the scorpion image
-        scorpion_image_path = '[enter path to specific horoscope image]'
-        scorpion_image = Image.open(scorpion_image_path)
+        # Load and resize the zodiac image
+        zodiac_image_path = '[enter path to specific horoscope image]'
+        zodiac_image = Image.open(zodiac_image_path)
 
         # Draw on display
-        draw_on_display(scorpion_image, horoscope_text, epd)
+        draw_on_display(zodiac_image, horoscope_text, epd)
     except Exception as e:
         print(f"Error: {e}")
 
