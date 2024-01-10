@@ -6,8 +6,8 @@ This project was my first attempt at any kind of python coding project. I saw a 
 # Equipment List
 1. Option 1: [Raspberry Pi Zero WH](https://amzn.to/4aOmxIN) - This is an older version of the RPi, but the headers are already installed, so it's good to go out of the box. Slower than the Zero 2 W (below) but perfectly fine for this project.
 2. Option 2: [Raspberry Pi Zero 2 W](https://amzn.to/3SdooQ2), [GPIO Pins (x2) and Installation Module](https://amzn.to/3vwNxfP) - For later versions of the project, I am using a Raspberry Pi Zero 2 W, which is notably faster, but the headers are sold separately and you need to install them manually. I found it to be quite easy to do so.
-3. 4. [Waveshare 7.5" Tri-Color e-Paper Display with HAT Module](https://amzn.to/48PiB8I)
-5. [5x7 Matted Desktop Picture Frame](https://amzn.to/3tJUklN) for housing the screen for display
+3. [Waveshare 7.5" Tri-Color e-Paper Display with HAT Module](https://amzn.to/48PiB8I)
+4. [5x7 Matted Desktop Picture Frame](https://amzn.to/3tJUklN) for housing the screen for display
 
 # New Build Guide
 1. Configure your SD card for the RaspberryPi. I used the Raspberry Pi installer on MacOS. Through that UI, give your unit a name (which is how it will appear on your network), then assign an ID and unique password. For ease of use later, also add your network SSID and password. On the second tab, be sure to enable enable SSH.
@@ -31,21 +31,35 @@ This project was my first attempt at any kind of python coding project. I saw a 
 •	sudo raspi-config<br>
 •	Enable SPI interface<br>
 •	Reboot<br>
-•	cd e-Paper/RaspberryPi_JetsonNano/<br>
-•	python [test script]<br>
 
-# Handy Commands
-1. Copy images from local machine to RaspberryPi:
-scp /[path to script]/[image name].bmp [piusername]@[piip]:/[path to where you are housing scripts]
+**Test the Screen**
+Once you've done all of this, you're ready to see if everything is installed correctly. Run the test script for the specific screen.<br>
+1. From the home prompt, enter **cd e-Paper/RaspberryPi_JetsonNano/python/examples**<br>
+2. Run **python epd_7in5b_test.py**<br>
 
-2. Clear SSH key from local machine:
-ssh-keygen -R {RPi-IP-Address}
+If the script runs and you see the series of test images run, you should be good to proceed!
+
+# Copy Assets to Pi
+1. Copy images from local machine to RaspberryPi:<br>
+scp /[path to script]/[image name].bmp [piusername]@[piip]:/[path to where you are housing scripts] - Do this for each of the .bmp images.
+
+In my case, I just left everything in the "examples" folder along with the test scripts. If I had it to do over again, I might put them elsewhere. But for now, I put the python scripts and images all in the same examples folder.
+
+# Set Up Scripts
+1. In the same examples folder, create each of the python files for the project.
+2. Customize all of the variables to your preference, e.g., image locations, geographic location for weather, etc.
+3. Run the scripts individually to test them out.
+
+The Weather Station is hard-coded for Eastern time, but that should be adjustable, though those instructions are not included here.
 
 # Set Up Crontab Jobs
-From the terminal, enter the command **crontab -e**, then, at the bottom of the file, enter each of these as an individual line.
+Once you are happy with how the scripts run on the screen, from the terminal, enter the command **crontab -e**, then, at the bottom of the file, enter each of these as an individual line.
 
 1. 0 7-21 * * * /usr/bin/python3 /[path to script]/showerthoughts.py
 2. 15 7-21 * * * /usr/bin/python3 /[path to script]/weatherstation.py
 3. 30 7-21 * * * /usr/bin/python3 /[path to script]/dadjokes.py
 4. 45 7-21 * * * /usr/bin/python3 /[path to script]/horoscope.py
 5.  0 22 * * * /usr/bin/python3 /[path to script]/sleep.py
+
+# Physical Assembly
+
