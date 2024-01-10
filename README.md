@@ -5,7 +5,7 @@ This project was my first attempt at any kind of python coding project. I saw a 
 
 # Equipment List
 1. Raspberry Pi Zero WH (for later copies of the project, I am using a Raspberry Pi Zero 2 W, but the headers are sold separately and you need to install them manually).
-2. [Waveshare 7.5"(B) tri-color display](url)
+2. [Waveshare 7.5" Tri-Color e-Paper Display with HAT Module](https://amzn.to/48PiB8I)
 3. 
 
 # New Build Guide
