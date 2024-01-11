@@ -6,6 +6,8 @@ This project was my first attempt at any kind of python coding project. I saw a 
 The overall cost for the project is about $150 USD.
 
 # Equipment List
+I have set up Amazon referral links to all of the components I used, which were all sourced from Amazon, if you don't mind using those links. Otherwise, you may be able to find the components elsewhere at a different cost.
+
 1. Option 1: [Raspberry Pi Zero WH](https://amzn.to/4aOmxIN) - This is an older version of the RPi, but the headers are already installed, so it's good to go out of the box. Slower than the Zero 2 W (below) but perfectly fine for this project.
 2. Option 2: [Raspberry Pi Zero 2 W](https://amzn.to/3SdooQ2), [GPIO Pins (x2) and Installation Module](https://amzn.to/3vwNxfP) - For later versions of the project, I am using a Raspberry Pi Zero 2 W, which is notably faster, but the headers are sold separately and you need to install them manually. I found it to be quite easy to do so.
 3. [Extra 40-Pin GPIO Solderless Header](https://amzn.to/3tFY4Vs)
