@@ -49,7 +49,7 @@ If the script runs and you see the series of test images run, you should be good
 
 # Copy Assets to Pi
 1. Copy images from local machine to RaspberryPi:<br>
-scp /[path to script]/[image name].bmp [piusername]@[piip]:/[path to where you are housing scripts] - Do this for each of the .bmp images.
+scp /[path to image]/[image name].bmp [piusername]@[piip]:/[path to where you are housing scripts] - Do this for each of the .bmp images.
 
 In my case, I just left everything in the "examples" folder along with the test scripts. If I had it to do over again, I might put them elsewhere. But for now, I put the python scripts and images all in the same examples folder.
 
