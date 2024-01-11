@@ -21,7 +21,7 @@ The overall cost for the project is about $150 USD.
 2. After the installer completes, put the SD card in the Pi and power it up. Depending on the unit, it could take ~10 minutes to appear on your network.
 3. Log in to your router, find the unit name you assigned, and take note of the IP address.
 4. Open a Terminal, and enter the command **SSH [unit name]@[ip address]**, followed by the password. Follow any additional prompts. **NOTE**, if you later scrap the build and start over, you likely need to reset the SSH key on your local device. Use the following command to clear it: **ssh-keygen -R {RPi-IP-Address}**<br>
-5. Run all of the commands listed below.
+5. Run all of the commands listed below.<br>
 •	sudo apt-get update<br>
 •	sudo apt-get upgrade<br>
 •	sudo apt-get install libjpeg-dev<br>
