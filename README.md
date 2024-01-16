@@ -65,7 +65,8 @@ The Weather Station is hard-coded for Eastern time, but that should be adjustabl
 # Set Up Crontab Jobs
 Once you are happy with how the scripts run on the screen, from the terminal, enter the command **crontab -e**, then, at the bottom of the file, enter each of these as an individual line.
 
-1. 0 7-21 * * * /usr/bin/python3 /[path to script]/showerthoughts.py
+1. 0 7-21 * * * /usr/bin/python3 /[path to script]/showerthoughts.py<br>
+![IMG_3032](https://github.com/Rocky56gh9/multimode-epaper-frame/assets/154940519/e9c3cef0-a6a2-4a1f-8abf-4e7857c67fc6)
 2. 15 7-21 * * * /usr/bin/python3 /[path to script]/weatherstation.py
 3. 30 7-21 * * * /usr/bin/python3 /[path to script]/dadjokes.py
 4. 45 7-21 * * * /usr/bin/python3 /[path to script]/horoscope.py
