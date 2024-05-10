@@ -1,6 +1,7 @@
 import os
 import requests
 import pytz
+import sys
 from PIL import Image, ImageDraw, ImageFont
 from datetime import datetime as dt
 libdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'lib')
@@ -8,9 +9,11 @@ if os.path.exists(libdir):
     sys.path.append(libdir)
 from waveshare_epd import epd7in5b_V2
 
-# OpenWeather API configuration for Princeton, NJ
-API_KEY = "[enter openweather api key between quotes"
-LAT, LON = "latitude, longitude"
+# OpenWeather API configuration
+API_KEY = "enter openweather api key between quotes"
+LAT, LON = "latitude, longitude".split(',')
+LAT = str(float(LAT))  # Convert to float and back to string to clean up any formatting issues
+LON = str(float(LON))
 eastern = pytz.timezone('America/New_York') # Change to your time zone as needed
 
 def fetch_weather_data():
@@ -77,12 +80,12 @@ def draw_on_display(epd, current_data, forecast_texts, font, sunrise_time, sunse
     sunrise_sunset_title_font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf', 26)
     sunrise_sunset_time_font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', 22)
 
-    title = "Weather Report - [type in your location]"
-    current_date = dt.now().strftime("%A, %B %d, %Y")
+    title = "Weather Report - [type in your location]" #Enter your City and State
+    current_date = dt.now().strftime("%A, %B %-d, %Y")
     title_x = (epd.width - draw_black.textsize(title, font=title_font)[0]) // 2
     date_x = (epd.width - draw_red.textsize(current_date, font=date_font)[0]) // 2
-    draw_black.text((title_x, 10), title, font=title_font, fill=0)
-    draw_red.text((date_x, 60), current_date, font=date_font, fill=0)
+    draw_red.text((title_x, 10), title, font=title_font, fill=0)
+    draw_black.text((date_x, 60), current_date, font=date_font, fill=0)
 
     left_column_width = epd.width // 3 - 10
     right_column_start = left_column_width + 20
