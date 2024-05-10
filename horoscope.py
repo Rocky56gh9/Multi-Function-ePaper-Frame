@@ -152,7 +152,7 @@ def draw_on_display(zodiac_image, horoscope_text, epd):
     header_draw.text((title_x, header_y_position), title, font=header_font, fill=0)
 
     # Date
-    current_date = datetime.now().strftime("%A, %B %d, %Y")
+    current_date = datetime.now().strftime("%A, %B %-d, %Y")
     date_x = (epd.width - draw_black.textsize(current_date, font=date_font)[0]) // 2
     date_draw = draw_red if date_color == "red" else draw_black
     date_draw.text((date_x, date_y_position), current_date, font=date_font, fill=0)
@@ -180,7 +180,7 @@ def main():
         epd.init()
 
         # Load and resize the zodiac image
-        zodiac_image_path = '[enter path to specific horoscope image]'
+        zodiac_image_path = '[enter path to specific horoscope image]' #Add path to your image
         zodiac_image = Image.open(zodiac_image_path)
 
         # Draw on display
