@@ -98,7 +98,7 @@ try:
 
     footer_font_size = 32
     footer_font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', footer_font_size)
-    footer_text = datetime.datetime.now().strftime("%A, %B %d, %Y")
+    footer_text = datetime.datetime.now().strftime("%A, %B %-d, %Y")
     footer_width, footer_height = draw_black.textsize(footer_text, font=footer_font)
     footer_x = (800 - footer_width) // 2  # Center align
     footer_y = 415  # Adjust as needed
