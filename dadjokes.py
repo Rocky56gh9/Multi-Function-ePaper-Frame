@@ -71,7 +71,7 @@ try:
     draw_red = ImageDraw.Draw(red_image)
 
     # Load and paste header image
-    header_image_path = '[path to image file]/laughingdad.bmp'
+    header_image_path = '[path to image file]/laughingdad.bmp' #Add path to your image
     header_image = Image.open(header_image_path)
     header_image = header_image.resize((80, 80))
 
@@ -100,7 +100,7 @@ try:
     title_font = ImageFont.truetype(title_font_path, title_font_size)
 
     # Footer setup
-    footer_text = datetime.datetime.now().strftime("%A, %B %d, %Y")
+    footer_text = datetime.datetime.now().strftime("%A, %B %-d, %Y")
     footer_font = ImageFont.truetype(footer_font_path, 32)
 
     # Draw title and footer
