@@ -29,24 +29,20 @@ I have set up Amazon referral links to all of the components I used, which were 
 2. After the installer completes, put the SD card in the Pi and power it up. Depending on the unit, it could take ~10 minutes to appear on your network.
 3. Log in to your router, find the unit name you assigned, and take note of the IP address.
 4. Open a Terminal, and enter the command **SSH [unit name]@[ip address]**, followed by the password. Follow any additional prompts. **NOTE**, if you later scrap the build and start over, you likely need to reset the SSH key on your local device. Use the following command to clear it: **ssh-keygen -R {RPi-IP-Address}**<br>
-5. Run all of the commands listed below.<br>
-•	sudo apt-get update<br>
-•	sudo apt-get upgrade<br>
-•	sudo apt-get install libjpeg-dev<br>
-•	sudo apt-get install libopenjp2-7<br>
-•	sudo apt-get install python3-pip<br>
-•	pip install Pillow<br>
-•	pip install pytz<br>
-•	pip install bs4<br>
-•	sudo apt-get install git<br>
-•	git config --global http.postBuffer 524288000<br>
-•	pip3 install praw<br>
-•	sudo pip3 install RPi.GPIO<br>
-•	sudo pip3 install spidev<br>
-•	git clone https://github.com/waveshare/e-Paper.git<br>
-•	sudo raspi-config<br>
-•	Enable SPI interface<br>
-•	Reboot<br>
+5. Clone the repository: git clone https://github.com/Rocky56gh9/multimode-epaper-frame.git<br>
+6. Navigate to the project directory on the device: cd multimode-epaper-frame<br>
+7. Make the Setup script executable: chmod +x setup.sh<br>
+8. Run the setup script: ./setup.sh<br>
+
+# Optional Access Method
+It is also possible to access the device from a local machine over USB using Gadget mode.<br>
+1. Access the device.<br>
+2. Edit "config.txt": sudo nano /boot/config.txt<br>
+3. Scroll to the end of the file and add the following line, followed by CTRL+O, then CTRL X: dtoverlay=dwc2<br>
+4. Edit "cmdline.txt": sudo nano /boot/cmdline.txt<br>
+5. You need to add modules-load=dwc2,g_ether immediately after rootwait. It's crucial not to add any extra spaces or lines. Your cmdline.txt might look something like this after modification: console=serial0,115200 console=tty1 root=PARTUUID=00000000-02 rootfstype=ext4 elevator=deadline fsck.repair=yes rootwait modules-load=dwc2,g_ether quiet init=/usr/lib/raspi-config/init_resize.sh<br>
+6. Save and reboot.<br>
+7. Access the device over USB: ssh pi@raspberrypi.local
 
 **Test the Screen**
 Once you've done all of this, you're ready to see if everything is installed correctly. Run the test script for the specific screen.<br>
