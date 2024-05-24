@@ -78,9 +78,10 @@ Once you are happy with how the scripts run on the screen, from the terminal, en
 5.  0 22 * * * /usr/bin/python3 /[path to script]/sleep.py
 
 # Physical Assembly
-1. The 7.5" screen fits well in the frame with paper mat listed in the equipment list, but requires modifying the size of the paper mat. Suggested modifications:
-•	Measuring from the outside top of the mat, measure 10mm toward the existing opening and mark a line horizontally.<br>
-•	Measuring from the outside of the left and right sides, measure 13mm toward existing opening from both sides and mark a line vertically.<br>
+1. The 7.5" screen fits well in the frame with paper mat listed in the equipment list, but requires modifying the size of the paper mat. Here are the measurements for the size of the mat needed to cover the non-display parts of the e-paper screen. These are measured from the exterior edge of the mat:
+•	Top: 14mm<br>
+•	Bottom: 16mm<br>
+•	Left/Right: 7mm<br>
 
 Remove the excess material as marked, and the remaining material should cover the non-display area of the screen. Carefully place the screen on the mat, ensure alignment, and tape the screen (from the back) to the mat to hold in place. Put the mat and screen into the frame and add the back. With the specific frame I used, the ribbon cable fits nicely through the bottom to the exterior of the frame. For now, I used an elastic to gather the excess ribbon material. I installed the RPi in the case (linked) and then glued the case to the rear of the frame.
 
