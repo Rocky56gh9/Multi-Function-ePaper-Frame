@@ -50,7 +50,7 @@ I have set up Amazon referral links to all of the components I used, which were 
    - Make the setup script executable: `chmod +x setup.sh`
    - Run the setup script: `./setup.sh`
 
-Note: The setup script also sets up access to the device from a local machine over USB using Gadget mode. Access the device over USB: ssh pi@raspberrypi.local<br>
+Note: The setup script also sets up access to the device from a local machine over USB using Gadget mode. Access the device over USB: `ssh pi@raspberrypi.local`<br>
 
 # Crontab Jobs
 The setup script automatically runs the scripts according to this schedule. You can modify the schedule. All scripts run from 7am to 9pm as shown.
