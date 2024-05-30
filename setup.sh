@@ -39,8 +39,15 @@ echo "USB access configured successfully."
 # Create a flag file to indicate first boot
 touch $HOME/multimode-epaper-frame/first_boot_flag
 
-# Add the first boot script to crontab
-(crontab -l 2>/dev/null; echo "@reboot $HOME/multimode-epaper-frame/scripts/first_boot.sh") | crontab -
+# Ensure first_boot.sh is executable
+chmod +x $HOME/multimode-epaper-frame/scripts/first_boot.sh
+
+# Add the first boot check to .bashrc automatically
+if ! grep -q 'first_boot.sh' $HOME/.bashrc; then
+    echo 'if [ -f $HOME/multimode-epaper-frame/first_boot_flag ]; then' >> $HOME/.bashrc
+    echo '    $HOME/multimode-epaper-frame/scripts/first_boot.sh' >> $HOME/.bashrc
+    echo 'fi' >> $HOME/.bashrc
+fi
 
 # Configure crontab for other scripts
 (crontab -l 2>/dev/null; echo "0 7-21 * * * /usr/bin/python3 $HOME/multimode-epaper-frame/scripts/showerthoughts.py") | crontab -
