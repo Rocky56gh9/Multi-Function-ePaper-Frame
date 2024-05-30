@@ -56,14 +56,14 @@ In my case, I just left everything in the "examples" folder along with the test 
 
 The Weather Station is hard-coded for Eastern time, but that should be adjustable, though those instructions are not included here.
 
-# Set Up Crontab Jobs
-Once you are happy with how the scripts run on the screen, from the terminal, enter the command **crontab -e**, then, at the bottom of the file, enter each of these as an individual line.
+# Crontab Jobs
+The setup script automatically runs the scripts according to this schedule. You can modify the schedule. All scripts run from 7am to 9pm as shown.
 
-1. 0 7-21 * * * /usr/bin/python3 /[path to script]/showerthoughts.py
-2. 15 7-21 * * * /usr/bin/python3 /[path to script]/weatherstation.py
-3. 30 7-21 * * * /usr/bin/python3 /[path to script]/dadjokes.py
-4. 45 7-21 * * * /usr/bin/python3 /[path to script]/horoscope.py
-5.  0 22 * * * /usr/bin/python3 /[path to script]/sleep.py
+1. Top of the hour: showerthoughts.py
+2. 15 past each hour: weatherstation.py
+3. 30 past each hour: dadjokes.py
+4. 45 past each hour: horoscope.py
+5. 9pm to 7am: sleep.py
 
 # Physical Assembly
 1. The 7.5" screen fits well in the frame with paper mat listed in the equipment list, but requires modifying the size of the paper mat. Here are the measurements for the size of the mat needed to cover the non-display parts of the e-paper screen. These are measured from the exterior edge of the mat:
