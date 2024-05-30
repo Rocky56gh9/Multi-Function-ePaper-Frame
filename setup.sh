@@ -17,11 +17,11 @@ git clone https://github.com/waveshare/e-Paper.git
 # Configure git
 git config --global http.postBuffer 524288000
 
-# Copy image files to appropriate location
+# Copy image files to appropriate location using dynamic home directory
 mkdir -p $HOME/multimode-epaper-frame/images
 cp *.bmp $HOME/multimode-epaper-frame/images/
 
-# Copy Python scripts to appropriate location
+# Copy Python scripts to appropriate location using dynamic home directory
 mkdir -p $HOME/multimode-epaper-frame/scripts
 cp *.py $HOME/multimode-epaper-frame/scripts/
 
@@ -35,5 +35,12 @@ sudo systemctl enable getty@ttyGS0.service
 sudo systemctl start getty@ttyGS0.service
 
 echo "USB access configured successfully."
+
+# Configure crontab
+(crontab -l 2>/dev/null; echo "0 7-21 * * * /usr/bin/python3 $HOME/multimode-epaper-frame/scripts/showerthoughts.py") | crontab -
+(crontab -l 2>/dev/null; echo "15 7-21 * * * /usr/bin/python3 $HOME/multimode-epaper-frame/scripts/weatherstation.py") | crontab -
+(crontab -l 2>/dev/null; echo "30 7-21 * * * /usr/bin/python3 $HOME/multimode-epaper-frame/scripts/dadjokes.py") | crontab -
+(crontab -l 2>/dev/null; echo "45 7-21 * * * /usr/bin/python3 $HOME/multimode-epaper-frame/scripts/horoscope.py") | crontab -
+(crontab -l 2>/dev/null; echo "0 22 * * * /usr/bin/python3 $HOME/multimode-epaper-frame/scripts/sleep.py") | crontab -
 
 echo "Setup complete. Please reboot your system to apply all changes."
