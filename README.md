@@ -25,8 +25,9 @@ I have set up Amazon referral links to all of the components I used, which were 
 9. [5x7 Desktop Picture Frame with paper mat insert](https://amzn.to/3tJUklN) for housing the screen for display. The mat will need to be modified later to fit the screen dimensions.
 
 # New Build Guide
+
 1. **Configure SD Card:**
-   - Use the Raspberry Pi Imager on macOS.
+   - Use the Raspberry Pi Imager.
    - Set a hostname, ID, and unique password.
    - Add your network SSID and password.
    - Enable SSH on the second tab.
@@ -49,16 +50,7 @@ I have set up Amazon referral links to all of the components I used, which were 
    - Make the setup script executable: `chmod +x setup.sh`
    - Run the setup script: `./setup.sh`
 
-1. Configure your SD card for the RaspberryPi. I used the Raspberry Pi installer on MacOS. Through that UI, give your unit a name (which is how it will appear on your network), then assign an ID and unique password. For ease of use later, also add your network SSID and password. On the second tab, be sure to enable enable SSH.
-2. After the installer completes, put the SD card in the Pi and power it up. Depending on the unit, it could take ~10 minutes to appear on your network.
-3. Log in to your router, find the unit name you assigned, and take note of the IP address.
-4. Open a Terminal, and enter the command **SSH [unit name]@[ip address]**, followed by the password. Follow any additional prompts. **NOTE**, if you later scrap the build and start over, you likely need to reset the SSH key on your local device. Use the following command to clear it: **ssh-keygen -R {RPi-IP-Address}**<br>
-5. Clone the repository: git clone https://github.com/Rocky56gh9/multimode-epaper-frame.git<br>
-6. Navigate to the project directory on the device: cd multimode-epaper-frame<br>
-7. Make the Setup script executable: chmod +x setup.sh<br>
-8. Run the setup script: ./setup.sh<br>
-
-The setup script also sets up access to the device from a local machine over USB using Gadget mode. Access the device over USB: ssh pi@raspberrypi.local<br>
+Note: The setup script also sets up access to the device from a local machine over USB using Gadget mode. Access the device over USB: ssh pi@raspberrypi.local<br>
 
 **Test the Screen**
 Once you've done all of this, you're ready to see if everything is installed correctly. Run the test script for the specific screen.<br>
@@ -66,19 +58,6 @@ Once you've done all of this, you're ready to see if everything is installed cor
 2. Run **python epd_7in5b_V2.py**<br>
 
 If the script runs and you see the series of test images run, you should be good to proceed!
-
-# Copy Assets to Pi
-1. Copy images from local machine to RaspberryPi:<br>
-scp /[path to image]/[image name].bmp [piusername]@[piip]:/[path to where you are housing scripts] - Do this for each of the .bmp images.
-
-In my case, I just left everything in the "examples" folder along with the test scripts. If I had it to do over again, I might put them elsewhere. But for now, I put the python scripts and images all in the same examples folder.
-
-# Set Up Scripts
-1. In the same examples folder, create each of the python files for the project.
-2. Customize all of the variables to your preference, e.g., image locations, geographic location for weather, etc.
-3. Run the scripts individually to test them out.
-
-The Weather Station is hard-coded for Eastern time, but that should be adjustable, though those instructions are not included here.
 
 # Crontab Jobs
 The setup script automatically runs the scripts according to this schedule. You can modify the schedule. All scripts run from 7am to 9pm as shown.
