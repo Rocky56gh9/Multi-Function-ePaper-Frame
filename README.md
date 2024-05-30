@@ -34,15 +34,7 @@ I have set up Amazon referral links to all of the components I used, which were 
 7. Make the Setup script executable: chmod +x setup.sh<br>
 8. Run the setup script: ./setup.sh<br>
 
-# Optional Access Method
-It is also possible to access the device from a local machine over USB using Gadget mode.<br>
-1. Access the device.<br>
-2. Edit "config.txt": sudo nano /boot/config.txt<br>
-3. Scroll to the end of the file and add the following line, followed by CTRL+O, then CTRL X: dtoverlay=dwc2<br>
-4. Edit "cmdline.txt": sudo nano /boot/cmdline.txt<br>
-5. You need to add modules-load=dwc2,g_ether immediately after rootwait. It's crucial not to add any extra spaces or lines. Your cmdline.txt might look something like this after modification: console=serial0,115200 console=tty1 root=PARTUUID=00000000-02 rootfstype=ext4 elevator=deadline fsck.repair=yes rootwait modules-load=dwc2,g_ether quiet init=/usr/lib/raspi-config/init_resize.sh<br>
-6. Save and reboot.<br>
-7. Access the device over USB: ssh pi@raspberrypi.local
+The setup script also sets up access to the device from a local machine over USB using Gadget mode. Access the device over USB: ssh pi@raspberrypi.local<br>
 
 **Test the Screen**
 Once you've done all of this, you're ready to see if everything is installed correctly. Run the test script for the specific screen.<br>
