@@ -52,13 +52,6 @@ I have set up Amazon referral links to all of the components I used, which were 
 
 Note: The setup script also sets up access to the device from a local machine over USB using Gadget mode. Access the device over USB: ssh pi@raspberrypi.local<br>
 
-**Test the Screen**
-Once you've done all of this, you're ready to see if everything is installed correctly. Run the test script for the specific screen.<br>
-1. From the home prompt, enter **cd e-Paper/RaspberryPi_JetsonNano/python/examples**<br>
-2. Run **python epd_7in5b_V2.py**<br>
-
-If the script runs and you see the series of test images run, you should be good to proceed!
-
 # Crontab Jobs
 The setup script automatically runs the scripts according to this schedule. You can modify the schedule. All scripts run from 7am to 9pm as shown.
 
