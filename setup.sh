@@ -18,12 +18,12 @@ git clone https://github.com/waveshare/e-Paper.git
 git config --global http.postBuffer 524288000
 
 # Copy image files to appropriate location
-mkdir -p /home/pi/multimode-epaper-frame/images
-cp *.bmp /home/pi/multimode-epaper-frame/images/
+mkdir -p $HOME/multimode-epaper-frame/images
+cp *.bmp $HOME/multimode-epaper-frame/images/
 
 # Copy Python scripts to appropriate location
-mkdir -p /home/pi/multimode-epaper-frame/scripts
-cp *.py /home/pi/multimode-epaper-frame/scripts/
+mkdir -p $HOME/multimode-epaper-frame/scripts
+cp *.py $HOME/multimode-epaper-frame/scripts/
 
 # Enable SPI interface (This will open the raspi-config tool, requiring user interaction)
 sudo raspi-config nonint do_spi 0
