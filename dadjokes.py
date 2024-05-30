@@ -14,6 +14,9 @@ if os.path.exists(libdir):
 
 from waveshare_epd import epd7in5b_V2
 
+home_dir = os.getenv('HOME')
+image_path = f"{home_dir}/multimode-epaper-frame/images/laughingdad.bmp"
+
 # Logging setup
 logging.basicConfig(level=logging.DEBUG)
 
@@ -71,7 +74,7 @@ try:
     draw_red = ImageDraw.Draw(red_image)
 
     # Load and paste header image
-    header_image_path = '[path to image file]/laughingdad.bmp' #Add path to your image
+    header_image_path = 'f"{home_dir}/multimode-epaper-frame/laughingdad.bmp' #Add path to your image
     header_image = Image.open(header_image_path)
     header_image = header_image.resize((80, 80))
 
