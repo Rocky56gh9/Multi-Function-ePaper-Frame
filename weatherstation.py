@@ -1,176 +1,92 @@
+import sys
 import os
 import requests
-import pytz
-import sys
+from datetime import datetime
 from PIL import Image, ImageDraw, ImageFont
-from datetime import datetime as dt
+
 libdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'lib')
 if os.path.exists(libdir):
     sys.path.append(libdir)
 from waveshare_epd import epd7in5b_V2
 
-# OpenWeather API configuration
-API_KEY = "enter openweather api key between quotes"
-LAT, LON = "latitude, longitude".split(',')
-LAT = str(float(LAT))  # Convert to float and back to string to clean up any formatting issues
-LON = str(float(LON))
-eastern = pytz.timezone('America/New_York') # Change to your time zone as needed
+# Function to get location based on IP address
+def get_location():
+    response = requests.get('https://ipinfo.io')
+    data = response.json()
+    location = data['loc'].split(',')
+    city = data['city']
+    return float(location[0]), float(location[1]), city
 
-def fetch_weather_data():
-    current_url = f"https://api.openweathermap.org/data/2.5/weather?lat={LAT}&lon={LON}&appid={API_KEY}&units=imperial"
-    forecast_url = f"https://api.openweathermap.org/data/2.5/onecall?lat={LAT}&lon={LON}&exclude=minutely,alerts&appid={API_KEY}&units=imperial"
+# Get location details
+latitude, longitude, city = get_location()
 
-    current_response = requests.get(current_url)
-    forecast_response = requests.get(forecast_url)
-    sunrise_time, sunset_time = None, None
+# Function to fetch weather data from OpenWeather API
+def fetch_weather(api_key, latitude, longitude):
+    url = f"http://api.openweathermap.org/data/2.5/weather?lat={latitude}&lon={longitude}&units=metric&appid={api_key}"
+    response = requests.get(url)
+    return response.json()
 
-    if current_response.status_code == 200 and forecast_response.status_code == 200:
-        weather_data = current_response.json()
-        sunrise_time = dt.fromtimestamp(weather_data['sys']['sunrise'], tz=eastern).strftime('%-I:%M%p ET')
-        sunset_time = dt.fromtimestamp(weather_data['sys']['sunset'], tz=eastern).strftime('%-I:%M%p ET')
-        return weather_data, forecast_response.json(), sunrise_time, sunset_time
-    else:
-        print(f"Error fetching data from OpenWeather: {current_response.status_code}, {forecast_response.status_code}")
-        return None, None, None, None
+# API key for OpenWeather (add your OpenWeather API key here)
+api_key = 'YOUR_OPENWEATHER_API_KEY'
 
-def wrap_text(text, max_width, font):
-    words = text.split()
-    lines = []
-    while words:
-        line = ''
-        while words and font.getsize(line + words[0])[0] <= max_width:
-            line += words.pop(0) + ' '
-        lines.append(line)
-    return lines
+# Fetch weather data
+weather_data = fetch_weather(api_key, latitude, longitude)
 
-def calculate_fit_text(weather_data, font_path, initial_font_size, max_width, max_height, additional_line_spacing):
-    font_size = initial_font_size
-    while font_size > 12:  # Minimum font size
-        font = ImageFont.truetype(font_path, font_size)
-        forecast_texts = []
-        combined_height = 0
+# Extract relevant weather information
+weather_main = weather_data['weather'][0]['main']
+temperature = weather_data['main']['temp']
+humidity = weather_data['main']['humidity']
+wind_speed = weather_data['wind']['speed']
 
-        for period in weather_data["daily"][:5]:  # Next 5 days
-            day_name = dt.fromtimestamp(period['dt']).strftime('%A')
-            temp_high = int(period['temp']['max'])
-            temp_low = int(period['temp']['min'])
-            forecast_detail = f"{day_name}: {period['weather'][0]['description'].capitalize()}, High: {temp_high}°F, Low: {temp_low}°F"
-            wrapped_text = wrap_text(forecast_detail, max_width, font)
-            forecast_texts.append(wrapped_text)
+# Initialize the e-Paper display
+epd = epd7in5b_V2.EPD()
+epd.init()
+epd.Clear()
 
-            for line in wrapped_text:
-                combined_height += font.getsize(line)[1] + additional_line_spacing
+# Create images for drawing
+black_image = Image.new('1', (800, 480), 255)
+red_image = Image.new('1', (800, 480), 255)
+draw_black = ImageDraw.Draw(black_image)
+draw_red = ImageDraw.Draw(red_image)
 
-        if combined_height + additional_line_spacing * len(forecast_texts) <= max_height:
-            return forecast_texts, font
-        font_size -= 1  # Reduce font size and try again
+# Font paths
+title_font_path = '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
+body_font_path = '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
+footer_font_path = '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
 
-    return [], ImageFont.truetype(font_path, 12)  # If no suitable size is found, return the smallest size
+# Title setup
+title_font_size = 50  # Starting font size for title
+title_text = f"Conditions & Forecast - {city}"
+title_font = ImageFont.truetype(title_font_path, title_font_size)
 
-def draw_on_display(epd, current_data, forecast_texts, font, sunrise_time, sunset_time):
-    image = Image.new('1', (epd.width, epd.height), 255)
-    red_image = Image.new('1', (epd.width, epd.height), 255)
-    draw_black = ImageDraw.Draw(image)
-    draw_red = ImageDraw.Draw(red_image)
+# Footer setup
+footer_text = datetime.now().strftime("%A, %B %-d, %Y")
+footer_font = ImageFont.truetype(footer_font_path, 32)
 
-    title_font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf', 32)
-    date_font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf', 28)
-    header_font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf', 30)
-    content_font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', 24)
-    sunrise_sunset_title_font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf', 26)
-    sunrise_sunset_time_font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', 22)
+# Draw title and footer
+title_width, title_height = draw_red.textsize(title_text, title_font)
+title_x = (800 - title_width) // 2
+title_y = 15
+draw_red.text((title_x, title_y), title_text, font=title_font, fill=0)
 
-    title = "Weather Report - [type in your location]" #Enter your City and State
-    current_date = dt.now().strftime("%A, %B %-d, %Y")
-    title_x = (epd.width - draw_black.textsize(title, font=title_font)[0]) // 2
-    date_x = (epd.width - draw_red.textsize(current_date, font=date_font)[0]) // 2
-    draw_red.text((title_x, 10), title, font=title_font, fill=0)
-    draw_black.text((date_x, 60), current_date, font=date_font, fill=0)
+footer_width, footer_height = draw_red.textsize(footer_text, footer_font)
+footer_x = (800 - footer_width) // 2
+footer_y = 415
+draw_red.text((footer_x, footer_y), footer_text, font=footer_font, fill=0)
 
-    left_column_width = epd.width // 3 - 10
-    right_column_start = left_column_width + 20
-    buffer_space = 10  # Reduced buffer space between title and content
+# Weather information setup
+info_font = ImageFont.truetype(body_font_path, 30)
+weather_text = f"Main: {weather_main}\nTemperature: {temperature}°C\nHumidity: {humidity}%\nWind Speed: {wind_speed} m/s"
+draw_black.text((20, title_y + title_height + 20), weather_text, font=info_font, fill=0)
 
-    current_y = 120
+# Display the images
+epd.display(epd.getbuffer(black_image), epd.getbuffer(red_image))
+epd.sleep()
 
-    # Left Column - Current Conditions
-    current_conditions_title = "Current Conditions:"
-    wrapped_title = wrap_text(current_conditions_title, left_column_width, header_font)
-    for line in wrapped_title:
-        draw_red.text((10, current_y), line, font=header_font, fill=0)
-        current_y += header_font.getsize(line)[1]
+except IOError as e:
+    print(e)
 
-    current_y += buffer_space // 2
-
-    current_conditions = current_data['weather'][0]['description'].capitalize()
-    current_temp = f"{int(current_data['main']['temp'])}°F"
-    full_conditions = f"{current_conditions}, {current_temp}"
-    lines = wrap_text(full_conditions, left_column_width, content_font)
-    for line in lines:
-        draw_black.text((10, current_y), line, font=content_font, fill=0)
-        current_y += content_font.getsize(line)[1]
-
-    # Right Column - 5-Day Forecast
-    forecast_y = 120
-    draw_red.text((right_column_start, forecast_y), "5-Day Forecast:", font=header_font, fill=0)
-    forecast_y += header_font.getsize("5-Day Forecast:")[1] + buffer_space
-
-    additional_line_spacing = 9
-
-    for day_forecast in forecast_texts:
-        for line in day_forecast:
-            if forecast_y + font.getsize(line)[1] + additional_line_spacing < epd.height - 20:
-                draw_black.text((right_column_start, forecast_y), line, font=font, fill=0)
-                forecast_y += font.getsize(line)[1] + additional_line_spacing
-            else:
-                break
-
-    # Sunrise and Sunset
-    sunrise_start_y = current_y + 100
-    sunset_start_y = current_y + 150
-
-    # Define the y-axis offsets for the sunrise and sunset times
-    sunrise_time_y_offset = 5  # Adjust as needed
-    sunset_time_y_offset = 5   # Adjust as needed
-
-    draw_red.text((10, sunrise_start_y), "Sunrise: ", font=sunrise_sunset_title_font, fill=0)
-    sunrise_time_x = 10 + draw_black.textsize("Sunrise: ", font=sunrise_sunset_title_font)[0]
-    draw_black.text((sunrise_time_x, sunrise_start_y + sunrise_time_y_offset), sunrise_time, font=sunrise_sunset_time_font, fill=0)
-
-    draw_red.text((10, sunset_start_y), "Sunset: ", font=sunrise_sunset_title_font, fill=0)
-    sunset_time_x = 10 + draw_black.textsize("Sunset: ", font=sunrise_sunset_title_font)[0]
-    draw_black.text((sunset_time_x, sunset_start_y + sunset_time_y_offset), sunset_time, font=sunrise_sunset_time_font, fill=0)
-
-    epd.display(epd.getbuffer(image), epd.getbuffer(red_image))
-    epd.sleep()
-
-def main():
-    epd = epd7in5b_V2.EPD()
-    epd.init()
-
-    current_weather_data, forecast_weather_data, sunrise_time, sunset_time = fetch_weather_data()
-    if current_weather_data and forecast_weather_data:
-        max_forecast_height = epd.height - 120 - 30
-        additional_line_spacing = 8
-
-        left_column_width = epd.width // 3 - 10
-        right_column_start = left_column_width + 20
-
-        # Calculate the maximum width for the right column
-        max_width = epd.width - right_column_start - 5  # Subtract 5 pixels for the buffer
-
-        initial_font_size = 24  # Adjust this as needed for the starting font size
-
-        forecast_texts, adjusted_font = calculate_fit_text(
-            forecast_weather_data, 
-            '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', 
-            initial_font_size, 
-            max_width, 
-            max_forecast_height,
-            additional_line_spacing
-        )
-
-        draw_on_display(epd, current_weather_data, forecast_texts, adjusted_font, sunrise_time, sunset_time)
-
-if __name__ == "__main__":
-    main()
+except KeyboardInterrupt:
+    print("ctrl + c:")
+    epd7in5b_V2.epdconfig.module_exit()
+    exit()
