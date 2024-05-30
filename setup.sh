@@ -29,8 +29,11 @@ cp *.py /home/pi/multimode-epaper-frame/scripts/
 sudo raspi-config nonint do_spi 0
 
 # Configure USB acces
+echo "Configuring device for USB access..."
 sudo modprobe g_serial
 sudo systemctl enable getty@ttyGS0.service
 sudo systemctl start getty@ttyGS0.service
+
+echo "USB access configured successfully."
 
 echo "Setup complete. Please reboot your system to apply all changes."
