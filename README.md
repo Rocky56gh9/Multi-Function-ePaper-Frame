@@ -25,6 +25,30 @@ I have set up Amazon referral links to all of the components I used, which were 
 9. [5x7 Desktop Picture Frame with paper mat insert](https://amzn.to/3tJUklN) for housing the screen for display. The mat will need to be modified later to fit the screen dimensions.
 
 # New Build Guide
+1. **Configure SD Card:**
+   - Use the Raspberry Pi Imager on macOS.
+   - Set a hostname, ID, and unique password.
+   - Add your network SSID and password.
+   - Enable SSH on the second tab.
+
+2. **Initial Setup:**
+   - Insert the SD card into the Pi and power it up.
+   - Wait ~10 minutes for it to appear on your network.
+   - Log into your router, find the Pi, and note its IP address.
+
+3. **SSH Login:**
+   - Open Terminal and run: `ssh [unit name]@[IP address]`
+   - Enter the password and follow prompts.
+   - If restarting, reset the SSH key with: `ssh-keygen -R {RPi-IP-Address}`
+
+4. **Clone Repository:**
+   - Run: `git clone https://github.com/Rocky56gh9/multimode-epaper-frame.git`
+
+5. **Setup Script:**
+   - Navigate to the directory: `cd multimode-epaper-frame`
+   - Make the setup script executable: `chmod +x setup.sh`
+   - Run the setup script: `./setup.sh`
+
 1. Configure your SD card for the RaspberryPi. I used the Raspberry Pi installer on MacOS. Through that UI, give your unit a name (which is how it will appear on your network), then assign an ID and unique password. For ease of use later, also add your network SSID and password. On the second tab, be sure to enable enable SSH.
 2. After the installer completes, put the SD card in the Pi and power it up. Depending on the unit, it could take ~10 minutes to appear on your network.
 3. Log in to your router, find the unit name you assigned, and take note of the IP address.
