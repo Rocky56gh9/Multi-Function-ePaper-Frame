@@ -36,6 +36,21 @@ sudo systemctl start getty@ttyGS0.service
 
 echo "USB access configured successfully."
 
+# Prompt user for WiFi SSID and password
+read -p "Please enter your WiFi SSID: " ssid
+read -sp "Please enter your WiFi password: " psk
+echo
+
+# Configure WiFi
+cat <<EOF | sudo tee -a /etc/wpa_supplicant/wpa_supplicant.conf
+network={
+    ssid="$ssid"
+    psk="$psk"
+}
+EOF
+
+sudo systemctl restart dhcpcd
+
 # Configure crontab
 (crontab -l 2>/dev/null; echo "0 7-21 * * * /usr/bin/python3 $HOME/multimode-epaper-frame/scripts/showerthoughts.py") | crontab -
 (crontab -l 2>/dev/null; echo "15 7-21 * * * /usr/bin/python3 $HOME/multimode-epaper-frame/scripts/weatherstation.py") | crontab -
