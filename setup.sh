@@ -28,4 +28,9 @@ cp *.py /home/pi/multimode-epaper-frame/scripts/
 # Enable SPI interface (This will open the raspi-config tool, requiring user interaction)
 sudo raspi-config nonint do_spi 0
 
+# Configure USB acces
+sudo modprobe g_serial
+sudo systemctl enable getty@ttyGS0.service
+sudo systemctl start getty@ttyGS0.service
+
 echo "Setup complete. Please reboot your system to apply all changes."
