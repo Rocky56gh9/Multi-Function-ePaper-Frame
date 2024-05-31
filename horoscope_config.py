@@ -91,12 +91,6 @@ except KeyboardInterrupt:
     exit()
 """
 
-VALID_SUN_SIGNS = [
-    "aries", "taurus", "gemini", "cancer",
-    "leo", "virgo", "libra", "scorpio",
-    "sagittarius", "capricorn", "aquarius", "pisces"
-]
-
 def configure_horoscopes():
     print("Configuring Horoscopes")
     print("Valid sun signs are:")
