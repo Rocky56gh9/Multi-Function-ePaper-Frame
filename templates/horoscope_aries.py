@@ -10,9 +10,7 @@ if os.path.exists(libdir):
     sys.path.append(libdir)
 from waveshare_epd import epd7in5b_V2
 
-# User-defined horoscope sign
-# Update the variable 'user_sunsign' with your horoscope sign (e.g., 'aries', 'taurus', 'gemini', etc.)
-user_sunsign = "aries"  # <-- Change this value to your horoscope sign
+user_sunsign = "aries"
 
 home_dir = os.getenv('HOME')
 image_dir = f"{home_dir}/multimode-epaper-frame/images"
