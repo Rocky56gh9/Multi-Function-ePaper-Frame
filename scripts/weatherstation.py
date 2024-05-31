@@ -2,50 +2,43 @@ import sys
 import os
 import requests
 from datetime import datetime
-from PIL import Image, ImageDraw, ImageFont
 import pytz
 from timezonefinder import TimezoneFinder
+from PIL import Image, ImageDraw, ImageFont
+
 libdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'lib')
 if os.path.exists(libdir):
     sys.path.append(libdir)
 from waveshare_epd import epd7in5b_V2
 
-# Function to get location based on IP address
-def get_location():
-    response = requests.get('https://ipinfo.io')
-    data = response.json()
-    location = data['loc'].split(',')
-    city = data['city']
-    return float(location[0]), float(location[1]), city
+# Configuration variables
+zip_code = "[Enter your ZIP code]"
+api_key = "[Enter your OpenWeather API key]"
 
-# Get location details
-latitude, longitude, city = get_location()
-
-# Function to fetch weather data from OpenWeather API
-def fetch_weather(api_key, latitude, longitude):
-    url = f"http://api.openweathermap.org/data/2.5/weather?lat={latitude}&lon={longitude}&units=metric&appid={api_key}"
+# Function to fetch weather data from OpenWeather API using zip code
+def fetch_weather(api_key, zip_code):
+    url = f"http://api.openweathermap.org/data/2.5/weather?zip={zip_code}&units=metric&appid={api_key}"
     response = requests.get(url)
     return response.json()
 
-# Function to fetch timezone from latitude and longitude
-def get_timezone(latitude, longitude):
+# Function to fetch the timezone using latitude and longitude
+def get_timezone(lat, lon):
     tf = TimezoneFinder()
-    return tf.timezone_at(lat=latitude, lng=longitude)
-
-# API key for OpenWeather (add your OpenWeather API key here)
-api_key = 'YOUR_OPENWEATHER_API_KEY'
+    return tf.timezone_at(lat=lat, lng=lon)
 
 # Fetch weather data
-weather_data = fetch_weather(api_key, latitude, longitude)
+weather_data = fetch_weather(api_key, zip_code)
 
 # Extract relevant weather information
 weather_main = weather_data['weather'][0]['main']
 temperature = weather_data['main']['temp']
 humidity = weather_data['main']['humidity']
 wind_speed = weather_data['wind']['speed']
+lat = weather_data['coord']['lat']
+lon = weather_data['coord']['lon']
 
 # Get timezone and current time in local timezone
-timezone_str = get_timezone(latitude, longitude)
+timezone_str = get_timezone(lat, lon)
 timezone = pytz.timezone(timezone_str)
 current_time = datetime.now(timezone)
 
@@ -67,11 +60,11 @@ footer_font_path = '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
 
 # Title setup
 title_font_size = 50  # Starting font size for title
-title_text = f"Conditions & Forecast - {city}"
+title_text = f"Conditions & Forecast for {zip_code}"
 title_font = ImageFont.truetype(title_font_path, title_font_size)
 
 # Footer setup
-footer_text = current_time.strftime("%A, %B %-d, %Y")
+footer_text = current_time.strftime("%A, %B %-d, %Y %I:%M %p %Z")
 footer_font = ImageFont.truetype(footer_font_path, 32)
 
 # Draw title and footer
