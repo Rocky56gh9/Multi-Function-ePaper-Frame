@@ -1,10 +1,7 @@
 #!/bin/bash
 
-# Update and upgrade the system
-sudo apt-get update
-sudo apt-get upgrade -y
-
 # Install necessary packages
+sudo apt-get update
 sudo apt-get install -y libjpeg-dev libopenjp2-7 python3-pip git
 
 # Install Python packages
