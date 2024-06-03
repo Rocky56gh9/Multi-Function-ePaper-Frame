@@ -59,9 +59,9 @@ try:
     epd.Clear()
 
     # Reddit API setup
-    reddit = praw.Reddit(client_id='[enter client id between quotes]',
-                         client_secret='[enter client secret between quotes]',
-                         user_agent='[enter whatever you want between quotes]')
+    reddit = praw.Reddit(client_id='{client_id}',
+                         client_secret='{client_secret}',
+                         user_agent='{user_agent}')
 
     subreddit = reddit.subreddit("dadjokes")
     top_post = next(subreddit.top(time_filter='hour', limit=1))
@@ -74,7 +74,7 @@ try:
     draw_red = ImageDraw.Draw(red_image)
 
     # Load and paste header image
-    header_image_path = 'f"{home_dir}/multimode-epaper-frame/laughingdad.bmp' #Add path to your image
+    header_image_path = f"{home_dir}/multimode-epaper-frame/images/laughingdad.bmp"
     header_image = Image.open(header_image_path)
     header_image = header_image.resize((80, 80))
 
