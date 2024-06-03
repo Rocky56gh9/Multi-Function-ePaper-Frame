@@ -1,11 +1,14 @@
 #!/bin/bash
 
-# Install necessary packages
+# Update and upgrade the system
 sudo apt-get update
+sudo apt-get upgrade -y
+
+# Install necessary packages
 sudo apt-get install -y libjpeg-dev libopenjp2-7 python3-pip git
 
 # Install Python packages
-pip install Pillow pytz bs4 praw
+pip install Pillow pytz bs4 praw requests timezonefinder
 sudo pip3 install RPi.GPIO spidev
 
 # Clone the e-Paper repository
