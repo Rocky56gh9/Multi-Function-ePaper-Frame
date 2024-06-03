@@ -28,6 +28,7 @@ I have set up Amazon referral links to all of the components I used, which were 
 
 1. **Configure SD Card:**
    - Use the Raspberry Pi Imager.
+   - Install RaspberryPi OS (Legacy, 64-bit) Lite
    - Set a hostname, ID, and unique password.
    - Add your network SSID and password.
    - Enable SSH on the second tab.
