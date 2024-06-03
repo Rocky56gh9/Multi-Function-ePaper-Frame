@@ -97,7 +97,7 @@ try:
     # Font paths
     title_font_path = '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
     body_font_path = '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
-    footer_font_path = '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
+    footer_font_path = '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
 
     # Title setup
     title_font_size = 50  # Starting font size for title
