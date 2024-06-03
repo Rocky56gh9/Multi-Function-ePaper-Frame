@@ -4,17 +4,19 @@ import os
 TEMPLATE_PATH = 'templates/weatherstation_template.py'
 SCRIPTS_PATH = 'scripts/weatherstation.py'
 
-def configure_weather():
+def configure_weatherstation():
     print("Configuring Weather Station Script")
     api_key = input("Enter your OpenWeather API key: ")
     zip_code = input("Enter your ZIP code: ")
+    
+    home_dir = os.getenv("HOME")
 
     # Read the template file
     with open(TEMPLATE_PATH, 'r') as file:
         template_content = file.read()
 
     # Replace placeholders with user inputs
-    script_content = template_content.format(api_key=api_key, zip_code=zip_code)
+    script_content = template_content.format(api_key=api_key, zip_code=zip_code, home_dir=home_dir)
 
     # Write the configured script to the scripts directory
     with open(SCRIPTS_PATH, 'w') as file:
@@ -24,7 +26,7 @@ def configure_weather():
 
 def main():
     print("Weather Station Configuration Interface")
-    configure_weather()
+    configure_weatherstation()
 
 if __name__ == "__main__":
     main()
