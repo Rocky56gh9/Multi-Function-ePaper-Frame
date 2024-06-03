@@ -10,14 +10,15 @@ import time
 from PIL import Image, ImageDraw, ImageFont
 from timezonefinder import TimezoneFinder
 from pytz import timezone
-libdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'lib')
+
+# Correct path to the waveshare_epd library
+libdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'e-Paper/RaspberryPi_JetsonNano/python/lib')
 if os.path.exists(libdir):
     sys.path.append(libdir)
 
 from waveshare_epd import epd7in5b_V2
 
 home_dir = os.getenv('HOME')
-image_path = f"{home_dir}/multimode-epaper-frame/images/weather.bmp"
 
 # Logging setup
 logging.basicConfig(level=logging.DEBUG)
@@ -32,12 +33,12 @@ def get_location_data(zip_code, api_key):
     response = requests.get(url)
     if response.status_code == 200:
         data = response.json()
-        return data['coord']['lat'], data['coord']['lon'], data['name']
+        return data['coord']['lat'], data['coord']['lon'], data['main']['temp'], data['weather'][0]['description']
     else:
         raise Exception("Error fetching location data")
 
-lat, lon, location_name = get_location_data(zip_code, api_key)
-logging.info(f"Fetched location data: {location_name} (Lat: {lat}, Lon: {lon})")
+lat, lon, temp, weather_description = get_location_data(zip_code, api_key)
+logging.info(f"Fetched location data: (Lat: {lat}, Lon: {lon}), Temp: {temp}F, Description: {weather_description}")
 
 # Get timezone based on latitude and longitude
 tf = TimezoneFinder()
@@ -82,39 +83,11 @@ try:
     epd.init()
     epd.Clear()
 
-    # Fetch weather data
-    url = f'http://api.openweathermap.org/data/2.5/weather?zip={zip_code},us&appid={api_key}&units=imperial'
-    response = requests.get(url)
-    weather_data = response.json()
-
-    temp = weather_data['main']['temp']
-    weather_description = weather_data['weather'][0]['description']
-    logging.info(f"Fetched weather data: {temp}F, {weather_description}")
-
     # Create images for drawing
     black_image = Image.new('1', (800, 480), 255)
     red_image = Image.new('1', (800, 480), 255)
     draw_black = ImageDraw.Draw(black_image)
     draw_red = ImageDraw.Draw(red_image)
-
-    # Load and paste header image
-    header_image_path = f"{home_dir}/multimode-epaper-frame/images/weather.bmp"
-    header_image = Image.open(header_image_path)
-    header_image = header_image.resize((80, 80))
-
-    # Create a horizontally mirrored image
-    mirrored_header_image = header_image.transpose(Image.FLIP_LEFT_RIGHT)
-
-    # Define positions for the images
-    positions = [(25, 0), (695, 0), (25, 400), (695, 400)]  # Top left, top right, bottom left, bottom right
-
-    # Paste the original image at top left and bottom left positions
-    for pos in [positions[0], positions[2]]:
-        black_image.paste(header_image, pos)
-
-    # Paste the mirrored image at top right and bottom right positions
-    for pos in [positions[1], positions[3]]:
-        black_image.paste(mirrored_header_image, pos)
 
     # Font paths
     title_font_path = '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
@@ -123,7 +96,7 @@ try:
 
     # Title setup
     title_font_size = 50  # Starting font size for title
-    title_text = f"Weather for {location_name}"
+    title_text = f"Conditions & Forecast for {zip_code}"
     title_font = ImageFont.truetype(title_font_path, title_font_size)
 
     # Footer setup
