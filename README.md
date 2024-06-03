@@ -42,10 +42,13 @@ I have set up Amazon referral links to all of the components I used, which were 
    - Enter the password and follow prompts.
    - If restarting, reset the SSH key with: `ssh-keygen -R {RPi-IP-Address}`
 
-4. **Clone Repository:**
+4. **Install Git**
+   - `sudo apt-get install git -y`
+
+5. **Clone Repository:**
    - Run: `git clone https://github.com/Rocky56gh9/multimode-epaper-frame.git`
 
-5. **Setup Script:**
+6. **Setup Script:**
    - Navigate to the directory: `cd multimode-epaper-frame`
    - Make the setup script executable: `chmod +x setup.sh`
    - Run the setup script: `./setup.sh`
