@@ -6,20 +6,16 @@ import os
 from PIL import Image
 import logging
 
-# Directory setup for libraries
-libdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'lib')
+# Correct path to the waveshare_epd library
+libdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'e-Paper/RaspberryPi_JetsonNano/python/lib')
 if os.path.exists(libdir):
     sys.path.append(libdir)
 
 # Logging setup
 logging.basicConfig(level=logging.DEBUG)
 
-# Try to import the waveshare_epd module
-try:
-    from waveshare_epd import epd7in5b_V2
-except ImportError as e:
-    logging.error("Failed to import waveshare_epd module. Please ensure it's installed.")
-    sys.exit(1)
+# Import the waveshare_epd module
+from waveshare_epd import epd7in5b_V2
 
 def resize_image(image, target_width, target_height):
     """Resize image while maintaining aspect ratio."""
@@ -37,7 +33,8 @@ def main():
         epd.Clear()
 
         # Load the image
-        image_path = '[enter path to image]/sleep.bmp'
+        home_dir = os.getenv('HOME')
+        image_path = f"{home_dir}/multimode-epaper-frame/images/sleep.bmp"
         image = Image.open(image_path)
 
         # Resize the image to fit the display
