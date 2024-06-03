@@ -1,8 +1,11 @@
 import os
 
+# Get the directory of the current script
+script_dir = os.path.dirname(os.path.realpath(__file__))
+
 # Path to the template file
-TEMPLATE_PATH = 'templates/dadjokes_template.py'
-SCRIPTS_PATH = 'scripts/dadjokes.py'
+TEMPLATE_PATH = os.path.join(script_dir, '../templates/dadjokes_template.py')
+SCRIPTS_PATH = os.path.join(script_dir, '../scripts/dadjokes.py')
 
 def configure_dadjokes():
     print("Configuring Dad Jokes Script")
