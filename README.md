@@ -51,8 +51,7 @@ I have set up Amazon referral links to all of the components I used, which were 
 
 6. **Setup Script:**
    - Navigate to the directory: `cd multimode-epaper-frame`
-   - Make the setup script executable: `chmod +x setup.sh`
-   - Run the setup script: `./setup.sh`
+   - Make the setup script executable and run the script: `chmod +x setup.sh && ./setup.sh`
 
 Note: The setup script also sets up access to the device from a local machine over USB using Gadget mode. Access the device over USB: `ssh [username]@[unit name].local`<br>
 
