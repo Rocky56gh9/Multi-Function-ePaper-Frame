@@ -72,9 +72,12 @@ def configure_wifi():
 def clear_wifi_settings():
     print("Clearing existing WiFi settings...")
     wifi_conf_path = '/etc/wpa_supplicant/wpa_supplicant.conf'
-    with open(wifi_conf_path, 'w') as file:
-        file.write("")
-    print("Existing WiFi settings cleared.")
+    try:
+        with open(wifi_conf_path, 'w') as file:
+            file.write("")
+        print("Existing WiFi settings cleared.")
+    except PermissionError:
+        print("Permission denied. Please run this script with sudo.")
 
 def add_wifi_settings():
     ssid = input("Enter your WiFi SSID: ")
@@ -86,10 +89,21 @@ network={{
     psk="{psk}"
 }}
 """
-    with open(wifi_conf_path, 'a') as file:
-        file.write(wifi_conf)
-    print("New WiFi settings added.")
-    subprocess.run(["sudo", "systemctl", "restart", "dhcpcd"], check=True)
+    try:
+        with open(wifi_conf_path, 'a') as file:
+            file.write(wifi_conf)
+        print("New WiFi settings added.")
+        restart_network()
+    except PermissionError:
+        print("Permission denied. Please run this script with sudo.")
+
+def restart_network():
+    print("Restarting network services...")
+    try:
+        subprocess.run(["sudo", "systemctl", "restart", "dhcpcd"], check=True)
+        print("Network services restarted.")
+    except subprocess.CalledProcessError as e:
+        print(f"Failed to restart network services: {e}")
 
 def main():
     print("Network Configuration Interface")
@@ -109,4 +123,7 @@ def main():
         main()
 
 if __name__ == "__main__":
+    if not os.geteuid() == 0:
+        print("This script must be run as root. Please use sudo.")
+        exit()
     main()
