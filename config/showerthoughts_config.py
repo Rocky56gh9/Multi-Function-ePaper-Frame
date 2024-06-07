@@ -1,15 +1,18 @@
 import os
 
+# Get the current working directory
+current_dir = os.path.dirname(os.path.realpath(__file__))
+
 # Path to the template file
-TEMPLATE_PATH = 'templates/showerthoughts_template.py'
-SCRIPTS_PATH = 'scripts/showerthoughts.py'
+TEMPLATE_PATH = os.path.join(current_dir, '..', 'templates', 'showerthoughts_template.py')
+SCRIPTS_PATH = os.path.join(current_dir, '..', 'scripts', 'showerthoughts.py')
 
 def configure_showerthoughts():
     print("Configuring Shower Thoughts Script")
     client_id = input("Enter your Reddit API client ID: ")
     client_secret = input("Enter your Reddit API client secret: ")
     user_agent = input("Enter your Reddit API user agent: ")
-    
+
     home_dir = os.getenv("HOME")
 
     # Read the template file
