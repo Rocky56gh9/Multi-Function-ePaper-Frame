@@ -73,7 +73,7 @@ try:
     draw_red = ImageDraw.Draw(red_image)
 
     # Load and paste header image
-    header_image_path = f"{home_dir}/multimode-epaper-frame/images/showerthought.bmp"
+    header_image_path = f"{home_dir}/multimode-epaper-frame/images/runningshower.bmp"
     header_image = Image.open(header_image_path)
     header_image = header_image.resize((80, 80))
 
