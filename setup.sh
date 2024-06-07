@@ -25,7 +25,7 @@ cp *.bmp $HOME/multimode-epaper-frame/images/
 mkdir -p $HOME/multimode-epaper-frame/scripts
 cp *.py $HOME/multimode-epaper-frame/scripts/
 
-# Enable SPI interface (This will open the raspi-config tool, requiring user interaction)
+# Enable SPI interface
 sudo raspi-config nonint do_spi 0
 
 # Configure USB access
