@@ -17,7 +17,7 @@ if os.path.exists(libdir):
 from waveshare_epd import epd7in5b_V2
 
 home_dir = os.getenv('HOME')
-image_path = f"{home_dir}/multimode-epaper-frame/images/showerthought.bmp"
+image_path = f"{home_dir}/multimode-epaper-frame/images/runningshower.bmp"
 
 # Logging setup
 logging.basicConfig(level=logging.DEBUG)
