@@ -53,16 +53,19 @@ I have set up Amazon referral links to all of the components I used, which were 
    - Navigate to the directory: `cd multimode-epaper-frame`
    - Make the setup script executable and run the script: `chmod +x setup.sh && ./setup.sh`
 
-Note: The setup script also sets up access to the device from a local machine over USB using Gadget mode. Access the device over USB: `ssh [username]@[unit name].local`<br>
+The setup script installs all of the necessary packages and enables access to the device from a local machine over USB using Gadget mode. Access the device over USB: `ssh [username]@[unit name].local`<br>
 
-# Crontab Jobs
-The setup script automatically runs the scripts according to this schedule. You can modify the schedule. All scripts run from 7am to 9pm as shown.
+# Obtain APIs
+You will need to obtain API keys for the following services, which will be set later via configuration scripts.
+1. Reddit: client_id, client_secret, user_agent [set whatever value you want]
+2. OpenWeather
 
-1. Top of the hour: showerthoughts.py
-2. 15 past each hour: weatherstation.py
-3. 30 past each hour: dadjokes.py
-4. 45 past each hour: horoscope.py
-5. 9pm to 7am: sleep.py
+# Configuration
+Navigate to the `config` folder and run each of the configuration scripts. Each script will prompt you for the credentials necessary for the scripts. The scripts are:
+1. dadjokes_config.py
+2. showerthoughts_config.py
+3. weatherstation_config.py
+4. network_config.py
 
 # Physical Assembly
 1. The 7.5" screen fits well in the frame with paper mat listed in the equipment list, but requires modifying the size of the paper mat. Here are the measurements for the size of the mat needed to cover the non-display parts of the e-paper screen. These are measured from the exterior edge of the mat:
