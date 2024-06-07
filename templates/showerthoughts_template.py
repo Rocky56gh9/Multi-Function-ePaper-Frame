@@ -1,6 +1,3 @@
-#!/usr/bin/python
-# -*- coding:utf-8 -*-
-
 import sys
 import os
 import praw
@@ -84,23 +81,23 @@ try:
     mirrored_header_image = header_image.transpose(Image.FLIP_LEFT_RIGHT)
 
     # Define positions for the images
-    positions = [(25, 0), (695, 0), (25, 400), (695, 400)]  # Top left, top right, bottom left, bottom right
+    positions = [(20, 0), (690, 0), (20, 400), (690, 400)]  # Top left, top right, bottom left, bottom right
 
     # Paste the original image at top left and bottom left positions
-    for pos in [positions[0], positions[2]]:
+    for pos in [positions[1], positions[3]]:
         black_image.paste(header_image, pos)
 
     # Paste the mirrored image at top right and bottom right positions
-    for pos in [positions[1], positions[3]]:
+    for pos in [positions[0], positions[2]]:
         black_image.paste(mirrored_header_image, pos)
 
     # Font paths
     title_font_path = '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
     body_font_path = '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
-    footer_font_path = '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
+    footer_font_path = '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
 
     # Title setup
-    title_font_size = 50  # Starting font size for title
+    title_font_size = 40  # Starting font size for title
     title_text = "Reddit Shower Thoughts"
     title_font = ImageFont.truetype(title_font_path, title_font_size)
 
