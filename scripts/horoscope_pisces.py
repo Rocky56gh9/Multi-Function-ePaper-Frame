@@ -5,7 +5,7 @@ from datetime import datetime
 from PIL import Image, ImageDraw, ImageFont
 from bs4 import BeautifulSoup
 
-# Correct path to the waveshare_epd library
+# Path to the waveshare_epd library
 libdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'e-Paper/RaspberryPi_JetsonNano/python/lib')
 if os.path.exists(libdir):
     sys.path.append(libdir)
