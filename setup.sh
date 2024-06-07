@@ -9,7 +9,7 @@ sudo apt-get install -y libjpeg-dev libopenjp2-7 python3-pip git
 
 # Install Python packages
 pip install Pillow pytz bs4 praw requests timezonefinder
-sudo pip3 install RPi.GPIO spidev
+sudo pip3 install RPi.GPIO spidev praw
 
 # Clone the e-Paper repository
 git clone https://github.com/waveshare/e-Paper.git
