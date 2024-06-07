@@ -8,6 +8,31 @@ ALL_HOROSCOPE_SCRIPTS = [f"scripts/horoscope_{sun_sign}.py" for sun_sign in [
     "sagittarius", "capricorn", "aquarius", "pisces"
 ]]
 
+CRONTAB_HEADER = """# Edit this file to introduce tasks to be run by cron.
+# 
+# Each task to run has to be defined through a single line
+# indicating with different fields when the task will be run
+# and what command to run for the task
+# 
+# To define the time you can provide concrete values for
+# minute (m), hour (h), day of month (dom), month (mon),
+# and day of week (dow) or use '*' in these fields (for 'any').
+# 
+# Notice that tasks will be started based on the cron's system
+# daemon's notion of time and timezones.
+# 
+# Output of the crontab jobs (including errors) is sent through
+# email to the user the crontab file belongs to (unless redirected).
+# 
+# For example, you can run a backup of all your user accounts
+# at 5 a.m every week with:
+# 0 5 * * 1 tar -zcf /var/backups/home.tgz /home/
+# 
+# For more information see the manual pages of crontab(5) and cron(8)
+# 
+# m h  dom mon dow   command
+"""
+
 def get_wake_time():
     print("Specify the time to wake up the display (local time):")
     wake_time = input("Enter time in HH:MM format (24-hour clock, e.g., 07:00): ").strip()
@@ -85,8 +110,10 @@ def configure_crontab():
 
     cron_lines.append(f"{sleep_time} /usr/bin/python3 $HOME/multimode-epaper-frame/scripts/sleep.py")
 
-    # Write the crontab file
+    # Write the crontab file with headers and the new lines
     with open("new_crontab", "w") as file:
+        file.write(CRONTAB_HEADER)
+        file.write("\n")  # Add a blank line after the headers
         file.write("\n".join(cron_lines) + "\n")
 
     # Install the new crontab
