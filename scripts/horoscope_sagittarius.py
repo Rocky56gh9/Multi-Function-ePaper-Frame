@@ -88,7 +88,7 @@ def resize_image(image, target_width, target_height):
 
 def draw_on_display(zodiac_image, horoscope_text, epd):
     header_font_path = '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
-    header_font_size = 50
+    header_font_size = 45
     header_color = "red"
     header_y_position = 5
     header_font = ImageFont.truetype(header_font_path, header_font_size)
@@ -115,7 +115,7 @@ def draw_on_display(zodiac_image, horoscope_text, epd):
     lines = wrap_text(horoscope_text, font, max_chars_per_line * font.getsize('W')[0])
 
     image_width = epd.width // 3
-    image_y_position = 190
+    image_y_position = 160
     zodiac_resized = resize_image(zodiac_image, image_width, epd.height - image_y_position)
 
     text_start_x = image_width
