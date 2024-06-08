@@ -8,14 +8,10 @@ sudo apt-get upgrade -y
 sudo apt-get install -y libjpeg-dev libopenjp2-7 python3-pip git
 
 # Install Python packages
-pip install Pillow pytz bs4 praw requests timezonefinder
-sudo pip3 install RPi.GPIO spidev praw bs4
+pip3 install Pillow pytz bs4 praw requests timezonefinder RPi.GPIO spidev
 
 # Clone the e-Paper repository
 git clone https://github.com/waveshare/e-Paper.git
-
-# Configure git
-git config --global http.postBuffer 524288000
 
 # Copy image files to appropriate location using dynamic home directory
 mkdir -p $HOME/multimode-epaper-frame/images
