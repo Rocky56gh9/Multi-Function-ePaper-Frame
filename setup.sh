@@ -61,4 +61,9 @@ echo "DE:AD:BE:EF:00:01" > functions/ecm.usb0/host_addr
 echo "DE:AD:BE:EF:00:02" > functions/ecm.usb0/dev_addr
 ln -s functions/ecm.usb0 configs/c.1/
 
+echo "Running configuration scripts..."
+python3 config/dadjokes_showerthoughts_config.py
+python3 config/weatherstation_config.py
+python3 config/crontab_config.py
+
 echo "Setup complete. Please reboot your system to apply all changes."
