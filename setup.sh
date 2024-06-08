@@ -1,6 +1,7 @@
 #!/bin/bash
 
 RETRY_LIMIT=5
+FAILURES=0
 
 function retry() {
     local n=1
@@ -17,7 +18,8 @@ function retry() {
                 sleep $delay
             else
                 echo "The command has failed after $n attempts."
-                return 1
+                FAILURES=$((FAILURES + 1))
+                break
             fi
         }
     done
@@ -57,22 +59,8 @@ echo "Configuring device for USB access..."
 echo "Setup complete. Please reboot your system to apply all changes."
 
 # Summary
-errors=0
-
-function check_command() {
-    if ! $1; then
-        echo "Failed: $1"
-        errors=$((errors + 1))
-    fi
-}
-
-check_command "pip3 --version"
-for package in $PYTHON_PACKAGES; do
-    check_command "pip3 show $package"
-done
-
-if [[ $errors -gt 0 ]]; then
-    echo "There were $errors errors during setup. Please re-run the setup script."
+if [[ $FAILURES -gt 0 ]]; then
+    echo "There were $FAILURES errors during setup. Please re-run the setup script."
 else
     echo "Setup completed successfully!"
 fi
