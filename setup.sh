@@ -35,6 +35,9 @@ echo "Cloning multimode-epaper-frame repository..."
 execute_command "git config --global http.postBuffer 524288000"
 execute_command "git clone https://github.com/Rocky56gh9/multimode-epaper-frame.git"
 
+echo "Cloning e-Paper repository..."
+execute_command "git clone https://github.com/waveshare/e-Paper.git"
+
 cd multimode-epaper-frame
 
 echo "Configuring device for USB access..."
