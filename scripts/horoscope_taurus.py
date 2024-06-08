@@ -115,7 +115,7 @@ def draw_on_display(zodiac_image, horoscope_text, epd):
     lines = wrap_text(horoscope_text, font, max_chars_per_line * font.getsize('W')[0])
 
     image_width = epd.width // 3
-    image_y_position = 190
+    image_y_position = 150
     zodiac_resized = resize_image(zodiac_image, image_width, epd.height - image_y_position)
 
     text_start_x = image_width
