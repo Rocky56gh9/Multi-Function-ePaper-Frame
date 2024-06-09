@@ -47,12 +47,17 @@ I have set up Amazon referral links to all of the components I used, which were 
    - Enter the password and follow prompts.
    - If necessary, reset the SSH keys with: `ssh-keygen -R {RPi-IP-Address}` or `ssh-keygen - R {username.local}`
 
-5. **Initial Steps**
-   - `git config --global http.postBuffer 524288000`
-   - `sudo apt-get install git -y`
-   - `sudo apt-get install git-lfs`
-   - `git lfs install`
-
+5. **Install Components**
+   - Copy and paste the following commands into your terminal to install necessary components and clone the repository:
+   
+     ```sh
+     sudo apt-get update --fix-missing && \
+     git config --global http.postBuffer 524288000 && \
+     sudo apt-get install -y git && \
+     sudo apt-get install -y git-lfs && \
+     git lfs install && \
+     git lfs clone https://github.com/Rocky56gh9/multimode-epaper-frame.git
+     ```
 7. **Clone Repository:**
    - Run: `git lfs clone https://github.com/Rocky56gh9/multimode-epaper-frame.git`
 
