@@ -2,7 +2,7 @@ import os
 import subprocess
 
 def configure_gadget_mode():
-    print("Gadget Mode Configuration")
+    print("\nGadget Mode Configuration")
     print("1. Turn Gadget Mode ON")
     print("2. Turn Gadget Mode OFF")
     choice = input("Select an option: ")
@@ -15,7 +15,7 @@ def configure_gadget_mode():
         configure_gadget_mode()
 
 def enable_gadget_mode():
-    print("Enabling Gadget Mode for local USB access...")
+    print("\nEnabling Gadget Mode for local USB access...")
     gadget_mode_script = """
     sudo modprobe libcomposite
     cd /sys/kernel/config/usb_gadget/
@@ -41,7 +41,7 @@ def enable_gadget_mode():
     print("Gadget mode enabled.")
 
 def disable_gadget_mode():
-    print("Disabling Gadget Mode for local USB access...")
+    print("\nDisabling Gadget Mode for local USB access...")
     gadget_mode_script = """
     cd /sys/kernel/config/usb_gadget/g1
     rm configs/c.1/ecm.usb0
@@ -57,7 +57,7 @@ def disable_gadget_mode():
     print("Gadget mode disabled.")
 
 def configure_wifi():
-    print("WiFi Configuration")
+    print("\nWiFi Configuration")
     print("1. Clear Existing WiFi Settings")
     print("2. Add New WiFi Settings")
     choice = input("Select an option: ")
@@ -70,7 +70,7 @@ def configure_wifi():
         configure_wifi()
 
 def clear_wifi_settings():
-    print("Clearing existing WiFi settings...")
+    print("\nClearing existing WiFi settings...")
     wifi_conf_path = '/etc/wpa_supplicant/wpa_supplicant.conf'
     try:
         with open(wifi_conf_path, 'w') as file:
@@ -80,7 +80,7 @@ def clear_wifi_settings():
         print("Permission denied. Please run this script with sudo.")
 
 def add_wifi_settings():
-    ssid = input("Enter your WiFi SSID: ")
+    ssid = input("\nEnter your WiFi SSID: ")
     psk = input("Enter your WiFi password: ")
     wifi_conf_path = '/etc/wpa_supplicant/wpa_supplicant.conf'
     wifi_conf = f"""
@@ -98,15 +98,16 @@ network={{
         print("Permission denied. Please run this script with sudo.")
 
 def restart_network():
-    print("Restarting network services...")
+    print("\nRestarting network services...")
     try:
         subprocess.run(["sudo", "systemctl", "restart", "dhcpcd"], check=True)
         print("Network services restarted.")
     except subprocess.CalledProcessError as e:
         print(f"Failed to restart network services: {e}")
+        enable_gadget_mode()  # Ensure gadget mode remains enabled if network restart fails
 
 def main():
-    print("Network Configuration Interface")
+    print("\nNetwork Configuration Interface")
     print("1. Configure Gadget Mode")
     print("2. Configure WiFi")
     print("3. Exit")
