@@ -13,8 +13,11 @@ SHOWERTHOUGHTS_SCRIPTS_PATH = os.path.join(script_dir, '../scripts/showerthought
 
 def configure_scripts():
     print("Configuring Reddit Scripts")
+    print()  # Add a blank line for readability
     client_id = input("Enter your Reddit API client ID: ")
+    print()  # Add a blank line for readability
     client_secret = input("Enter your Reddit API client secret: ")
+    print()  # Add a blank line for readability
     user_agent = input("Enter your Reddit API user agent: ")
 
     home_dir = os.getenv("HOME")
