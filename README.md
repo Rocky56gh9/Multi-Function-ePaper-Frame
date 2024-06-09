@@ -27,61 +27,8 @@ I have set up Amazon referral links to all of the components I used, which were 
 # New Build Guide
 
 1. **Obtain APIs**
-You will need to obtain API keys for the following services, which will be set later via configuration scripts.
-
-**Reddit**<br>
-How to Obtain New Reddit API Credentials
-
-**Step 1**: Create a Reddit Account
-- If you don't already have a Reddit account, you need to create one.
-
-Go to Reddit's Sign Up page.
-- Follow the instructions to create a new account.
-
-**Step 2**: Create a Reddit Application
-- Once you have a Reddit account, you can create an application to get your API credentials.
-- Go to Reddit's Apps page.
-- Scroll down to the "Developed Applications" section.
-- Click on the "Create App" or "Create Another App" button.
-
-**Step 3**: Fill in the Application Details
-- You will be prompted to fill in some details about your application.
-- Name: Give your application a name (e.g., "My Reddit App").
-- App Type: Select "script".
-- Description: (Optional) You can add a brief description of your application.
-- About URL: (Optional) You can leave this blank or add a URL related to your application.
-- Redirect URI: Enter http://localhost:8080.
-- Permissions: Select the permissions your app needs (leave it as default for most cases).
-
-**Step 4**: Save and Retrieve Credentials
-- After filling in the details, click on the "Create app" button. Your app will be created, and you'll be shown your credentials.
-- **Client ID**: This is the string just under the name of your application (it's a long string of letters and numbers).
-- **Client Secret**: This is the secret key displayed next to "secret".
-- **User Agent**: This is a string that identifies your application, like MyRedditApp by /u/your_reddit_username.
-
-**Step 5**: Save Your Credentials
-Make sure to save your Client ID, Client Secret, and User Agent somewhere safe. You will need to manually add these credentials to your device later.
-
-**OpenWeather**<br>
-**Step 1**: Sign Up for an OpenWeather Account
-   - If you don't already have an OpenWeather account, you need to create one.
-   - Go to OpenWeather's Sign Up page.
-   - Fill in the required information (your email, password, etc.) and click on the "Create Account" button.
-   - Check your email for a confirmation link and click on it to verify your account.
-
-**Step 2**: Log In to Your OpenWeather Account
-- Go to OpenWeather's Log In page.
-- Enter your email and password, then click the "Sign In" button.
-
-**Step 3**: Create an API Key
-- Once you're logged in, you need to create an API key.
-- Go to the API Keys page.
-- Click on the "Create Key" button.
-- Enter a name for your API key (e.g., "My Weather App").
-- Click the "Generate" button.
-
-**Step 4**: Retrieve Your API Key
-- After you create your API key, it will appear in the list of your API keys. Make sure to save this key somewhere safe, as you will need it for your application.
+   - Go to the respective websites and create an account.
+   - Follow the instructions to obtain your API keys.
 
 2. **Configure SD Card:**
    - Use the Raspberry Pi Imager.
