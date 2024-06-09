@@ -1,66 +1,9 @@
 import os
 import subprocess
+import time
 
-def configure_gadget_mode():
-    print("\nGadget Mode Configuration")
-    print("1. Turn Gadget Mode ON")
-    print("2. Turn Gadget Mode OFF")
-    choice = input("Select an option: ")
-    if choice == '1':
-        enable_gadget_mode()
-    elif choice == '2':
-        disable_gadget_mode()
-    else:
-        print("Invalid option. Please select a valid option.")
-        configure_gadget_mode()
-
-def enable_gadget_mode():
-    print("\nEnabling Gadget Mode for local USB access...")
-    gadget_mode_script = """
-    sudo modprobe libcomposite
-    cd /sys/kernel/config/usb_gadget/
-    mkdir -p g1
-    cd g1
-    echo 0x1d6b > idVendor # Linux Foundation
-    echo 0x0104 > idProduct # Multifunction Composite Gadget
-    echo 0x0100 > bcdDevice # v1.0.0
-    echo 0x0200 > bcdUSB # USB2
-    mkdir -p strings/0x409
-    echo "fedcba9876543210" > strings/0x409/serialnumber
-    echo "Manufacturer" > strings/0x409/manufacturer
-    echo "Product" > strings/0x409/product
-    mkdir -p configs/c.1/strings/0x409
-    echo "Config 1: ECM network" > configs/c.1/strings/0x409/configuration
-    echo 250 > configs/c.1/MaxPower
-    mkdir -p functions/ecm.usb0
-    echo "DE:AD:BE:EF:00:01" > functions/ecm.usb0/host_addr || echo "Skipping host_addr configuration as it is busy."
-    echo "DE:AD:BE:EF:00:02" > functions/ecm.usb0/dev_addr || echo "Skipping dev_addr configuration as it is busy."
-    if [ ! -L configs/c.1/ecm.usb0 ]; then
-      ln -s functions/ecm.usb0 configs/c.1/
-    else
-      echo "Symbolic link 'configs/c.1/ecm.usb0' already exists. Skipping link creation."
-    fi
-    """
-    with open("/etc/rc.local", "a") as f:
-        f.write(f"\n{gadget_mode_script}")
-    print("Gadget mode enabled and will be activated on reboot.")
-
-def disable_gadget_mode():
-    print("\nDisabling Gadget Mode for local USB access...")
-    gadget_mode_script = """
-    cd /sys/kernel/config/usb_gadget/g1
-    rm configs/c.1/ecm.usb0
-    rmdir configs/c.1/strings/0x409
-    rmdir configs/c.1
-    rmdir functions/ecm.usb0
-    rmdir strings/0x409
-    cd ..
-    rmdir g1
-    sudo modprobe -r libcomposite
-    """
-    with open("/etc/rc.local", "a") as f:
-        f.write(f"\n{gadget_mode_script}")
-    print("Gadget mode disabled and will be deactivated on reboot.")
+WIFI_CONF_PATH = '/etc/wpa_supplicant/wpa_supplicant.conf'
+TEMP_WIFI_CONF_PATH = '/tmp/temp_wpa_supplicant.conf'
 
 def configure_wifi():
     print("\nWiFi Configuration")
@@ -77,59 +20,73 @@ def configure_wifi():
 
 def clear_wifi_settings():
     print("\nClearing existing WiFi settings...")
-    wifi_conf_path = '/etc/wpa_supplicant/wpa_supplicant.conf'
     try:
-        with open("/etc/rc.local", "a") as f:
-            f.write(f"echo '' > {wifi_conf_path}\n")
-        print("Existing WiFi settings will be cleared on reboot.")
+        with open(WIFI_CONF_PATH, 'w') as file:
+            file.write("")
+        print("Existing WiFi settings cleared.")
     except PermissionError:
         print("Permission denied. Please run this script with sudo.")
 
 def add_wifi_settings():
     ssid = input("\nEnter your WiFi SSID: ")
     psk = input("Enter your WiFi password: ")
-    wifi_conf_path = '/etc/wpa_supplicant/wpa_supplicant.conf'
     wifi_conf = f"""
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+country=US
+
 network={{
     ssid="{ssid}"
     psk="{psk}"
 }}
 """
     try:
-        with open("/etc/rc.local", "a") as f:
-            f.write(f"echo '{wifi_conf}' >> {wifi_conf_path}\n")
-        print("New WiFi settings will be added on reboot.")
+        with open(TEMP_WIFI_CONF_PATH, 'w') as file:
+            file.write(wifi_conf)
+        print(f"Temporary WiFi configuration written to {TEMP_WIFI_CONF_PATH}.")
+        
+        os.rename(TEMP_WIFI_CONF_PATH, WIFI_CONF_PATH)
+        print(f"WiFi configuration updated and applied from {TEMP_WIFI_CONF_PATH} to {WIFI_CONF_PATH}.")
+
+        # Restart network services to apply new settings
+        restart_network()
+
+        # Check if the device is connected to the new WiFi network
+        check_wifi_connection(ssid)
     except PermissionError:
         print("Permission denied. Please run this script with sudo.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
 def restart_network():
     print("\nRestarting network services...")
     try:
-        subprocess.run(["sudo", "systemctl", "restart", "dhcpcd"], check=True, timeout=30)
+        subprocess.run(["sudo", "systemctl", "restart", "dhcpcd"], check=True)
         print("Network services restarted.")
-        result = subprocess.run(["sudo", "iwgetid"], capture_output=True, text=True, timeout=10)
+    except subprocess.CalledProcessError as e:
+        print(f"Failed to restart network services: {e}")
+
+def check_wifi_connection(ssid):
+    print("\nChecking WiFi connection...")
+    time.sleep(10)  # Give some time for the network to restart and connect
+    try:
+        result = subprocess.run(["iwgetid"], capture_output=True, text=True)
         if ssid in result.stdout:
             print(f"Successfully connected to {ssid}")
         else:
             print(f"Failed to connect to {ssid}. Please check your credentials or network settings.")
     except subprocess.CalledProcessError as e:
-        print(f"Failed to restart network services: {e}")
-    except subprocess.TimeoutExpired:
-        print("Network restart timed out. Please check your network settings.")
+        print(f"Failed to check WiFi connection: {e}")
 
 def main():
-    print("\nNetwork Configuration Interface")
-    print("1. Configure Gadget Mode")
-    print("2. Configure WiFi")
-    print("3. Exit and Reboot")
-
+    print("\nWiFi Configuration Interface")
+    print("1. Configure WiFi")
+    print("2. Exit")
+    
     choice = input("Select an option: ")
     if choice == '1':
-        configure_gadget_mode()
-    elif choice == '2':
         configure_wifi()
-    elif choice == '3':
-        os.system("sudo reboot")
+    elif choice == '2':
         exit()
     else:
         print("Invalid option. Please select a valid option.")
