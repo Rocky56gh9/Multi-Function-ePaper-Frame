@@ -51,15 +51,33 @@ I have set up Amazon referral links to all of the components I used, which were 
    - Copy and paste the following commands into your terminal to install necessary components and clone the repository:
    
      ```sh
-     sudo apt-get update --fix-missing && \
-     sudo apt-get install -y git && \
+     # Retry function
+     retry() {
+       local n=1
+       local max=5
+       local delay=5
+       while true; do
+         "$@" && break || {
+           if [[ $n -lt $max ]]; then
+             ((n++))
+             echo "Command failed. Attempt $n/$max:"
+             sleep $delay;
+           else
+             echo "The command has failed after $n attempts."
+             return 1
+           fi
+         }
+       done
+     }
+
+     # Execute commands with retry logic
+     retry sudo apt-get update --fix-missing && \
+     retry sudo apt-get install -y git && \
      git config --global http.postBuffer 524288000 && \
-     sudo apt-get install -y git-lfs && \
+     retry sudo apt-get install -y git-lfs && \
      git lfs install && \
-     git lfs clone https://github.com/Rocky56gh9/multimode-epaper-frame.git
-     ```
-     If any command fails, you can rerun the script to ensure all components are installed properly.
-     
+     retry git lfs clone https://github.com/Rocky56gh9/multimode-epaper-frame.git
+     ```     
 6. **Run the Setup Script:**
    - Navigate to the directory:
    ```sh
