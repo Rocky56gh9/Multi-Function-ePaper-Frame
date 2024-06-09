@@ -100,8 +100,18 @@ network={{
 def restart_network():
     print("\nRestarting network services...")
     try:
+        # Ensure gadget mode remains enabled if network restart fails
+        enable_gadget_mode()
+
         subprocess.run(["sudo", "systemctl", "restart", "dhcpcd"], check=True)
         print("Network services restarted.")
+
+        # Check if the device is connected to the new WiFi network
+        result = subprocess.run(["sudo", "iwgetid"], capture_output=True, text=True)
+        if ssid in result.stdout:
+            print(f"Successfully connected to {ssid}")
+        else:
+            print(f"Failed to connect to {ssid}. Please check your credentials or network settings.")
     except subprocess.CalledProcessError as e:
         print(f"Failed to restart network services: {e}")
         enable_gadget_mode()  # Ensure gadget mode remains enabled if network restart fails
