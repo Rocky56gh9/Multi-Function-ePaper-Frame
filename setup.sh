@@ -42,7 +42,7 @@ echo "Cloning multimode-epaper-frame repository..."
 # Increase the postBuffer to handle large files
 execute_command "git config --global http.postBuffer 524288000"
 if [ ! -d "multimode-epaper-frame" ]; then
-  execute_command "git clone https://github.com/Rocky56gh9/multimode-epaper-frame.git"
+  execute_command "git lfs clone https://github.com/Rocky56gh9/multimode-epaper-frame.git"
 else
   echo "Directory 'multimode-epaper-frame' already exists. Skipping clone."
 fi
@@ -53,6 +53,10 @@ if [ ! -d "e-Paper" ]; then
 else
   echo "Directory 'e-Paper' already exists. Skipping clone."
 fi
+
+# Enable SPI interface
+echo "Enabling SPI interface..."
+execute_command "sudo raspi-config nonint do_spi 0"
 
 cd multimode-epaper-frame || exit
 
