@@ -27,7 +27,7 @@ I have set up Amazon referral links to all of the components I used, which were 
 # New Build Guide
 
 1. **Obtain APIs**
-   - Go to the respective websites and create an account.
+   - Go to the respective websites for Reddit and OpenWeather and create an account.
    - Follow the instructions to obtain your API keys.
 
 2. **Configure SD Card:**
@@ -43,11 +43,21 @@ I have set up Amazon referral links to all of the components I used, which were 
    - Log into your router, find the Pi, and note its IP address.
 
 4. **SSH Login:**
-   - Open Terminal and run: `ssh [unit name]@[IP address]`
+   - Open Terminal and run:
+   ```
+   ssh [unit name]@[IP address]
+   ```
    - Enter the password and follow prompts.
-   - If necessary, reset the SSH keys with: `ssh-keygen -R {RPi-IP-Address}` or `ssh-keygen - R {username.local}`
+   - If necessary, reset the SSH keys with:
+   ```sh
+   ssh-keygen -R {RPi-IP-Address}
+   ```
+   or
+   ```sh
+   ssh-keygen - R {username.local}
+   ```
 
-5. **Install Components**
+6. **Install Components**
    - Copy and paste the following commands into your terminal to install necessary components and clone the repository:
    
      ```sh
@@ -78,27 +88,22 @@ I have set up Amazon referral links to all of the components I used, which were 
      git lfs install && \
      retry git lfs clone https://github.com/Rocky56gh9/multimode-epaper-frame.git
      ```     
-6. **Run the Setup Script:**
-   - Navigate to the directory:
+7. **Run the Setup Script:**
+   - Run this command to navigate to the project directory and initiate the setup script.
    ```sh
-   cd multimode-epaper-frame
+   cd multimode-epaper-frame && chmod +x setup.sh && ./setup.sh
    ```
-   - Make the setup script executable and run the script:
-   ```sh
-   chmod +x setup.sh && ./setup.sh
-   ```
-
-The setup script installs all of the necessary packages and enables access to the device from a local machine over USB using Gadget mode. Access the device over USB: `ssh [username]@[unit name].local`<br>
+The setup script installs all of the necessary packages and enables access to the device from a local machine over USB using Gadget mode. This will take a while to run. The script has built-in retries due to the number of dependencies that need to be installed. If you're still seeing errors or things are not working as expected. Try running the ./setup.sh script again.
 
 # Configuration
-The initial setup script will call the required configuration scripts and prompt for the inputs needed for the project. To change configurations after initial setup, navigate to the `config` folder to access the inidividual scripts. Each script will prompt you for the credentials necessary for the scripts. For example, if you want to change the location for the Weatherstation, run that configuration script to change the zip code.
+After installing all dependencies, the setup script will call the required configuration scripts and templates and prompt you for the inputs needed for the project. To change configurations after initial setup, navigate to the `config` folder to access the inidividual scripts. Each script will prompt you for the credentials necessary for the scripts. For example, if you want to change the location for the Weatherstation, run that configuration script to change the zip code.
 
 # Physical Assembly
-1. The 7.5" screen fits well in the frame with paper mat listed in the equipment list, but requires modifying the size of the paper mat. Here are the measurements for the size of the mat needed to cover the non-display parts of the e-paper screen. These are measured from the exterior edge of the mat:<br>
+The 7.5" screen fits well in the frame with paper mat listed in the equipment list, but requires modifying the size of the paper mat. Here are the measurements for the size of the mat needed to cover the non-display parts of the e-paper screen. These are measured from the exterior edge of the mat:<br>
    - Top: 14mm<br>
    - Bottom: 16mm<br>
    - Left/Right: 7mm<br>
 
 Remove the excess material as marked, and the remaining material should cover the non-display area of the screen. Carefully place the screen on the mat, ensure alignment, and tape the screen (from the back) to the mat to hold in place. Put the mat and screen into the frame and add the back. With the specific frame I used, the ribbon cable fits nicely through the bottom to the exterior of the frame. For now, I used an elastic to gather the excess ribbon material. I installed the RPi in the case (linked) and then glued the case to the rear of the frame.
 
-That's it!
+Have fun!
