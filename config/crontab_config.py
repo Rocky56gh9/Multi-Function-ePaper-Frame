@@ -1,5 +1,6 @@
 import os
 import subprocess
+import socket
 
 # List of all possible horoscope scripts
 ALL_HOROSCOPE_SCRIPTS = [f"scripts/horoscope_{sun_sign}.py" for sun_sign in [
@@ -31,43 +32,18 @@ CRONTAB_HEADER = """# Edit this file to introduce tasks to be run by cron.
 # m h  dom mon dow   command
 """
 
-def get_wake_time():
-    print("Specify the time to wake up the display (local time):")
-    wake_time = input("Enter time in HH:MM format (24-hour clock, e.g., 07:00): ").strip()
-    try:
-        hours, minutes = map(int, wake_time.split(':'))
-        if 0 <= hours < 24 and 0 <= minutes < 60:
-            return f"{minutes} {hours} * * *"
-    except ValueError:
-        pass
-    print("Invalid time format. Defaulting to 07:00 (7:00 AM).")
-    return "0 7 * * *"  # Default to 07:00 (7:00 AM)
-
-def get_sleep_time():
-    print("Specify the time to put the display to sleep (local time):")
-    sleep_time = input("Enter time in HH:MM format (24-hour clock, e.g., 22:00): ").strip()
-    try:
-        hours, minutes = map(int, sleep_time.split(':'))
-        if 0 <= hours < 24 and 0 <= minutes < 60:
-            return f"{minutes} {hours} * * *"
-    except ValueError:
-        pass
-    print("Invalid time format. Defaulting to 22:00 (10:00 PM).")
-    return "0 22 * * *"  # Default to 22:00 (10:00 PM)
-
 def get_horoscope_sun_signs():
-    print("Specify the sun signs for horoscopes you want to display (separated by spaces):")
+    print("\n\nSpecify the sun signs for horoscopes you want to display (separated by spaces):")
     print("Valid sun signs are:")
     valid_sun_signs = [
-        "aquarius", "aries", "cancer", "capricorn", "gemini", "leo", "libra", "pisces", "sagittarius", "scorpio", "taurus", "virgo" 
-        
+        "aquarius", "aries", "cancer", "capricorn", "gemini", "leo", "libra", "pisces", "sagittarius", "scorpio", "taurus", "virgo"
     ]
     print(", ".join(valid_sun_signs))
     sun_signs = input("Enter the sun signs: ").strip().lower().split()
     return [f"scripts/horoscope_{sun_sign}.py" for sun_sign in sun_signs if sun_sign in valid_sun_signs]
 
 def get_script_for_time(time_label):
-    print(f"Specify the script to run at {time_label}:")
+    print(f"\n\nSpecify the script to run at {time_label}:")
     print("1. Dad Jokes")
     print("2. Shower Thoughts")
     print("3. Weather")
@@ -81,9 +57,22 @@ def get_script_for_time(time_label):
     }
     return script_map.get(choice)
 
+def get_sleep_time():
+    print("\n\nSpecify the time to display the sleep screen (local time):")
+    sleep_time = input("Enter time in HH:MM format (24-hour clock, e.g., 22:00): ").strip()
+    try:
+        hours, minutes = map(int, sleep_time.split(':'))
+        if 0 <= hours < 24 and 0 <= minutes < 60:
+            return f"{minutes} {hours} * * *"
+    except ValueError:
+        pass
+    print("Invalid time format. Defaulting to 22:00 (10:00 PM).")
+    return "0 22 * * *"  # Default to 22:00 (10:00 PM)
+
 def configure_crontab():
-    wake_time = get_wake_time()
-    sleep_time = get_sleep_time()
+    hostname = socket.gethostname()
+    project_path = f"/home/{os.getenv('USER')}/multimode-epaper-frame"
+
     horoscope_scripts = get_horoscope_sun_signs()
 
     schedule = {
@@ -93,19 +82,20 @@ def configure_crontab():
         "45": get_script_for_time("45 past the hour"),
     }
 
+    sleep_time = get_sleep_time()
+
     # Generate crontab lines
     cron_lines = []
-    cron_lines.append(f"{wake_time} /usr/bin/python3 $HOME/multimode-epaper-frame/scripts/wake.py")
 
     for minute, script in schedule.items():
         if script == "horoscope":
             num_horoscope_scripts = len(horoscope_scripts)
             for i, horoscope_script in enumerate(horoscope_scripts):
-                cron_lines.append(f"{minute} */{num_horoscope_scripts} * * * /usr/bin/python3 $HOME/multimode-epaper-frame/{horoscope_script}")
+                cron_lines.append(f"{minute} */{num_horoscope_scripts} * * * /usr/bin/python3 {project_path}/{horoscope_script}")
         else:
-            cron_lines.append(f"{minute} * * * * /usr/bin/python3 $HOME/multimode-epaper-frame/{script}")
+            cron_lines.append(f"{minute} * * * * /usr/bin/python3 {project_path}/{script}")
 
-    cron_lines.append(f"{sleep_time} /usr/bin/python3 $HOME/multimode-epaper-frame/scripts/sleep.py")
+    cron_lines.append(f"{sleep_time} /usr/bin/python3 {project_path}/scripts/sleep.py")
 
     # Write the crontab file with headers and the new lines
     with open("new_crontab", "w") as file:
