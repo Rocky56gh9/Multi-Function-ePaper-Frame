@@ -48,14 +48,15 @@ I have set up Amazon referral links to all of the components I used, which were 
    - If necessary, reset the SSH keys with: `ssh-keygen -R {RPi-IP-Address}` or `ssh-keygen - R {username.local}`
 
 5. **Initial Steps**
+   - `git config --global http.postBuffer 524288000`
    - `sudo apt-get install git -y`
    - `sudo apt-get install git-lfs`
    - `git lfs install`
 
-6. **Clone Repository:**
+7. **Clone Repository:**
    - Run: `git lfs clone https://github.com/Rocky56gh9/multimode-epaper-frame.git`
 
-7. **Run the Setup Script:**
+8. **Run the Setup Script:**
    - Navigate to the directory: `cd multimode-epaper-frame`
    - Make the setup script executable and run the script: `chmod +x setup.sh && ./setup.sh`
 
