@@ -45,7 +45,7 @@ I have set up Amazon referral links to all of the components I used, which were 
 4. **SSH Login:**
    - Open Terminal and run: `ssh [unit name]@[IP address]`
    - Enter the password and follow prompts.
-   - If restarting, reset the SSH key with: `ssh-keygen -R {RPi-IP-Address}`
+   - If necessary, reset the SSH keys with: `ssh-keygen -R {RPi-IP-Address}` or `ssh-keygen - R {username.local}
 
 5. **Initial Steps**
    - `sudo apt-get install git -y`
