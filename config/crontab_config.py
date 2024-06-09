@@ -57,45 +57,51 @@ def get_script_for_time(time_label):
     }
     return script_map.get(choice)
 
-def get_sleep_time():
-    print("\n\nSpecify the time to display the sleep screen (local time):")
-    sleep_time = input("Enter time in HH:MM format (24-hour clock, e.g., 22:00): ").strip()
+def get_time(prompt):
+    print(f"\n\n{prompt}")
+    time_input = input("Enter time in HH:MM format (24-hour clock, e.g., 07:00): ").strip()
     try:
-        hours, minutes = map(int, sleep_time.split(':'))
+        hours, minutes = map(int, time_input.split(':'))
         if 0 <= hours < 24 and 0 <= minutes < 60:
-            return f"{minutes} {hours} * * *"
+            return hours, minutes
     except ValueError:
         pass
-    print("Invalid time format. Defaulting to 22:00 (10:00 PM).")
-    return "0 22 * * *"  # Default to 22:00 (10:00 PM)
+    print("Invalid time format. Please enter the time in HH:MM format (24-hour clock).")
+    return get_time(prompt)
 
 def configure_crontab():
     hostname = socket.gethostname()
     project_path = f"/home/{os.getenv('USER')}/multimode-epaper-frame"
 
     horoscope_scripts = get_horoscope_sun_signs()
+    start_hour, start_minute = get_time("Specify the time to start running the scripts (local time):")
+    sleep_hour, sleep_minute = get_time("Specify the time to display the sleep screen (local time):")
 
     schedule = {
         "00": get_script_for_time("the top of the hour"),
         "15": get_script_for_time("15 past the hour"),
         "30": get_script_for_time("30 past the hour"),
-        "45": get_script_for_time("45 past the hour"),
+        "45": get_script_for_time("45 past the hour")
     }
-
-    sleep_time = get_sleep_time()
 
     # Generate crontab lines
     cron_lines = []
 
     for minute, script in schedule.items():
         if script == "horoscope":
-            num_horoscope_scripts = len(horoscope_scripts)
-            for i, horoscope_script in enumerate(horoscope_scripts):
-                cron_lines.append(f"{minute} */{num_horoscope_scripts} * * * /usr/bin/python3 {project_path}/{horoscope_script}")
+            total_hours = (sleep_hour - start_hour) + (1 if sleep_minute > start_minute else 0)
+            interval_hours = total_hours // len(horoscope_scripts)
+            current_hour = start_hour
+            hour_list = list(range(start_hour, sleep_hour + 1))
+            for idx, horoscope_script in enumerate(horoscope_scripts):
+                for hour_offset in range(idx, len(hour_list), len(horoscope_scripts)):
+                    job_hour = hour_list[hour_offset]
+                    cron_lines.append(f"{minute} {job_hour} * * * /usr/bin/python3 {project_path}/{horoscope_script}")
         else:
-            cron_lines.append(f"{minute} * * * * /usr/bin/python3 {project_path}/{script}")
+            for hour in range(start_hour, sleep_hour):
+                cron_lines.append(f"{minute} {hour} * * * /usr/bin/python3 {project_path}/{script}")
 
-    cron_lines.append(f"{sleep_time} /usr/bin/python3 {project_path}/scripts/sleep.py")
+    cron_lines.append(f"{sleep_minute} {sleep_hour} * * * /usr/bin/python3 {project_path}/scripts/sleep.py")
 
     # Write the crontab file with headers and the new lines
     with open("new_crontab", "w") as file:
