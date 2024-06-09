@@ -62,7 +62,7 @@ I have set up Amazon referral links to all of the components I used, which were 
    - Run: `git lfs clone https://github.com/Rocky56gh9/multimode-epaper-frame.git`
 
 8. **Run the Setup Script:**
-   - Navigate to the directory: `cd multimode-epaper-frame`
+   - Navigate to the directory: ```cd multimode-epaper-frame```
    - Make the setup script executable and run the script: `chmod +x setup.sh && ./setup.sh`
 
 The setup script installs all of the necessary packages and enables access to the device from a local machine over USB using Gadget mode. Access the device over USB: `ssh [username]@[unit name].local`<br>
