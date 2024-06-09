@@ -27,7 +27,7 @@ echo "Installing necessary packages..."
 execute_command "sudo apt-get install -y libjpeg-dev libopenjp2-7 python3-pip git"
 
 echo "Installing Python packages..."
-execute_command "pip3 install Pillow pytz bs4 praw timezonefinder"
+execute_command "pip3 install Pillow pytz bs4 praw timezonefinder crontab"
 execute_command "sudo pip3 install RPi.GPIO spidev"
 
 echo "Cloning multimode-epaper-frame repository..."
