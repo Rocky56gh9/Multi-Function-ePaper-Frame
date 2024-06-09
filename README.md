@@ -57,8 +57,8 @@ I have set up Amazon referral links to all of the components I used, which were 
    ssh-keygen - R {username.local}
    ```
 
-6. **Install Components**
-   - Copy and paste the following commands into your terminal to install necessary components and clone the repository:
+6. **Install Components and Set Up Configurations**
+   - Copy and paste the following into your terminal to install all necessary components, clone the repository, and run the configuration scripts automatically:
    
      ```sh
      # Retry function
@@ -89,15 +89,7 @@ I have set up Amazon referral links to all of the components I used, which were 
      retry git lfs clone https://github.com/Rocky56gh9/multimode-epaper-frame.git && \
      cd multimode-epaper-frame && chmod +x setup.sh && ./setup.sh
      ```     
-7. **Run the Setup Script:**
-   - Run this command to navigate to the project directory and initiate the setup script.
-   ```sh
-   cd multimode-epaper-frame && chmod +x setup.sh && ./setup.sh
-   ```
-The setup script installs all of the necessary packages and enables access to the device from a local machine over USB using Gadget mode. This will take a while to run. The script has built-in retries due to the number of dependencies that need to be installed. If you're still seeing errors or things are not working as expected, try running the ./setup.sh script again.
-
-# Configuration
-After installing all dependencies, the setup script will call the required configuration scripts and templates and prompt you for the inputs needed for the project. To change configurations after initial setup, navigate to the `config` folder to access the inidividual scripts. Each script will prompt you for the credentials necessary for the scripts. For example, if you want to change the location for the Weatherstation, run that configuration script to change the zip code.
+The setup script installs all of the necessary packages and enables access to the device from a local machine over USB using Gadget mode. This will take a while to run. The script has built-in retries due to the number of dependencies that need to be installed. If you're still seeing errors or things are not working as expected, try running the ./setup.sh script again. After installing all dependencies, the setup script will automatically call the required configuration scripts and templates and prompt you for the inputs needed for the project. To change configurations after initial setup, navigate to the `config` folder to access the inidividual scripts. Each script will prompt you for the credentials necessary for the scripts. For example, if you want to change the location for the Weatherstation, run that configuration script to change the zip code.
 
 # Physical Assembly
 The 7.5" screen fits well in the frame with paper mat listed in the equipment list, but requires modifying the size of the paper mat. Here are the measurements for the size of the mat needed to cover the non-display parts of the e-paper screen. These are measured from the exterior edge of the mat:<br>
