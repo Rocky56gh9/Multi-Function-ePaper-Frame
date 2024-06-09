@@ -65,7 +65,7 @@ The setup script installs all of the necessary packages and enables access to th
 The initial setup script will call the required configuration scripts and prompt for the inputs needed for the project. To change configurations after initial setup, navigate to the `config` folder to access the inidividual scripts. Each script will prompt you for the credentials necessary for the scripts. For example, if you want to change the location for the Weatherstation, run that configuration script to change the zip code.
 
 # Physical Assembly
-1. The 7.5" screen fits well in the frame with paper mat listed in the equipment list, but requires modifying the size of the paper mat. Here are the measurements for the size of the mat needed to cover the non-display parts of the e-paper screen. These are measured from the exterior edge of the mat:
+1. The 7.5" screen fits well in the frame with paper mat listed in the equipment list, but requires modifying the size of the paper mat. Here are the measurements for the size of the mat needed to cover the non-display parts of the e-paper screen. These are measured from the exterior edge of the mat:<br>
 •	Top: 14mm<br>
 •	Bottom: 16mm<br>
 •	Left/Right: 7mm<br>
