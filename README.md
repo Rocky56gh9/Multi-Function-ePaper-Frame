@@ -26,6 +26,41 @@ I have set up Amazon referral links to all of the components I used, which were 
 
 # New Build Guide
 
+1. # Obtain APIs**
+You will need to obtain API keys for the following services, which will be set later via configuration scripts.
+
+How to Obtain New Reddit API Credentials
+To use the Reddit API, you need to create a set of credentials (Client ID, Client Secret, and User Agent). Follow these steps to obtain them:
+
+Step 1: Create a Reddit Account
+If you don't already have a Reddit account, you need to create one.
+
+Go to Reddit's Sign Up page.
+Follow the instructions to create a new account.
+Step 2: Create a Reddit Application
+Once you have a Reddit account, you can create an application to get your API credentials.
+
+Go to Reddit's Apps page.
+Scroll down to the "Developed Applications" section.
+Click on the "Create App" or "Create Another App" button.
+Step 3: Fill in the Application Details
+You will be prompted to fill in some details about your application.
+
+Name: Give your application a name (e.g., "My Reddit App").
+App Type: Select "script".
+Description: (Optional) You can add a brief description of your application.
+About URL: (Optional) You can leave this blank or add a URL related to your application.
+Redirect URI: Enter http://localhost:8080.
+Permissions: Select the permissions your app needs (leave it as default for most cases).
+Step 4: Save and Retrieve Credentials
+After filling in the details, click on the "Create app" button. Your app will be created, and you'll be shown your credentials.
+
+Client ID: This is the string just under the name of your application (it's a long string of letters and numbers).
+Client Secret: This is the secret key displayed next to "secret".
+User Agent: This is a string that identifies your application, like MyRedditApp by /u/your_reddit_username.
+Step 5: Save Your Credentials
+Make sure to save your Client ID, Client Secret, and User Agent somewhere safe. You will need to manually add these credentials to your device later.
+
 1. **Configure SD Card:**
    - Use the Raspberry Pi Imager.
    - Install RaspberryPi OS (Legacy, 64-bit) Lite
@@ -54,11 +89,6 @@ I have set up Amazon referral links to all of the components I used, which were 
    - Make the setup script executable and run the script: `chmod +x setup.sh && ./setup.sh`
 
 The setup script installs all of the necessary packages and enables access to the device from a local machine over USB using Gadget mode. Access the device over USB: `ssh [username]@[unit name].local`<br>
-
-# Obtain APIs
-You will need to obtain API keys for the following services, which will be set later via configuration scripts.
-1. Reddit: client_id, client_secret, user_agent [set whatever value you want]
-2. OpenWeather
 
 # Configuration
 Navigate to the `config` folder and run each of the configuration scripts. Each script will prompt you for the credentials necessary for the scripts. The scripts are:
