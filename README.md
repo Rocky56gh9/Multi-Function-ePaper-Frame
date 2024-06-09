@@ -64,10 +64,10 @@ Make sure to save your Client ID, Client Secret, and User Agent somewhere safe. 
 
 **OpenWeather**<br>
 **Step 1**: Sign Up for an OpenWeather Account
-- If you don't already have an OpenWeather account, you need to create one.
-- Go to OpenWeather's Sign Up page.
-- Fill in the required information (your email, password, etc.) and click on the "Create Account" button.
-- Check your email for a confirmation link and click on it to verify your account.
+   - If you don't already have an OpenWeather account, you need to create one.
+   - Go to OpenWeather's Sign Up page.
+   - Fill in the required information (your email, password, etc.) and click on the "Create Account" button.
+   - Check your email for a confirmation link and click on it to verify your account.
 
 **Step 2**: Log In to Your OpenWeather Account
 - Go to OpenWeather's Log In page.
@@ -113,11 +113,7 @@ Make sure to save your Client ID, Client Secret, and User Agent somewhere safe. 
 The setup script installs all of the necessary packages and enables access to the device from a local machine over USB using Gadget mode. Access the device over USB: `ssh [username]@[unit name].local`<br>
 
 # Configuration
-Navigate to the `config` folder and run each of the configuration scripts. Each script will prompt you for the credentials necessary for the scripts. The scripts are:
-1. dadjokes_config.py
-2. showerthoughts_config.py
-3. weatherstation_config.py
-4. network_config.py
+The initial setup script will call the required configuration scripts and prompt for the inputs needed for the project. To change configurations after initial setup, navigate to the `config` folder to access the inidividual scripts. Each script will prompt you for the credentials necessary for the scripts. For example, if you want to change the location for the Weatherstation, run that configuration script to change the zip code.
 
 # Physical Assembly
 1. The 7.5" screen fits well in the frame with paper mat listed in the equipment list, but requires modifying the size of the paper mat. Here are the measurements for the size of the mat needed to cover the non-display parts of the e-paper screen. These are measured from the exterior edge of the mat:
