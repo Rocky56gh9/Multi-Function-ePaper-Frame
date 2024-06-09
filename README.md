@@ -66,9 +66,9 @@ The initial setup script will call the required configuration scripts and prompt
 
 # Physical Assembly
 1. The 7.5" screen fits well in the frame with paper mat listed in the equipment list, but requires modifying the size of the paper mat. Here are the measurements for the size of the mat needed to cover the non-display parts of the e-paper screen. These are measured from the exterior edge of the mat:<br>
-•	Top: 14mm<br>
-•	Bottom: 16mm<br>
-•	Left/Right: 7mm<br>
+   - Top: 14mm<br>
+   - Bottom: 16mm<br>
+   - Left/Right: 7mm<br>
 
 Remove the excess material as marked, and the remaining material should cover the non-display area of the screen. Carefully place the screen on the mat, ensure alignment, and tape the screen (from the back) to the mat to hold in place. Put the mat and screen into the frame and add the back. With the specific frame I used, the ribbon cable fits nicely through the bottom to the exterior of the frame. For now, I used an elastic to gather the excess ribbon material. I installed the RPi in the case (linked) and then glued the case to the rear of the frame.
 
