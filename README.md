@@ -26,9 +26,10 @@ I have set up Amazon referral links to all of the components I used, which were 
 
 # New Build Guide
 
-1. # Obtain APIs**
+1. **Obtain APIs**
 You will need to obtain API keys for the following services, which will be set later via configuration scripts.
 
+**Reddit**
 How to Obtain New Reddit API Credentials
 To use the Reddit API, you need to create a set of credentials (Client ID, Client Secret, and User Agent). Follow these steps to obtain them:
 
@@ -61,30 +62,30 @@ User Agent: This is a string that identifies your application, like MyRedditApp 
 Step 5: Save Your Credentials
 Make sure to save your Client ID, Client Secret, and User Agent somewhere safe. You will need to manually add these credentials to your device later.
 
-1. **Configure SD Card:**
+2. **Configure SD Card:**
    - Use the Raspberry Pi Imager.
    - Install RaspberryPi OS (Legacy, 64-bit) Lite
    - Set a hostname, ID, and unique password.
    - Add your network SSID and password.
    - Enable SSH on the second tab.
 
-2. **Initial Setup:**
+3. **Initial Setup:**
    - Insert the SD card into the Pi and power it up.
    - Wait ~10 minutes for it to appear on your network.
    - Log into your router, find the Pi, and note its IP address.
 
-3. **SSH Login:**
+4. **SSH Login:**
    - Open Terminal and run: `ssh [unit name]@[IP address]`
    - Enter the password and follow prompts.
    - If restarting, reset the SSH key with: `ssh-keygen -R {RPi-IP-Address}`
 
-4. **Install Git**
+5. **Install Git**
    - `sudo apt-get install git -y`
 
-5. **Clone Repository:**
+6. **Clone Repository:**
    - Run: `git clone https://github.com/Rocky56gh9/multimode-epaper-frame.git`
 
-6. **Setup Script:**
+7. **Setup Script:**
    - Navigate to the directory: `cd multimode-epaper-frame`
    - Make the setup script executable and run the script: `chmod +x setup.sh && ./setup.sh`
 
