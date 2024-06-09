@@ -100,11 +100,13 @@ Make sure to save your Client ID, Client Secret, and User Agent somewhere safe. 
    - Enter the password and follow prompts.
    - If restarting, reset the SSH key with: `ssh-keygen -R {RPi-IP-Address}`
 
-5. **Install Git**
+5. **Initial Steps**
    - `sudo apt-get install git -y`
+   - `sudo apt-get install git-lfs`
+   - `git lfs install`
 
 6. **Clone Repository:**
-   - Run: `git clone https://github.com/Rocky56gh9/multimode-epaper-frame.git`
+   - Run: `git lfs clone https://github.com/Rocky56gh9/multimode-epaper-frame.git`
 
 7. **Setup Script:**
    - Navigate to the directory: `cd multimode-epaper-frame`
