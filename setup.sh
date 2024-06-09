@@ -86,6 +86,9 @@ fi
 
 cd "$HOME/multimode-epaper-frame" || exit
 
+echo "Making Python scripts executable..."
+chmod +x scripts/*.py
+
 echo "Running configuration scripts..."
 execute_command "python3 config/dadjokes_showerthoughts_config.py"
 execute_command "python3 config/weatherstation_config.py"
