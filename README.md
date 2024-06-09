@@ -1,9 +1,9 @@
 # e-Paper Multi-Function Display
 An e-paper multi-function display project using an API from Reddit to pull and display Shower Thoughts and Dad Jokes, an API from OpenWeather to display a weather station, and web scraping to display a daily horoscope. Also includes a sleep image for the display for overnight hours. This can likley be adapted to other screens, but you'll need to work out the code changes. My build used a Raspberry Pi Zero WH and Waveshare 7.5"(B) tri-color e-paper display.
 
-This project was my first attempt at any kind of python coding and is entirely self-taught using ChatGPT-4. I recognize that the code is not elegant, and the same variables/functionality differ between the different scripts, but they all work. I may in the future get around to trying to make the code more elegant and consistent, but in case anyone wants to try this build, hopefully this works for you!
+This project was my first attempt at any kind of python coding and is entirely self-taught using ChatGPT-4.
 
-The overall cost for the project is about $150 USD.
+The overall cost for the project materials is about $150 USD.
 
 ![IMG_3032](https://github.com/Rocky56gh9/multimode-epaper-frame/assets/154940519/e9c3cef0-a6a2-4a1f-8abf-4e7857c67fc6)<br>
 ![IMG_3031](https://github.com/Rocky56gh9/multimode-epaper-frame/assets/154940519/4f26712a-f590-4b00-bb5e-5cda1b18fa73)<br>
