@@ -61,9 +61,8 @@ def get_horoscope_sun_signs():
     print("Specify the sun signs for horoscopes you want to display (separated by spaces):")
     print("Valid sun signs are:")
     valid_sun_signs = [
-        "aries", "taurus", "gemini", "cancer",
-        "leo", "virgo", "libra", "scorpio",
-        "sagittarius", "capricorn", "aquarius", "pisces"
+        "aquarius", "aries", "cancer", "capricorn", "gemini", "leo", "libra", "pisces", "sagittarius", "scorpio", "taurus", "virgo" 
+        
     ]
     print(", ".join(valid_sun_signs))
     sun_signs = input("Enter the sun signs: ").strip().lower().split()
