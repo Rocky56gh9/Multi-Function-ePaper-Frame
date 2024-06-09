@@ -93,7 +93,7 @@ I have set up Amazon referral links to all of the components I used, which were 
    ```sh
    cd multimode-epaper-frame && chmod +x setup.sh && ./setup.sh
    ```
-The setup script installs all of the necessary packages and enables access to the device from a local machine over USB using Gadget mode. This will take a while to run. The script has built-in retries due to the number of dependencies that need to be installed. If you're still seeing errors or things are not working as expected. Try running the ./setup.sh script again.
+The setup script installs all of the necessary packages and enables access to the device from a local machine over USB using Gadget mode. This will take a while to run. The script has built-in retries due to the number of dependencies that need to be installed. If you're still seeing errors or things are not working as expected, try running the ./setup.sh script again.
 
 # Configuration
 After installing all dependencies, the setup script will call the required configuration scripts and templates and prompt you for the inputs needed for the project. To change configurations after initial setup, navigate to the `config` folder to access the inidividual scripts. Each script will prompt you for the credentials necessary for the scripts. For example, if you want to change the location for the Weatherstation, run that configuration script to change the zip code.
