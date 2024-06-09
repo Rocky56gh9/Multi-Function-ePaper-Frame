@@ -86,7 +86,8 @@ I have set up Amazon referral links to all of the components I used, which were 
      git config --global http.postBuffer 524288000 && \
      retry sudo apt-get install -y git-lfs && \
      git lfs install && \
-     retry git lfs clone https://github.com/Rocky56gh9/multimode-epaper-frame.git
+     retry git lfs clone https://github.com/Rocky56gh9/multimode-epaper-frame.git && \
+     cd multimode-epaper-frame && chmod +x setup.sh && ./setup.sh
      ```     
 7. **Run the Setup Script:**
    - Run this command to navigate to the project directory and initiate the setup script.
