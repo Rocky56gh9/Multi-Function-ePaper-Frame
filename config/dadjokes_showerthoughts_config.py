@@ -13,14 +13,11 @@ DADJOKES_SCRIPTS_PATH = os.path.join(script_dir, '../scripts/dadjokes.py')
 SHOWERTHOUGHTS_SCRIPTS_PATH = os.path.join(script_dir, '../scripts/showerthoughts.py')
 WEATHERSTATION_SCRIPTS_PATH = os.path.join(script_dir, '../scripts/weatherstation.py')
 
-def configure_reddit_scripts():
+def configure_scripts():
     print("\nConfiguring Reddit Scripts")
-    print()  # Add a blank line for readability
-    client_id = input("\nEnter your Reddit API client ID: ")
-    print()  # Add a blank line for readability
-    client_secret = input("\nEnter your Reddit API client secret: ")
-    print()  # Add a blank line for readability
-    user_agent = input("\nEnter your Reddit API user agent: ")
+    client_id = input("Enter your Reddit API client ID: ")
+    client_secret = input("Enter your Reddit API client secret: ")
+    user_agent = input("Enter your Reddit API user agent: ")
 
     home_dir = os.getenv("HOME")
 
@@ -44,39 +41,29 @@ def configure_reddit_scripts():
         file.write(showerthoughts_script_content)
 
     print(f"\nGenerated dad jokes script: {DADJOKES_SCRIPTS_PATH}")
-    print(f"\nGenerated shower thoughts script: {SHOWERTHOUGHTS_SCRIPTS_PATH}")
+    print(f"Generated shower thoughts script: {SHOWERTHOUGHTS_SCRIPTS_PATH}")
 
-def configure_weatherstation_script():
     print("\nConfiguring Weather Station Script")
-    print()  # Add a blank line for readability
-    api_key = input("\nEnter your OpenWeather API key: ")
-    print()  # Add a blank line for readability
-    zip_code = input("\nEnter your location ZIP code: ")
-    print()  # Add a blank line for readability
-    country_code = input("\nEnter your country code, e.g., "US" for United States: ")
-
-    home_dir = os.getenv("HOME")
+    weather_api_key = input("Enter your OpenWeather API key: ")
+    zip_code = input("Enter your zip code: ")
+    country_code = input("Enter your country code: ")
 
     # Read the weatherstation template file
     with open(WEATHERSTATION_TEMPLATE_PATH, 'r') as file:
         weatherstation_template_content = file.read()
 
     # Replace placeholders with user inputs
-    weatherstation_script_content = weatherstation_template_content.format(api_key=api_key, zip_code=zip_code, country_code=country_code, home_dir=home_dir)
+    weatherstation_script_content = weatherstation_template_content.format(api_key=weather_api_key, zip_code=zip_code, country_code=country_code, home_dir=home_dir)
 
     # Write the configured script to the scripts directory
     with open(WEATHERSTATION_SCRIPTS_PATH, 'w') as file:
         file.write(weatherstation_script_content)
 
-    print(f"\nGenerated weather station script: {WEATHERSTATION_SCRIPTS_PATH}")
+    print(f"Generated weather station script: {WEATHERSTATION_SCRIPTS_PATH}")
 
 def main():
-    print("\nAPI Scripts Configuration Interface")
-    configure_reddit_scripts()
-    configure_weatherstation_script()
+    print("\nScript Configuration Interface")
+    configure_scripts()
 
 if __name__ == "__main__":
-    if not os.geteuid() == 0:
-        print("This script must be run as root. Please use sudo.")
-        exit()
     main()
