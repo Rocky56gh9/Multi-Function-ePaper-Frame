@@ -52,8 +52,8 @@ I have set up Amazon referral links to all of the components I used, which were 
    
      ```sh
      sudo apt-get update --fix-missing && \
-     git config --global http.postBuffer 524288000 && \
      sudo apt-get install -y git && \
+     git config --global http.postBuffer 524288000 && \
      sudo apt-get install -y git-lfs && \
      git lfs install && \
      git lfs clone https://github.com/Rocky56gh9/multimode-epaper-frame.git
