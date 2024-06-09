@@ -58,9 +58,8 @@ I have set up Amazon referral links to all of the components I used, which were 
      git lfs install && \
      git lfs clone https://github.com/Rocky56gh9/multimode-epaper-frame.git
      ```
-
      If any command fails, you can rerun the script to ensure all components are installed properly.
-     ```
+     
 6. **Run the Setup Script:**
    - Navigate to the directory:
    ```sh
