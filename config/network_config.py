@@ -33,12 +33,17 @@ def enable_gadget_mode():
     echo "Config 1: ECM network" > configs/c.1/strings/0x409/configuration
     echo 250 > configs/c.1/MaxPower
     mkdir -p functions/ecm.usb0
-    echo "DE:AD:BE:EF:00:01" > functions/ecm.usb0/host_addr
-    echo "DE:AD:BE:EF:00:02" > functions/ecm.usb0/dev_addr
-    ln -s functions/ecm.usb0 configs/c.1/
+    echo "DE:AD:BE:EF:00:01" > functions/ecm.usb0/host_addr || echo "Skipping host_addr configuration as it is busy."
+    echo "DE:AD:BE:EF:00:02" > functions/ecm.usb0/dev_addr || echo "Skipping dev_addr configuration as it is busy."
+    if [ ! -L configs/c.1/ecm.usb0 ]; then
+      ln -s functions/ecm.usb0 configs/c.1/
+    else
+      echo "Symbolic link 'configs/c.1/ecm.usb0' already exists. Skipping link creation."
+    fi
     """
-    subprocess.run(gadget_mode_script, shell=True, check=True)
-    print("Gadget mode enabled.")
+    with open("/etc/rc.local", "a") as f:
+        f.write(f"\n{gadget_mode_script}")
+    print("Gadget mode enabled and will be activated on reboot.")
 
 def disable_gadget_mode():
     print("\nDisabling Gadget Mode for local USB access...")
@@ -53,8 +58,9 @@ def disable_gadget_mode():
     rmdir g1
     sudo modprobe -r libcomposite
     """
-    subprocess.run(gadget_mode_script, shell=True, check=True)
-    print("Gadget mode disabled.")
+    with open("/etc/rc.local", "a") as f:
+        f.write(f"\n{gadget_mode_script}")
+    print("Gadget mode disabled and will be deactivated on reboot.")
 
 def configure_wifi():
     print("\nWiFi Configuration")
@@ -73,9 +79,9 @@ def clear_wifi_settings():
     print("\nClearing existing WiFi settings...")
     wifi_conf_path = '/etc/wpa_supplicant/wpa_supplicant.conf'
     try:
-        with open(wifi_conf_path, 'w') as file:
-            file.write("")
-        print("Existing WiFi settings cleared.")
+        with open("/etc/rc.local", "a") as f:
+            f.write(f"echo '' > {wifi_conf_path}\n")
+        print("Existing WiFi settings will be cleared on reboot.")
     except PermissionError:
         print("Permission denied. Please run this script with sudo.")
 
@@ -90,44 +96,40 @@ network={{
 }}
 """
     try:
-        with open(wifi_conf_path, 'a') as file:
-            file.write(wifi_conf)
-        print("New WiFi settings added.")
-        restart_network()
+        with open("/etc/rc.local", "a") as f:
+            f.write(f"echo '{wifi_conf}' >> {wifi_conf_path}\n")
+        print("New WiFi settings will be added on reboot.")
     except PermissionError:
         print("Permission denied. Please run this script with sudo.")
 
 def restart_network():
     print("\nRestarting network services...")
     try:
-        # Ensure gadget mode remains enabled if network restart fails
-        enable_gadget_mode()
-
-        subprocess.run(["sudo", "systemctl", "restart", "dhcpcd"], check=True)
+        subprocess.run(["sudo", "systemctl", "restart", "dhcpcd"], check=True, timeout=30)
         print("Network services restarted.")
-
-        # Check if the device is connected to the new WiFi network
-        result = subprocess.run(["sudo", "iwgetid"], capture_output=True, text=True)
+        result = subprocess.run(["sudo", "iwgetid"], capture_output=True, text=True, timeout=10)
         if ssid in result.stdout:
             print(f"Successfully connected to {ssid}")
         else:
             print(f"Failed to connect to {ssid}. Please check your credentials or network settings.")
     except subprocess.CalledProcessError as e:
         print(f"Failed to restart network services: {e}")
-        enable_gadget_mode()  # Ensure gadget mode remains enabled if network restart fails
+    except subprocess.TimeoutExpired:
+        print("Network restart timed out. Please check your network settings.")
 
 def main():
     print("\nNetwork Configuration Interface")
     print("1. Configure Gadget Mode")
     print("2. Configure WiFi")
-    print("3. Exit")
-    
+    print("3. Exit and Reboot")
+
     choice = input("Select an option: ")
     if choice == '1':
         configure_gadget_mode()
     elif choice == '2':
         configure_wifi()
     elif choice == '3':
+        os.system("sudo reboot")
         exit()
     else:
         print("Invalid option. Please select a valid option.")
