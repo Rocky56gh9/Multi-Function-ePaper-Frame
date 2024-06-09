@@ -3,9 +3,7 @@ import subprocess
 
 # List of all possible horoscope scripts
 ALL_HOROSCOPE_SCRIPTS = [f"scripts/horoscope_{sun_sign}.py" for sun_sign in [
-    "aries", "taurus", "gemini", "cancer",
-    "leo", "virgo", "libra", "scorpio",
-    "sagittarius", "capricorn", "aquarius", "pisces"
+    "aquarius", "aries", "cancer", "capricorn", "gemini", "leo", "libra", "pisces", "sagittarius", "scorpio", "taurus", "virgo"
 ]]
 
 CRONTAB_HEADER = """# Edit this file to introduce tasks to be run by cron.
