@@ -16,9 +16,9 @@ if os.path.exists(libdir):
 from waveshare_epd import epd7in5b_V2
 
 # OpenWeather API configuration
-API_KEY = "{API_KEY}"
-ZIP_CODE = "{ZIP_CODE}"
-COUNTRY_CODE = "{COUNTRY_CODE}"
+API_KEY = "{api_key}"
+ZIP_CODE = "{zip_code}"
+COUNTRY_CODE = "{country_code}"
 
 def fetch_weather_data():
     current_url = f"https://api.openweathermap.org/data/2.5/weather?zip={ZIP_CODE},{COUNTRY_CODE}&appid={API_KEY}&units=imperial"
