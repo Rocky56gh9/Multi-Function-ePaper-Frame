@@ -108,7 +108,7 @@ Make sure to save your Client ID, Client Secret, and User Agent somewhere safe. 
 6. **Clone Repository:**
    - Run: `git lfs clone https://github.com/Rocky56gh9/multimode-epaper-frame.git`
 
-7. **Setup Script:**
+7. **Run the Setup Script:**
    - Navigate to the directory: `cd multimode-epaper-frame`
    - Make the setup script executable and run the script: `chmod +x setup.sh && ./setup.sh`
 
