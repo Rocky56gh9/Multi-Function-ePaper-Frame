@@ -93,7 +93,19 @@ The setup script installs all of the necessary packages and enables access to th
 
 The script has built-in retries due to the number of dependencies that need to be installed. If you're still seeing errors or things are not working as expected, try running the ./setup.sh script again.
 
-After installing all dependencies, the setup script will automatically call the required configuration scripts and templates and <b>prompt you for the inputs needed for the project</b>. To change configurations after initial setup, navigate to the `config` folder to access the inidividual scripts. Each script will prompt you for the credentials necessary for the scripts. For example, if you want to change the location for the Weatherstation, run that configuration script to change the zip code.
+After installing all dependencies, the setup script will automatically call the required configuration scripts and templates and <b>prompt you for the inputs needed for the project</b>.
+
+# Adding Your Configurations
+In addition to your API keys (Reddit client_id, client_secret, and user_agent) (OpenWeather API Key), and because you can customize the rotation of the various screens (e.g., Dad Jokes, Shower Thoughts, Horoscope, Weatherstation), you'll need to think about the schedule. The setup script builds a cron job, with your input. The cron script is designed to run your defined script as follows:
+   - At the top of the hour, at 15 after the hour, at 30 after the hour, and at 45 after the hour
+
+The script will also ask you:
+   - What time to start running scripts in the morning
+   - What time to display the sleep image at night
+
+NOTE: For the horoscopes, you can add as many as you'd like. The script will ask you for the one or more zodiac signs to include. The cron job will automatically distribute them across the day. For example, if you entered two zodiac signs and specified the horoscope to run at half past the hour, they would display in turn, at half past, throughout the day between your defined start and end times.
+
+To change configurations after initial setup, navigate to the `config` folder to access the inidividual scripts. Each script will prompt you for the credentials necessary for the scripts. For example, if you want to change the location for the Weatherstation, run that configuration script to change the zip code.
 
 # Physical Assembly
 The 7.5" screen fits well in the frame with paper mat listed in the equipment list, but requires modifying the size of the paper mat. Here are the measurements for the size of the mat needed to cover the non-display parts of the e-paper screen. These are measured from the exterior edge of the mat:<br>
