@@ -64,6 +64,7 @@ install_package() {
 clone_repo() {
   local repo_url="$1"
   local repo_dir="$2"
+  local zip_url="${repo_url}/archive/main.zip"
 
   # Attempt using HTTPS first
   if retry git clone $repo_url $repo_dir; then
@@ -80,7 +81,6 @@ clone_repo() {
   fi
 
   # As a last resort, try downloading the repository as a ZIP file and extracting it
-  local zip_url=${repo_url}/archive/main.zip
   echo "Trying to download and unzip: $zip_url"
   if retry wget $zip_url -O ${repo_dir}.zip; then
     unzip ${repo_dir}.zip
@@ -108,6 +108,12 @@ git config --global http.postBuffer 524288000 && \
 retry sudo apt-get install -y git-lfs && \
 git lfs install && \
 clone_repo "https://github.com/Rocky56gh9/multimode-epaper-frame.git" "multimode-epaper-frame"
+
+# Check if the repository was successfully cloned
+if [ ! -d "multimode-epaper-frame" ]; then
+  echo "Failed to clone the repository. Exiting."
+  exit 1
+fi
 
 # Move to the cloned directory
 cd multimode-epaper-frame || exit
