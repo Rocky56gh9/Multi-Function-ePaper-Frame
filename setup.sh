@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Function to execute a command and retry if it fails
+# Retry function to execute a command and retry if it fails
 execute_command() {
   local cmd="$1"
-  local retries=3
+  local retries=2
   local count=0
   local delay=10
 
@@ -44,25 +44,21 @@ manual_install_package() {
   pip3 install --no-cache-dir ${package_name}*
 }
 
-# Function to clone a repository with retries and local backup fallback
-clone_repo() {
-  local repo_url="$1"
-  local repo_dir="$2"
-  local backup_dir="$3"
+# Function to install a package with retries and manual fallback
+install_package() {
+  local package_name="$1"
+  local pip_command="$2"
+  local manual_url="$3"
 
-  if [ -d "$repo_dir" ]; then
-    echo "Directory '$repo_dir' already exists. Skipping clone."
-    return 0
+  echo "Attempting to install $package_name..."
+  if ! execute_command "$pip_command"; then
+    echo "$package_name installation failed via pip. Attempting manual installation..."
+    if ! manual_install_package "$package_name" "$manual_url"; then
+      echo "$package_name manual installation also failed."
+      return 1
+    fi
   fi
-
-  if [ -d "$backup_dir" ]; then
-    echo "Local backup found for '$repo_dir'. Copying from backup..."
-    cp -r "$backup_dir" "$repo_dir"
-    return 0
-  fi
-
-  echo "Cloning repository '$repo_url'..."
-  execute_command "git clone $repo_url $repo_dir"
+  return 0
 }
 
 # Ensure that local bin is in PATH
@@ -73,33 +69,31 @@ log_file="setup.log"
 exec > >(tee -i $log_file)
 exec 2>&1
 
-# Update and upgrade the system
-echo "Updating and upgrading the system..."
-execute_command "sudo apt-get update --fix-missing && sudo apt-get upgrade -y --fix-missing"
-
 # Install necessary packages
 echo "Installing necessary packages..."
-execute_command "sudo apt-get install -y libjpeg-dev libopenjp2-7 python3-pip git"
+execute_command "sudo apt-get install -y libjpeg-dev libopenjp2-7 python3-pip"
 
-# Install Python packages
-echo "Installing Python packages..."
-execute_command "pip3 install --no-cache-dir Pillow pytz bs4 praw crontab"
-execute_command "sudo pip3 install --no-cache-dir RPi.GPIO spidev"
+# Install Python packages with fallback logic
+failed_packages=()
 
-# Check network and fallback to manual installation if needed
-if ! check_network; then
-  echo "Network check failed. Attempting manual installation of timezonefinder..."
-  manual_install_package "timezonefinder" "https://files.pythonhosted.org/packages/2b/f7/10e278b8ef145da2e7f1480d7180b296ec53535985dc3bc5844f7191d9a0/timezonefinder-6.5.0.tar.gz"
+install_package "Pillow" "pip3 install --no-cache-dir Pillow" "https://files.pythonhosted.org/packages/58/b7/ece20939f84f3a4f9d6b344df82d30e0ed4b35a5e58e9a4b7b15c7870c2b/Pillow-8.1.2.tar.gz" || failed_packages+=("Pillow")
+install_package "pytz" "pip3 install --no-cache-dir pytz" "https://files.pythonhosted.org/packages/41/aa/0b509ee60282b11d6a09c218beeb24c8f2281a2e8d7b708d9d44bb2dfdeb/pytz-2024.1.tar.gz" || failed_packages+=("pytz")
+install_package "bs4" "pip3 install --no-cache-dir bs4" "https://files.pythonhosted.org/packages/91/f7/5e1a6e20b7edc17219f3fd1c10fc8c1708a80c867b09f2e2f5aaf8d03b65/beautifulsoup4-4.12.3.tar.gz" || failed_packages+=("bs4")
+install_package "praw" "pip3 install --no-cache-dir praw" "https://files.pythonhosted.org/packages/2d/49/1f8ea5e875cf1a31c4b9d4f0e293c1e2c64c98a0f85ed19fd0f0c4f4ff8e/praw-7.7.1.tar.gz" || failed_packages+=("praw")
+install_package "crontab" "pip3 install --no-cache-dir crontab" "https://files.pythonhosted.org/packages/fb/35/5a63ea0ed7c91f2a0c71e62a7f85edff6ef0efb99f8954781a3429cbfb69/python-crontab-2.5.1.tar.gz" || failed_packages+=("crontab")
+install_package "RPi.GPIO" "sudo pip3 install --no-cache-dir RPi.GPIO" "https://files.pythonhosted.org/packages/fd/57/3a2a4b1dc42b55c01e2b82ddda12e3b0e7ecb9ffb9f1c54e4785e89a6f6b/RPi.GPIO-0.7.1.tar.gz" || failed_packages+=("RPi.GPIO")
+install_package "spidev" "sudo pip3 install --no-cache-dir spidev" "https://files.pythonhosted.org/packages/6b/2e/60a5e29b8e1cb8d7e6b8cfc8a1251156a2b8f5b8c6cbe5cbdf979117f143/spidev-3.5.tar.gz" || failed_packages+=("spidev")
+install_package "timezonefinder" "pip3 install --timeout 60 --no-cache-dir timezonefinder" "https://files.pythonhosted.org/packages/2b/f7/10e278b8ef145da2e7f1480d7180b296ec53535985dc3bc5844f7191d9a0/timezonefinder-6.5.0.tar.gz" || failed_packages+=("timezonefinder")
+
+# Check if there are any failed packages
+if [ ${#failed_packages[@]} -ne 0 ]; then
+  echo "The following packages failed to install:"
+  for pkg in "${failed_packages[@]}"; do
+    echo "- $pkg"
+  done
 else
-  echo "Installing timezonefinder package..."
-  if ! execute_command "pip3 install --timeout 60 --no-cache-dir timezonefinder"; then
-    manual_install_package "timezonefinder" "https://files.pythonhosted.org/packages/2b/f7/10e278b8ef145da2e7f1480d7180b296ec53535985dc3bc5844f7191d9a0/timezonefinder-6.5.0.tar.gz"
-  fi
+  echo "All packages installed successfully."
 fi
-
-# Clone the multimode-epaper-frame repository if it does not exist
-echo "Cloning multimode-epaper-frame repository..."
-clone_repo "https://github.com/Rocky56gh9/multimode-epaper-frame.git" "multimode-epaper-frame" "$HOME/multimode-epaper-frame-backup"
 
 # Clone the e-Paper repository if it does not exist
 echo "Cloning e-Paper repository..."
@@ -151,4 +145,3 @@ execute_command "python3 config/weatherstation_config.py"
 execute_command "python3 config/crontab_config.py"
 
 echo "Setup complete. Please reboot your system to apply all changes."
-
