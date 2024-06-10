@@ -16,9 +16,9 @@ def main():
     country_code = input("Enter the country code (e.g., US for United States): ")
 
     variables = {
-        'API_KEY': api_key,
-        'ZIP_CODE': zip_code,
-        'COUNTRY_CODE': country_code
+        'api_key': api_key,
+        'zip_code': zip_code,
+        'country_code': country_code
     }
 
     script_dir = os.path.dirname(os.path.abspath(__file__))
