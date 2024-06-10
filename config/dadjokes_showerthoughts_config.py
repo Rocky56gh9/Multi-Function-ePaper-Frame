@@ -44,7 +44,7 @@ def configure_scripts():
     print(f"Generated shower thoughts script: {SHOWERTHOUGHTS_SCRIPTS_PATH}")
 
     print("\nConfiguring Weather Station Script")
-    weather_api_key = input("Enter your OpenWeather API key: ")
+    api_key = input("Enter your OpenWeather API key: ")
     zip_code = input("Enter your zip code: ")
     country_code = input("Enter your country code: ")
 
