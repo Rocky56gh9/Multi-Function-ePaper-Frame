@@ -6,17 +6,18 @@ script_dir = os.path.dirname(os.path.realpath(__file__))
 # Path to the template files
 DADJOKES_TEMPLATE_PATH = os.path.join(script_dir, '../templates/dadjokes_template.py')
 SHOWERTHOUGHTS_TEMPLATE_PATH = os.path.join(script_dir, '../templates/showerthoughts_template.py')
-WEATHERSTATION_TEMPLATE_PATH = os.path.join(script_dir, '../templates/weatherstation_template.py')
 
 # Path to the script files
 DADJOKES_SCRIPTS_PATH = os.path.join(script_dir, '../scripts/dadjokes.py')
 SHOWERTHOUGHTS_SCRIPTS_PATH = os.path.join(script_dir, '../scripts/showerthoughts.py')
-WEATHERSTATION_SCRIPTS_PATH = os.path.join(script_dir, '../scripts/weatherstation.py')
 
 def configure_scripts():
     print("\nConfiguring Reddit Scripts")
+    print() 
     client_id = input("Enter your Reddit API client ID: ")
+    print()
     client_secret = input("Enter your Reddit API client secret: ")
+    print()
     user_agent = input("Enter your Reddit API user agent: ")
 
     home_dir = os.getenv("HOME")
@@ -41,25 +42,8 @@ def configure_scripts():
         file.write(showerthoughts_script_content)
 
     print(f"\nGenerated dad jokes script: {DADJOKES_SCRIPTS_PATH}")
+    print()
     print(f"Generated shower thoughts script: {SHOWERTHOUGHTS_SCRIPTS_PATH}")
-
-    print("\nConfiguring Weather Station Script")
-    api_key = input("Enter your OpenWeather API key: ")
-    zip_code = input("Enter your zip code: ")
-    country_code = input("Enter your country code: ")
-
-    # Read the weatherstation template file
-    with open(WEATHERSTATION_TEMPLATE_PATH, 'r') as file:
-        weatherstation_template_content = file.read()
-
-    # Replace placeholders with user inputs
-    weatherstation_script_content = weatherstation_template_content.format(api_key=weather_api_key, zip_code=zip_code, country_code=country_code, home_dir=home_dir)
-
-    # Write the configured script to the scripts directory
-    with open(WEATHERSTATION_SCRIPTS_PATH, 'w') as file:
-        file.write(weatherstation_script_content)
-
-    print(f"Generated weather station script: {WEATHERSTATION_SCRIPTS_PATH}")
 
 def main():
     print("\nScript Configuration Interface")
