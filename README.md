@@ -68,39 +68,11 @@ I have set up Amazon referral links to all of the components I used, which were 
    - Copy and paste the following into your terminal to install all necessary components, clone the repository, and run the configuration scripts automatically:
    
      ```sh
-     # Retry function
-     retry() {
-       local n=1
-       local max=5
-       local delay=5
-       while true; do
-         "$@" && break || {
-           if [[ $n -lt $max ]]; then
-             ((n++))
-             echo "Command failed. Attempt $n/$max:"
-             sleep $delay;
-           else
-             echo "The command has failed after $n attempts."
-             return 1
-           fi
-         }
-       done
-     }
-
-     # Execute commands with retry logic
-     retry sudo apt-get update --fix-missing && \
-     retry sudo apt-get install -y git && \
-     git config --global http.postBuffer 524288000 && \
-     retry sudo apt-get install -y git-lfs && \
-     git lfs install && \
-     retry git lfs clone https://github.com/Rocky56gh9/multimode-epaper-frame.git && \
-     cd multimode-epaper-frame && chmod +x setup.sh && ./setup.sh
+     curl -sSL https://raw.githubusercontent.com/Rocky56gh9/multimode-epaper-frame/main/setup_project.sh -o setup_project.sh && chmod +x setup_project.sh && ./setup_project.sh
      ```     
-The setup script installs all of the necessary packages and enables access to the device from a local machine over USB using Gadget mode. <b>This will take quite a while to run</b>.
-
-The script has built-in retries due to the number of dependencies that need to be installed. If you're still seeing errors or things are not working as expected, try running the ./setup.sh script again.
-
-After installing all dependencies, the setup script will automatically call the required configuration scripts and templates and <b>prompt you for the inputs needed for the project</b>.
+   - The setup script installs all of the necessary packages and enables access to the device from a local machine over USB using Gadget mode. <b>This will take quite a while to run</b>.
+   - The script has built-in retries due to the number of dependencies that need to be installed. If you're still seeing errors or things are not working as expected, try running the ./setup.sh script again.
+   - After installing all dependencies, the setup script will automatically call the required configuration scripts and templates and <b>prompt you for the inputs needed for the project</b>.
 
 # Adding Your Configurations
 Have this information in hand as the setup script runs, so you're ready to enter the data when prompted.
