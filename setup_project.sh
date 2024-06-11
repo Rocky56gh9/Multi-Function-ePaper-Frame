@@ -148,6 +148,12 @@ fi
 echo "Cloning e-Paper repository..."
 clone_repo "https://github.com/waveshare/e-Paper.git" "e-Paper"
 
+# Check if the e-Paper repository was successfully cloned
+if [ ! -d "e-Paper" ]; then
+  echo "Failed to clone the e-Paper repository. Exiting."
+  exit 1
+fi
+
 # Enable SPI interface
 echo "Enabling SPI interface..."
 retry sudo raspi-config nonint do_spi 0
