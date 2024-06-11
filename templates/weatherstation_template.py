@@ -21,8 +21,8 @@ zip_code = "{zip_code}"
 country_code = "{country_code}"
 
 def fetch_weather_data():
-    current_url = f"https://api.openweathermap.org/data/2.5/weather?zip={ZIP_CODE},{COUNTRY_CODE}&appid={API_KEY}&units=imperial"
-    forecast_url = f"https://api.openweathermap.org/data/2.5/onecall?lat={{lat}}&lon={{lon}}&exclude=minutely,alerts&appid={API_KEY}&units=imperial"
+    current_url = f"https://api.openweathermap.org/data/2.5/weather?zip={zip_code},{country_code}&appid={api_key}&units=imperial"
+    forecast_url = f"https://api.openweathermap.org/data/2.5/onecall?lat={{lat}}&lon={{lon}}&exclude=minutely,alerts&appid={api_key}&units=imperial"
 
     current_response = requests.get(current_url)
     if current_response.status_code == 200:
