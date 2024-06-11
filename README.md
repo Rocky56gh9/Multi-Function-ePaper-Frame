@@ -65,8 +65,8 @@ I have set up Amazon referral links to all of the components I used, which were 
    ```
 
 6. **Install Components and Set Up Configurations**
-   - Copy and paste the following into your terminal to install all necessary components, clone the repository, and run the configuration scripts automatically:
-   
+Copy and paste the following into your terminal to install all necessary components, clone the repository, and run the configuration scripts automatically:
+
      ```sh
      curl -sSL https://raw.githubusercontent.com/Rocky56gh9/multimode-epaper-frame/main/setup_project.sh -o setup_project.sh && chmod +x setup_project.sh && ./setup_project.sh
      ```     
