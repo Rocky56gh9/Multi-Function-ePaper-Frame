@@ -90,7 +90,7 @@ Have this information in hand as the setup script runs, so you're ready to enter
       - What time to stop running scripts and display the sleep image (24-hour, HH:MM)
       - The e-Paper screen will refresh at the top of the hour, at 15 after the hour, at 30 after the hour, and at 45 after the hour, between the start and end times you enter. You can customize the order of what (e.g., Dad Jokes, Shower Thoughts, Horoscope, Weatherstation) displays at each milestone time.
 
-<b>NOTE</b>: For the horoscopes, you can add as many as you'd like. The script will ask you for the one or more zodiac signs to include. The cron job will automatically distribute them across the day. For example, if you entered two zodiac signs and specified the horoscope to run at half past the hour, they would display in turn, at half past, throughout the day between your defined start and end times.
+<b>NOTE</b>: For the horoscopes, you can add as many as you'd like. The script will ask you for the one or more zodiac signs to include. The cron job will automatically distribute them across the day. For example, if you entered two zodiac signs and specified the horoscope to run at half past the hour, they would alternate every other hour throughout the day between your defined start and end times.
 
 To change configurations after initial setup, navigate to the `config` folder to access the inidividual scripts. For example, if you want to change the location for the Weatherstation, run that configuration script to change the zip code.
 
