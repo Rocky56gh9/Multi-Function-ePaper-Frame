@@ -71,7 +71,7 @@ Copy and paste the following into your terminal to install all necessary compone
      curl -sSL https://raw.githubusercontent.com/Rocky56gh9/multimode-epaper-frame/main/setup_project.sh -o setup_project.sh && chmod +x setup_project.sh && ./setup_project.sh
      ```     
    - The setup script installs all of the necessary packages and enables access to the device from a local machine over USB using Gadget mode. <b>This will take quite a while to run</b>.
-   - The script has built-in retries due to the number of dependencies that need to be installed. If you're still seeing errors or things are not working as expected, try running the ./setup.sh script again.
+   - The script has built-in retries due to the number of dependencies that need to be installed. If you're still seeing errors or things are not working as expected, try running the full setup script again.
    - After installing all dependencies, the setup script will automatically call the required configuration scripts and templates and <b>prompt you for the inputs needed for the project</b>.
 
 # Adding Your Configurations
