@@ -90,7 +90,7 @@ def resize_image(image, target_width, target_height):
 
 def draw_on_display(zodiac_image, horoscope_text, epd):
     header_font_path = '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
-    header_font_size = 50
+    header_font_size = 55
     header_color = "red"
     header_y_position = 5
     header_font = ImageFont.truetype(header_font_path, header_font_size)
