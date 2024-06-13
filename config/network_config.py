@@ -90,7 +90,7 @@ def update_network_password(lines, line_num, new_psk):
 
     write_wifi_conf(lines)
     log_and_print("Network password updated.")
-    restart_network_services()
+    reboot_device()
 
 def remove_network(lines, line_num):
     log_debug(f"Removing network block starting at line {line_num}")
@@ -112,7 +112,7 @@ def remove_network(lines, line_num):
         log_debug(f"Removed lines {start} to {end}")
         write_wifi_conf(lines)
         log_and_print("Network removed.")
-        restart_network_services()
+        reboot_device()
     else:
         log_and_print("Failed to locate the network block in the configuration file.")
         log_debug(f"Failed to locate network block starting at line {line_num}")
@@ -122,6 +122,11 @@ def write_wifi_conf(lines):
     with open(wifi_conf_path, 'w') as file:
         file.writelines(lines)
     log_debug("Updated wpa_supplicant.conf written")
+
+def reboot_device():
+    log_and_print("Rebooting device to apply changes...")
+    time.sleep(5)
+    run_command(["sudo", "reboot"])
 
 def restart_network_services():
     log_and_print("\nRestarting network services...\n")
@@ -186,6 +191,7 @@ def attempt_wifi_connection(ssid, backup_wifi_conf_path):
     log_debug(f"iwgetid result: {result.stdout}")
     if ssid in result.stdout:
         log_and_print(f"\nSuccessfully connected to {ssid}\n")
+        reboot_device()
     else:
         log_and_print(f"\nFailed to connect to {ssid}. Reverting to previous WiFi settings...\n")
         revert_to_backup(backup_wifi_conf_path)
@@ -199,7 +205,7 @@ def revert_to_backup(backup_wifi_conf_path):
         exit(1)
 
     log_and_print("\nBackup restored successfully.")
-    restart_network_services()
+    reboot_device()
 
 def preserve_gadget_mode():
     log_and_print("\nPreserving gadget mode settings...\n")
