@@ -1,6 +1,6 @@
 #!/bin/bash
 
-LOGFILE="/var/log/setup_project.log"
+LOGFILE="$HOME/setup_project.log"
 
 log_and_print() {
     echo "$1"
