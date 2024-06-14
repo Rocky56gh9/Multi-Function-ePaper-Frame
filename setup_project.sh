@@ -133,7 +133,7 @@ if [ ! -d "multimode-epaper-frame" ]; then
 fi
 
 # Change to the multimode-epaper-frame directory
-cd "$(dirname "$0")/multimode-epaper-frame" || { echo "Directory change failed"; exit 1; }
+cd multimode-epaper-frame || { echo "Directory change failed"; exit 1; }
 
 # Install Python packages with fallback logic
 python_packages=(
@@ -178,7 +178,7 @@ retry sudo raspi-config nonint do_spi 0
 echo "Configuring device for USB access..."
 sudo modprobe libcomposite
 sudo mkdir -p /sys/kernel/config/usb_gadget/g1
-cd /sys/kernel/config/usb_gadget/g1 || exit
+cd /sys/kernel/config/usb_gadget/g1 || { echo "Directory change failed"; exit 1; }
 echo 0x1d6b | sudo tee idVendor # Linux Foundation
 echo 0x0104 | sudo tee idProduct # Multifunction Composite Gadget
 echo 0x0100 | sudo tee bcdDevice # v1.0.0
@@ -204,7 +204,7 @@ else
 fi
 
 # Move back to the cloned directory
-cd "$(dirname "$0")/multimode-epaper-frame" || exit
+cd "$(dirname "$0")/multimode-epaper-frame" || { echo "Directory change failed"; exit 1; }
 
 # Make Python scripts executable
 echo "Making Python scripts executable..."
