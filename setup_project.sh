@@ -100,6 +100,10 @@ is_installed() {
 # Ensure the local bin is in PATH
 export PATH=$PATH:$HOME/.local/bin
 
+# Preserve the home directory of the user who initiated the script
+export ORIGINAL_HOME=$(eval echo ~${SUDO_USER})
+project_dir="$ORIGINAL_HOME/multimode-epaper-frame"
+
 # Check network connectivity
 if ! check_network; then
   echo "Network check failed. Please ensure you are connected to the internet."
@@ -126,7 +130,6 @@ git config --global http.postBuffer 524288000
 git lfs install
 
 # Create project directory if it doesn't exist
-project_dir="$HOME/multimode-epaper-frame"
 mkdir -p "$project_dir"
 
 # Clone the multimode-epaper-frame repository into the project directory
