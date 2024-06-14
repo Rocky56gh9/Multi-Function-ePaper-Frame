@@ -131,6 +131,7 @@ git lfs install
 
 # Create project directory if it doesn't exist
 mkdir -p "$project_dir"
+chown -R $SUDO_USER:$SUDO_USER "$project_dir"
 
 # Clone the multimode-epaper-frame repository into the project directory
 clone_repo "https://github.com/Rocky56gh9/multimode-epaper-frame.git" "$project_dir"
@@ -220,11 +221,12 @@ cd "$project_dir" || { echo "Directory change failed"; exit 1; }
 # Make Python scripts executable
 echo "Making Python scripts executable..."
 chmod +x scripts/*.py
+chown -R $SUDO_USER:$SUDO_USER scripts
 
 # Run configuration scripts
 echo "Running configuration scripts..."
-retry python3 config/dadjokes_showerthoughts_config.py
-retry python3 config/weatherstation_config.py
-retry python3 config/crontab_config.py
+sudo -u $SUDO_USER python3 config/dadjokes_showerthoughts_config.py
+sudo -u $SUDO_USER python3 config/weatherstation_config.py
+sudo -u $SUDO_USER python3 config/crontab_config.py
 
 echo "Setup complete. Please reboot your system to apply all changes."
