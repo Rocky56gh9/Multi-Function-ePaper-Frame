@@ -109,7 +109,6 @@ fi
 # Update and upgrade system packages
 echo "Updating system packages..."
 retry sudo apt-get update --fix-missing
-retry sudo apt-get upgrade -y
 
 # Install essential packages
 essential_packages=(git git-lfs libjpeg-dev libopenjp2-7 python3-pip wget unzip)
