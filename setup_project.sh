@@ -109,6 +109,7 @@ fi
 # Update and upgrade system packages
 echo "Updating system packages..."
 retry sudo apt-get update --fix-missing
+retry sudo apt-get upgrade -y
 
 # Install essential packages
 essential_packages=(git git-lfs libjpeg-dev libopenjp2-7 python3-pip wget unzip)
@@ -125,15 +126,19 @@ done
 git config --global http.postBuffer 524288000
 git lfs install
 
-# Clone the multimode-epaper-frame repository
-clone_repo "https://github.com/Rocky56gh9/multimode-epaper-frame.git" "multimode-epaper-frame"
-if [ ! -d "multimode-epaper-frame" ]; then
+# Create project directory if it doesn't exist
+project_dir="$HOME/multimode-epaper-frame"
+mkdir -p "$project_dir"
+
+# Clone the multimode-epaper-frame repository into the project directory
+clone_repo "https://github.com/Rocky56gh9/multimode-epaper-frame.git" "$project_dir"
+if [ ! -d "$project_dir" ]; then
   echo "Failed to clone the repository. Exiting."
   exit 1
 fi
 
-# Change to the multimode-epaper-frame directory
-cd multimode-epaper-frame || { echo "Directory change failed"; exit 1; }
+# Change to the project directory
+cd "$project_dir" || { echo "Directory change failed"; exit 1; }
 
 # Install Python packages with fallback logic
 python_packages=(
@@ -163,13 +168,10 @@ else
   echo "All packages installed successfully."
 fi
 
-# Change to the multimode-epaper-frame directory again to ensure correct path
-cd multimode-epaper-frame || { echo "Directory change failed"; exit 1; }
-
 # Clone the e-Paper repository inside multimode-epaper-frame
-if [ ! -d "e-Paper" ]; then
-  clone_repo "https://github.com/waveshare/e-Paper.git" "e-Paper"
-  if [ ! -d "e-Paper" ]; then
+if [ ! -d "$project_dir/e-Paper" ]; then
+  clone_repo "https://github.com/waveshare/e-Paper.git" "$project_dir/e-Paper"
+  if [ ! -d "$project_dir/e-Paper" ]; then
     echo "Failed to clone the e-Paper repository. Exiting."
     exit 1
   fi
@@ -210,8 +212,8 @@ else
   echo "Symbolic link 'configs/c.1/ecm.usb0' already exists. Skipping link creation."
 fi
 
-# Move back to the multimode-epaper-frame directory
-cd "$HOME/multimode-epaper-frame" || { echo "Directory change failed"; exit 1; }
+# Move back to the project directory
+cd "$project_dir" || { echo "Directory change failed"; exit 1; }
 
 # Make Python scripts executable
 echo "Making Python scripts executable..."
