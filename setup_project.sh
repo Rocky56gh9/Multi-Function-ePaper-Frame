@@ -163,11 +163,18 @@ else
   echo "All packages installed successfully."
 fi
 
-# Clone the e-Paper repository
-clone_repo "https://github.com/waveshare/e-Paper.git" "e-Paper"
+# Change to the multimode-epaper-frame directory again to ensure correct path
+cd multimode-epaper-frame || { echo "Directory change failed"; exit 1; }
+
+# Clone the e-Paper repository inside multimode-epaper-frame
 if [ ! -d "e-Paper" ]; then
-  echo "Failed to clone the e-Paper repository. Exiting."
-  exit 1
+  clone_repo "https://github.com/waveshare/e-Paper.git" "e-Paper"
+  if [ ! -d "e-Paper" ]; then
+    echo "Failed to clone the e-Paper repository. Exiting."
+    exit 1
+  fi
+else
+  echo "e-Paper directory already exists."
 fi
 
 # Enable SPI interface
@@ -178,7 +185,7 @@ retry sudo raspi-config nonint do_spi 0
 echo "Configuring device for USB access..."
 sudo modprobe libcomposite
 sudo mkdir -p /sys/kernel/config/usb_gadget/g1
-cd /sys/kernel/config/usb_gadget/g1 || { echo "Directory change failed"; exit 1; }
+cd /sys/kernel/config/usb_gadget/g1 || { echo "USB gadget directory change failed"; exit 1; }
 echo 0x1d6b | sudo tee idVendor # Linux Foundation
 echo 0x0104 | sudo tee idProduct # Multifunction Composite Gadget
 echo 0x0100 | sudo tee bcdDevice # v1.0.0
@@ -203,8 +210,8 @@ else
   echo "Symbolic link 'configs/c.1/ecm.usb0' already exists. Skipping link creation."
 fi
 
-# Move back to the cloned directory
-cd "$(dirname "$0")/multimode-epaper-frame" || { echo "Directory change failed"; exit 1; }
+# Move back to the multimode-epaper-frame directory
+cd "$HOME/multimode-epaper-frame" || { echo "Directory change failed"; exit 1; }
 
 # Make Python scripts executable
 echo "Making Python scripts executable..."
