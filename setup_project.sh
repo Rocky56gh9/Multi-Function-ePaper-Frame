@@ -132,8 +132,8 @@ if [ ! -d "multimode-epaper-frame" ]; then
   exit 1
 fi
 
-# Move to the cloned directory
-cd multimode-epaper-frame || exit
+# Change to the multimode-epaper-frame directory
+cd "$(dirname "$0")/multimode-epaper-frame" || { echo "Directory change failed"; exit 1; }
 
 # Install Python packages with fallback logic
 python_packages=(
@@ -204,7 +204,7 @@ else
 fi
 
 # Move back to the cloned directory
-cd "$HOME/multimode-epaper-frame" || exit
+cd "$(dirname "$0")/multimode-epaper-frame" || exit
 
 # Make Python scripts executable
 echo "Making Python scripts executable..."
