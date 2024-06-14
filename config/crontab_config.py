@@ -70,8 +70,15 @@ def get_time(prompt):
     return get_time(prompt)
 
 def configure_crontab():
-    hostname = socket.gethostname()
-    project_path = f"/home/{os.getenv('USER')}/multimode-epaper-frame"
+    # Determine the correct user and home directory
+    user = os.getenv('SUDO_USER', os.getenv('USER'))
+    home_dir = os.path.expanduser(f"~{user}")
+    project_path = os.path.join(home_dir, "multimode-epaper-frame")
+    
+    # Ensure the project path is correct
+    if not os.path.exists(project_path):
+        print(f"Project path {project_path} does not exist. Please check the path.")
+        return
 
     horoscope_scripts = get_horoscope_sun_signs()
     start_hour, start_minute = get_time("Specify the time to start running the scripts (local time):")
@@ -104,14 +111,15 @@ def configure_crontab():
     cron_lines.append(f"{sleep_minute} {sleep_hour} * * * /usr/bin/python3 {project_path}/scripts/sleep.py")
 
     # Write the crontab file with headers and the new lines
-    with open("new_crontab", "w") as file:
+    crontab_file = os.path.join(project_path, "new_crontab")
+    with open(crontab_file, "w") as file:
         file.write(CRONTAB_HEADER)
         file.write("\n")  # Add a blank line after the headers
         file.write("\n".join(cron_lines) + "\n")
 
-    # Install the new crontab
-    subprocess.run(["crontab", "new_crontab"])
-    os.remove("new_crontab")
+    # Install the new crontab for the correct user
+    subprocess.run(["crontab", "-u", user, crontab_file], check=True)
+    os.remove(crontab_file)
     print("Crontab configured successfully.")
 
 def main():
