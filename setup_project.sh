@@ -107,6 +107,9 @@ if ! check_network; then
   exit 1
 fi
 
+# Create the base directory if it doesn't exist
+mkdir -p "$BASE_DIR"
+
 # Update and upgrade system
 retry sudo apt-get update --fix-missing && \
 retry sudo apt-get -y upgrade
