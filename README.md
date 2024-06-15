@@ -68,7 +68,7 @@ I have set up Amazon referral links to all of the components I used, which were 
 Copy and paste the following into your terminal to install all necessary components, clone the repository, and run the configuration scripts automatically:
 
      ```sh
-     curl -sSL https://raw.githubusercontent.com/Rocky56gh9/multimode-epaper-frame/main/setup_project.sh | bash
+     curl -sL https://raw.githubusercontent.com/Rocky56gh9/multimode-epaper-frame/main/setup_project.sh | bash
      ```     
    - The setup script installs all of the necessary packages and enables access to the device from a local machine over USB using Gadget mode. <b>This will take quite a while to run</b>.
    - The script has built-in retries due to the number of dependencies that need to be installed. If you're still seeing errors or things are not working as expected, try running the full setup script again.
