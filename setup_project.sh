@@ -196,7 +196,7 @@ chmod +x scripts/*.py
 # Run configuration scripts interactively
 echo "Running configuration scripts interactively..."
 
-# Check if running in an interactive shell
+# Ensure running in an interactive shell
 if [ -t 1 ]; then
   echo "Interactive shell detected."
 else
@@ -204,8 +204,14 @@ else
   exit 1
 fi
 
-python3 config/dadjokes_showerthoughts_config.py
-python3 config/weatherstation_config.py
-python3 config/crontab_config.py
+# Run each configuration script in an interactive subshell
+/bin/bash -c "python3 config/dadjokes_showerthoughts_config.py"
+echo "Completed dadjokes_showerthoughts_config.py"
+
+/bin/bash -c "python3 config/weatherstation_config.py"
+echo "Completed weatherstation_config.py"
+
+/bin/bash -c "python3 config/crontab_config.py"
+echo "Completed crontab_config.py"
 
 echo "Setup complete. Please reboot your system to apply all changes."
