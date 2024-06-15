@@ -119,9 +119,20 @@ retry_command pip3 install RPi.GPIO
 echo "Installing spidev..."
 retry_command pip3 install spidev
 
-# 16. Install timezonefinder
-echo "Installing timezonefinder..."
-retry_command pip3 install timezonefinder
+# 16. Install timezonefinder with alternate methods
+install_timezonefinder() {
+    echo "Installing timezonefinder..."
+    if retry_command pip3 install timezonefinder; then
+        echo "Successfully installed timezonefinder."
+    elif retry_command pip3 install git+https://github.com/jannikmi/timezonefinder.git; then
+        echo "Successfully installed timezonefinder from GitHub."
+    else
+        echo "Failed to install timezonefinder using all methods."
+        exit 1
+    fi
+}
+
+install_timezonefinder
 
 # 17. Clone the e-Paper repository inside multimode-epaper-frame directory
 echo "Cloning the e-Paper repository..."
@@ -157,17 +168,17 @@ echo "DE:AD:BE:EF:00:02" | sudo tee functions/ecm.usb0/dev_addr || echo "Skippin
 
 # 20. Move back to the home directory
 echo "Moving back to the multimode-epaper-frame directory..."
-cd ~/multimode-epaper-frame
+cd ~/multimode-epaper-frame || { echo "Failed to change directory to multimode-epaper-frame"; exit 1; }
 
 # 21. Make the python scripts executable
 echo "Making Python scripts executable..."
-chmod +x *.py
+chmod +x scripts/*.py
 
 # 22. Run each of the configuration scripts
 echo "Running configuration scripts..."
-for script in config/*.sh; do
+for script in config/*.py; do
   echo "Running $script..."
-  bash "$script"
+  python3 "$script"
 done
 
 echo "Setup completed. Checking installation status..."
