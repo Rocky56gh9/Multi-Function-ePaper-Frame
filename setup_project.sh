@@ -12,8 +12,8 @@ fi
 # Base directory for the project
 BASE_DIR="$HOME/multimode-epaper-frame"
 EPAPER_REPO_DIR="$BASE_DIR/e-Paper"
-RETRY_COUNT=5
-RETRY_DELAY=5
+RETRY_COUNT=10
+RETRY_DELAY=10
 
 # Retry function to execute a command and retry if it fails
 retry() {
@@ -25,7 +25,7 @@ retry() {
       if [[ $n -lt $max ]]; then
         ((n++))
         echo "Command failed. Attempt $n/$max:"
-        sleep $delay;
+        sleep $delay
         delay=$((delay * 2))  # Exponential backoff
       else
         echo "The command has failed after $n attempts."
