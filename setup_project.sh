@@ -34,7 +34,7 @@ retry_command sudo apt-get install -y git
 
 # 6. Configure git
 echo "Configuring git..."
-git config --global http.postBuffer 1048576000
+git config --global http.postBuffer 104857600  # Set buffer size to 100MB
 
 # 7. Install git lfs
 echo "Installing git lfs..."
