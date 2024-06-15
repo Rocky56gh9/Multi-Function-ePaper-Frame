@@ -193,10 +193,11 @@ cd "$HOME/multimode-epaper-frame" || exit
 echo "Making Python scripts executable..."
 chmod +x scripts/*.py
 
-# Run configuration scripts
-echo "Running configuration scripts..."
-retry python3 config/dadjokes_showerthoughts_config.py
-retry python3 config/weatherstation_config.py
-retry python3 config/crontab_config.py
+# Run configuration scripts interactively
+echo "Running configuration scripts interactively..."
+
+python3 config/dadjokes_showerthoughts_config.py
+python3 config/weatherstation_config.py
+python3 config/crontab_config.py
 
 echo "Setup complete. Please reboot your system to apply all changes."
