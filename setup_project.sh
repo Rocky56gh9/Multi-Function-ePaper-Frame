@@ -1,18 +1,36 @@
 #!/bin/bash
 
+retry_command() {
+    local n=1
+    local max=5
+    local delay=10
+    while true; do
+        "$@" && break || {
+            if [[ $n -lt $max ]]; then
+                ((n++))
+                echo "Command failed. Attempt $n/$max:"
+                sleep $delay;
+            else
+                echo "The command has failed after $n attempts."
+                return 1
+            fi
+        }
+    done
+}
+
 echo "Starting setup script for multimode-epaper-frame..."
 
 # 3. Run sudo apt-get update
 echo "Running sudo apt-get update..."
-sudo apt-get update
+retry_command sudo apt-get update
 
 # 4. Run sudo apt-get upgrade
 echo "Running sudo apt-get upgrade..."
-sudo apt-get upgrade -y
+retry_command sudo apt-get upgrade -y
 
 # 5. Install git
 echo "Installing git..."
-sudo apt-get install -y git
+retry_command sudo apt-get install -y git
 
 # 6. Configure git
 echo "Configuring git..."
@@ -20,53 +38,53 @@ git config --global http.postBuffer 524288000
 
 # 7. Install git lfs
 echo "Installing git lfs..."
-sudo apt-get install -y git-lfs
+retry_command sudo apt-get install -y git-lfs
 git lfs install
 
 # 7a. Install pip
 echo "Installing pip..."
-sudo apt-get install -y python3-pip
+retry_command sudo apt-get install -y python3-pip
 
 # 8. Clone the project repository
 echo "Cloning the project repository..."
-git clone https://github.com/Rocky56gh9/multimode-epaper-frame.git
+retry_command git clone https://github.com/Rocky56gh9/multimode-epaper-frame.git
 cd multimode-epaper-frame || { echo "Failed to change directory to multimode-epaper-frame"; exit 1; }
 
 # 9. Install Pillow
 echo "Installing Pillow..."
-pip3 install Pillow
+retry_command pip3 install Pillow
 
 # 10. Install pytz
 echo "Installing pytz..."
-pip3 install pytz
+retry_command pip3 install pytz
 
 # 11. Install bs4
 echo "Installing BeautifulSoup4..."
-pip3 install bs4
+retry_command pip3 install bs4
 
 # 12. Install praw
 echo "Installing praw..."
-pip3 install praw
+retry_command pip3 install praw
 
 # 13. Install crontab
 echo "Installing crontab..."
-sudo apt-get install -y cron
+retry_command sudo apt-get install -y cron
 
 # 14. Install RPI.GPIO
 echo "Installing RPI.GPIO..."
-pip3 install RPi.GPIO
+retry_command pip3 install RPi.GPIO
 
 # 15. Install spidev
 echo "Installing spidev..."
-pip3 install spidev
+retry_command pip3 install spidev
 
 # 16. Install timezonefinder
 echo "Installing timezonefinder..."
-pip3 install timezonefinder
+retry_command pip3 install timezonefinder
 
 # 17. Clone the e-Paper repository
 echo "Cloning the e-Paper repository..."
-git clone https://github.com/waveshare/e-Paper.git
+retry_command git clone https://github.com/waveshare/e-Paper.git
 
 # 18. Enable SPI interface
 echo "Enabling SPI interface..."
