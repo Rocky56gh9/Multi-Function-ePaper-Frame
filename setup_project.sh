@@ -126,7 +126,18 @@ install_package "praw" "pip3 install --no-cache-dir praw" "https://files.pythonh
 install_package "crontab" "pip3 install --no-cache-dir crontab" "https://files.pythonhosted.org/packages/fb/35/5a63ea0ed7c91f2a0c71e62a7f85edff6ef0efb99f8954781a3429cbfb69/python-crontab-2.5.1.tar.gz" || failed_packages+=("crontab")
 install_package "RPi.GPIO" "sudo pip3 install --no-cache-dir RPi.GPIO" "https://files.pythonhosted.org/packages/fd/57/3a2a4b1dc42b55c01e2b82ddda12e3b0e7ecb9ffb9f1c54e4785e89a6f6b/RPi.GPIO-0.7.1.tar.gz" || failed_packages+=("RPi.GPIO")
 install_package "spidev" "sudo pip3 install --no-cache-dir spidev" "https://files.pythonhosted.org/packages/6b/2e/60a5e29b8e1cb8d7e6b8cfc8a1251156a2b8f5b8c6cbe5cbdf979117f143/spidev-3.5.tar.gz" || failed_packages+=("spidev")
-install_package "timezonefinder" "pip3 install --timeout 60 --no-cache-dir timezonefinder" "https://files.pythonhosted.org/packages/2b/f7/10e278b8ef145da2e7f1480d7180b296ec53535985dc3bc5844f7191d9a0/timezonefinder-6.5.0.tar.gz" || failed_packages+=("timezonefinder")
+
+# Attempt to install timezonefinder with different methods
+echo "Attempting to install timezonefinder..."
+retry pip3 install --timeout 120 --no-cache-dir timezonefinder || {
+  echo "Installing timezonefinder from source..."
+  if ! retry manual_install_package "timezonefinder" "https://files.pythonhosted.org/packages/2b/f7/10e278b8ef145da2e7f1480d7180b296ec53535985dc3bc5844f7191d9a0/timezonefinder-6.5.0.tar.gz"; then
+    echo "timezonefinder installation failed. Trying alternative source..."
+    if ! retry manual_install_package "timezonefinder" "https://pypi.python.org/packages/source/t/timezonefinder/timezonefinder-6.5.0.tar.gz"; then
+      failed_packages+=("timezonefinder")
+    fi
+  fi
+}
 
 # Check if there are any failed packages
 if [ ${#failed_packages[@]} -ne 0 ]; then
