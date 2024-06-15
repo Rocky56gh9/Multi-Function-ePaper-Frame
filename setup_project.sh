@@ -34,11 +34,15 @@ retry_command sudo apt-get install -y git
 
 # 6. Configure git
 echo "Configuring git..."
-git config --global http.postBuffer 524288000
+git config --global http.postBuffer 1048576000
 
 # 7. Install git lfs
 echo "Installing git lfs..."
 retry_command sudo apt-get install -y git-lfs
+git lfs install
+
+# Enable git lfs
+echo "Enabling git lfs..."
 git lfs install
 
 # 7a. Install pip
@@ -47,7 +51,7 @@ retry_command sudo apt-get install -y python3-pip
 
 # 8. Clone the project repository
 echo "Cloning the project repository..."
-retry_command git clone https://github.com/Rocky56gh9/multimode-epaper-frame.git
+retry_command git clone --depth 1 https://github.com/Rocky56gh9/multimode-epaper-frame.git
 cd multimode-epaper-frame || { echo "Failed to change directory to multimode-epaper-frame"; exit 1; }
 
 # 9. Install Pillow
