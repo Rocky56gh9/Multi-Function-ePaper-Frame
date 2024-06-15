@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# Exit if any command fails
+set -e
+
+# Check if the script is run as root
+if [ "$EUID" -eq 0 ]; then
+  echo "Please do not run this script as root or with sudo."
+  exit 1
+fi
+
 # Base directory for the project
 BASE_DIR="$HOME/multimode-epaper-frame"
 EPAPER_REPO_DIR="$BASE_DIR/e-Paper"
