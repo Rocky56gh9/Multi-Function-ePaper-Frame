@@ -13,7 +13,7 @@ fi
 BASE_DIR="$HOME/multimode-epaper-frame"
 EPAPER_REPO_DIR="$BASE_DIR/e-Paper"
 RETRY_COUNT=10
-RETRY_DELAY=10
+RETRY_DELAY=15
 
 # Retry function to execute a command and retry if it fails
 retry() {
@@ -26,7 +26,7 @@ retry() {
         ((n++))
         echo "Command failed. Attempt $n/$max:"
         sleep $delay
-        delay=$((delay * 2))  # Exponential backoff
+        delay=$((delay + 15))  # Linear backoff
       else
         echo "The command has failed after $n attempts."
         return 1
@@ -80,6 +80,9 @@ clone_repo() {
   local repo_url="$1"
   local repo_dir="$2"
   local zip_url="${repo_url}/archive/main.zip"
+
+  # Set Git to use OpenSSL instead of GnuTLS
+  git config --global http.sslBackend "openssl"
 
   # Attempt using HTTPS first
   if retry git clone $repo_url $repo_dir; then
