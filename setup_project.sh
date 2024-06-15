@@ -2,7 +2,7 @@
 
 retry_command() {
     local n=1
-    local max=5
+    local max=2
     local delay=10
     while true; do
         "$@" && break || {
@@ -49,9 +49,46 @@ git lfs install
 echo "Installing pip..."
 retry_command sudo apt-get install -y python3-pip
 
-# 8. Clone the project repository
-echo "Cloning the project repository..."
-retry_command git clone --depth 1 https://github.com/Rocky56gh9/multimode-epaper-frame.git
+# Function to clone repository using Git
+clone_repo_git() {
+    echo "Cloning the project repository using Git..."
+    retry_command git clone https://github.com/Rocky56gh9/multimode-epaper-frame.git
+}
+
+# Function to download and unzip repository as a zip file
+download_repo_zip() {
+    echo "Downloading the project repository as a zip file..."
+    retry_command wget https://github.com/Rocky56gh9/multimode-epaper-frame/archive/refs/heads/main.zip -O multimode-epaper-frame.zip
+    echo "Unzipping the project repository..."
+    retry_command unzip multimode-epaper-frame.zip
+    mv multimode-epaper-frame-main multimode-epaper-frame
+}
+
+# Function to download repository using curl
+download_repo_curl() {
+    echo "Downloading the project repository using curl..."
+    retry_command curl -L https://github.com/Rocky56gh9/multimode-epaper-frame/archive/refs/heads/main.zip -o multimode-epaper-frame.zip
+    echo "Unzipping the project repository..."
+    retry_command unzip multimode-epaper-frame.zip
+    mv multimode-epaper-frame-main multimode-epaper-frame
+}
+
+# Attempt to clone the repository using Git, fallback to other methods if Git fails
+clone_repo() {
+    if clone_repo_git; then
+        echo "Successfully cloned the repository using Git."
+    elif download_repo_zip; then
+        echo "Successfully downloaded and unzipped the repository using wget."
+    elif download_repo_curl; then
+        echo "Successfully downloaded and unzipped the repository using curl."
+    else
+        echo "Failed to clone the repository using all methods."
+        exit 1
+    fi
+}
+
+# Clone the project repository
+clone_repo
 cd multimode-epaper-frame || { echo "Failed to change directory to multimode-epaper-frame"; exit 1; }
 
 # 9. Install Pillow
@@ -86,8 +123,9 @@ retry_command pip3 install spidev
 echo "Installing timezonefinder..."
 retry_command pip3 install timezonefinder
 
-# 17. Clone the e-Paper repository
+# 17. Clone the e-Paper repository inside multimode-epaper-frame directory
 echo "Cloning the e-Paper repository..."
+cd multimode-epaper-frame || { echo "Failed to change directory to multimode-epaper-frame"; exit 1; }
 retry_command git clone https://github.com/waveshare/e-Paper.git
 
 # 18. Enable SPI interface
