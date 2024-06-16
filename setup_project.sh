@@ -162,15 +162,12 @@ else
 fi
 
 # Clone the e-Paper repository with robust logic
-echo "Cloning e-Paper repository..."
 clone_repo "https://github.com/waveshare/e-Paper.git" "e-Paper"
 
 # Enable SPI interface
-echo "Enabling SPI interface..."
 retry sudo raspi-config nonint do_spi 0
 
 # Configure USB access
-echo "Configuring device for USB access..."
 sudo modprobe libcomposite
 sudo mkdir -p /sys/kernel/config/usb_gadget/g1
 cd /sys/kernel/config/usb_gadget/g1 || exit
@@ -202,13 +199,9 @@ fi
 cd "$HOME/multimode-epaper-frame" || exit
 
 # Make Python scripts executable
-echo "Making Python scripts executable..."
 chmod +x scripts/*.py
 
 # Run configuration scripts interactively
-echo "Running configuration scripts interactively..."
-
-# Ensure running in an interactive shell
 if [ -t 1 ]; then
   echo "Interactive shell detected."
 else
@@ -216,10 +209,9 @@ else
   exit 1
 fi
 
-# Run each configuration script in an interactive subshell and wait for it to finish
 for script in config/dadjokes_showerthoughts_config.py config/weatherstation_config.py config/crontab_config.py; do
   echo "Running $script..."
-  /bin/bash -c "exec python3 $script"
+  python3 "$script"
   wait $!
   echo "Completed $script"
 done
