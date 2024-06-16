@@ -191,4 +191,15 @@ else
   echo "Symbolic link 'configs/c.1/ecm.usb0' already exists. Skipping link creation."
 fi
 
-echo "Initial Setup Complete."
+echo "Initial Setup Complete. Pausing briefly..."
+
+sleep 5
+
+# Ensure run_all_configs.py is executable
+chmod +x run_all_configs.py
+
+# Run the configuration scripts
+echo "Running configuration scripts..."
+python3 run_all_configs.py
+
+echo "All configuration scripts have been executed successfully."
