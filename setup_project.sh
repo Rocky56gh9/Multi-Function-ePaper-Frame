@@ -194,36 +194,11 @@ fi
 echo "Initial Setup Complete. Pausing briefly..."
 sleep 5
 
-# Move to the multimode-epaper-frame directory
+# Move back to the multimode-epaper-frame directory
 cd "$HOME/multimode-epaper-frame" || exit
-cd config || exit
 
-# Make Python scripts executable
-echo "Making Python scripts executable..."
-chmod +x *.py
-
-# Run configuration scripts interactively
-echo "Running configuration scripts interactively..."
-
-# Ensure running in an interactive shell
-if [ -t 1 ]; then
-  echo "Interactive shell detected."
-else
-  echo "No interactive shell detected. Please run the configuration scripts manually."
-  exit 1
-fi
-
-# Run each configuration script interactively and wait for it to finish
-echo "Running dadjokes_showerthoughts_config.py..."
-python3 dadjokes_showerthoughts_config.py
-echo "Completed dadjokes_showerthoughts_config.py"
-
-echo "Running weatherstation_config.py..."
-python3 weatherstation_config.py
-echo "Completed weatherstation_config.py"
-
-echo "Running crontab_config.py..."
-python3 crontab_config.py
-echo "Completed crontab_config.py"
+# Make run_all_configs.py executable and run it
+chmod +x run_all_configs.py
+./run_all_configs.py
 
 echo "Project Setup Complete. Please reboot your system to apply all changes."
