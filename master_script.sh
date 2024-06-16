@@ -26,11 +26,11 @@ cd ~/multimode-epaper-frame || { echo "Failed to change directory to ~/multimode
 echo "Current directory: $(pwd)"
 ls -l
 
-# Run the script if it has not been run before
+# Check if the flag file exists
 if [ ! -f ~/multimode-epaper-frame/configs_executed.flag ]; then
-  echo "Running run_all_configs.py..."
+  echo "Flag file does not exist. Running run_all_configs.py..."
   python3 run_all_configs.py
-  
+
   # Check the exit status of run_all_configs.py
   if [ $? -ne 0 ]; then
     echo "run_all_configs.py encountered an error. Exiting."
@@ -38,9 +38,10 @@ if [ ! -f ~/multimode-epaper-frame/configs_executed.flag ]; then
   fi
 
   # Create a flag file to indicate the script has run
+  echo "Creating flag file..."
   touch ~/multimode-epaper-frame/configs_executed.flag
 else
-  echo "run_all_configs.py has already been executed. Skipping."
+  echo "Flag file exists. Skipping run_all_configs.py."
 fi
 
 echo "All configuration scripts have been executed successfully."
