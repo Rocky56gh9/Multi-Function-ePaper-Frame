@@ -1,6 +1,9 @@
 #!/bin/bash
 
+echo "Starting master_script.sh..."
+
 # Run setup_project.sh and wait for it to complete
+echo "Running setup_project.sh..."
 bash setup_project.sh
 
 # Check the exit status of setup_project.sh
@@ -12,10 +15,12 @@ fi
 echo "setup_project.sh completed successfully."
 
 # Ensure run_all_configs.py is executable
+echo "Making run_all_configs.py executable..."
 chmod +x ~/multimode-epaper-frame/run_all_configs.py
 
 # Change to the directory where run_all_configs.py is located
-cd ~/multimode-epaper-frame || exit
+echo "Changing directory to ~/multimode-epaper-frame"
+cd ~/multimode-epaper-frame || { echo "Failed to change directory to ~/multimode-epaper-frame. Exiting."; exit 1; }
 
 # Output current directory to verify
 echo "Current directory: $(pwd)"
