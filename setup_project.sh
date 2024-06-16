@@ -191,7 +191,7 @@ else
   echo "Symbolic link 'configs/c.1/ecm.usb0' already exists. Skipping link creation."
 fi
 
-echo "Initial Setup Complete. Starting configuration scripts..."
+echo "Initial Setup Complete. Pausing briefly..."
 sleep 5
 
 # Move back to the multimode-epaper-frame directory
