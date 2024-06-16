@@ -194,8 +194,13 @@ fi
 echo "Initial Setup Complete. Initiating configuration scripts..."
 sleep 5
 
-# Ensure run_all_configs.py is executable and run it
+# Ensure run_all_configs.py is executable
 chmod +x ~/multimode-epaper-frame/run_all_configs.py
-python3 ~/multimode-epaper-frame/run_all_configs.py
+
+# Change to the directory where run_all_configs.py is located
+cd ~/multimode-epaper-frame
+
+# Run the script
+python3 run_all_configs.py
 
 echo "All configuration scripts have been executed successfully."
