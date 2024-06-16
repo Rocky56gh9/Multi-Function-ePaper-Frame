@@ -198,6 +198,10 @@ sleep 5
 # Ensure run_all_configs.py is executable
 chmod +x run_all_configs.py
 
+# Explicitly prompt the user before running the configuration scripts
+echo "Press Enter to run the configuration scripts."
+read -r
+
 # Run the configuration scripts
 echo "Running configuration scripts..."
 python3 run_all_configs.py
