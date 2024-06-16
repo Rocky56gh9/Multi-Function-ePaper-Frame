@@ -3,6 +3,11 @@ import subprocess
 import time
 import logging
 
+# Check if the script is run as root
+if not os.geteuid() == 0:
+    print("This script must be run as root. Please use sudo.")
+    exit()
+
 # Configure logging
 logging.basicConfig(filename='/var/log/wifi_config.log', level=logging.DEBUG, format='%(asctime)s %(levelname)s:%(message)s')
 
