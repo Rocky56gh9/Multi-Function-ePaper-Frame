@@ -2,6 +2,19 @@
 
 echo "Starting master_script.sh..."
 
+# Download setup_project.sh
+echo "Downloading setup_project.sh..."
+curl -sL https://raw.githubusercontent.com/Rocky56gh9/multimode-epaper-frame/main/setup_project.sh -o setup_project.sh
+
+# Check if setup_project.sh was downloaded
+if [ ! -f setup_project.sh ]; then
+  echo "Failed to download setup_project.sh. Exiting."
+  exit 1
+fi
+
+# Make setup_project.sh executable
+chmod +x setup_project.sh
+
 # Run setup_project.sh and wait for it to complete
 echo "Running setup_project.sh..."
 bash setup_project.sh
