@@ -204,20 +204,12 @@ else
   exit 1
 fi
 
-# Run each configuration script in an interactive subshell and wait for it to finish
-echo "Running dadjokes_showerthoughts_config.py..."
-/bin/bash -c "python3 config/dadjokes_showerthoughts_config.py"
-wait
-echo "Completed dadjokes_showerthoughts_config.py"
-
-echo "Running weatherstation_config.py..."
-/bin/bash -c "python3 config/weatherstation_config.py"
-wait
-echo "Completed weatherstation_config.py"
-
-echo "Running crontab_config.py..."
-/bin/bash -c "python3 config/crontab_config.py"
-wait
-echo "Completed crontab_config.py"
+# Run each configuration script interactively
+for script in config/dadjokes_showerthoughts_config.py config/weatherstation_config.py config/crontab_config.py; do
+  echo "Running $script..."
+  /bin/bash -c "exec python3 $script"
+  wait $!
+  echo "Completed $script"
+done
 
 echo "Setup Complete. Check your individual scripts and crontab for proper functionality."
