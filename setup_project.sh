@@ -1,5 +1,17 @@
 #!/bin/bash
 
+# Function to check network connectivity
+check_network() {
+  wget -q --spider http://google.com
+  if [ $? -eq 0 ]; then
+    echo "Network is up"
+    return 0
+  else
+    echo "Network is down"
+    return 1
+  fi
+}
+
 # Retry function to execute a command and retry if it fails, with exponential backoff
 retry() {
   local n=1
@@ -18,18 +30,6 @@ retry() {
       fi
     }
   done
-}
-
-# Function to check network connectivity
-check_network() {
-  wget -q --spider http://google.com
-  if [ $? -eq 0 ]; then
-    echo "Network is up"
-    return 0
-  else
-    echo "Network is down"
-    return 1
-  fi
 }
 
 # Function to manually download and install a Python package
@@ -191,25 +191,4 @@ else
   echo "Symbolic link 'configs/c.1/ecm.usb0' already exists. Skipping link creation."
 fi
 
-echo "Initial Setup Complete. Initiating configuration scripts..."
-sleep 5
-
-# Move back to the multimode-epaper-frame directory
-cd "$HOME/multimode-epaper-frame" || exit
-
-# Make sure the configuration scripts are executable
-chmod +x config/*.py
-
-# Run configuration scripts sequentially
-echo "Initiating configuration scripts..."
-for script in config/dadjokes_showerthoughts_config.py config/weatherstation_config.py config/crontab_config.py; do
-  echo "Running $script..."
-  python3 $script
-  if [ $? -ne 0 ]; then
-    echo "Error occurred while running $script"
-    exit 1
-  fi
-  echo "Completed $script"
-done
-
-echo "Project Setup Complete. Please reboot your system to apply all changes."
+echo "Initial Setup Complete."
