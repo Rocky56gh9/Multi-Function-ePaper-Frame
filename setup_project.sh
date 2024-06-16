@@ -138,7 +138,7 @@ retry pip3 install --timeout 120 --no-cache-dir timezonefinder || {
   echo "Installing timezonefinder from source..."
   if ! retry manual_install_package "timezonefinder" "https://files.pythonhosted.org/packages/2b/f7/10e278b8ef145da2e7f1480d7180b296ec53535985dc3bc5844f7191d9a0/timezonefinder-6.5.0.tar.gz"; then
     echo "timezonefinder installation failed. Trying alternative source..."
-    if ! retry manual_install_package "timezonefinder" "https://pypi.python.org/packages/source/t/timezonefinder/timezonefinder-6.5.0.tar.gz"; then
+    if ! retry manual_install_package "timezonefinder" "https://pypi.pythonhosted.org/packages/source/t/timezonefinder/timezonefinder-6.5.0.tar.gz"; then
       failed_packages+=("timezonefinder")
     fi
   fi
@@ -198,7 +198,11 @@ sleep 5
 chmod +x ~/multimode-epaper-frame/run_all_configs.py
 
 # Change to the directory where run_all_configs.py is located
-cd ~/multimode-epaper-frame
+cd ~/multimode-epaper-frame || exit
+
+# Output current directory to verify
+echo "Current directory: $(pwd)"
+ls -l
 
 # Run the script
 python3 run_all_configs.py
