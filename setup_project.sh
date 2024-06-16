@@ -49,12 +49,6 @@ install_package() {
   local pip_command="$2"
   local manual_url="$3"
 
-  # Check if program is installed
-  if python3 -c "import $package_name" &> /dev/null; then
-    echo "Package '$package_name' is already installed. Skipping installation."
-    return 0
-  fi
-
   echo "Attempting to install $package_name..."
   if ! retry $pip_command; then
     echo "$package_name installation failed via pip. Attempting manual installation..."
@@ -71,7 +65,6 @@ clone_repo() {
   local repo_url="$1"
   local repo_dir="$2"
 
-  # Check if directory exists
   if [ -d "$repo_dir" ]; then
     echo "Directory '$repo_dir' already exists. Skipping clone."
     return 0
@@ -162,12 +155,15 @@ else
 fi
 
 # Clone the e-Paper repository with robust logic
+echo "Cloning e-Paper repository..."
 clone_repo "https://github.com/waveshare/e-Paper.git" "e-Paper"
 
 # Enable SPI interface
+echo "Enabling SPI interface..."
 retry sudo raspi-config nonint do_spi 0
 
 # Configure USB access
+echo "Configuring device for USB access..."
 sudo modprobe libcomposite
 sudo mkdir -p /sys/kernel/config/usb_gadget/g1
 cd /sys/kernel/config/usb_gadget/g1 || exit
@@ -195,13 +191,29 @@ else
   echo "Symbolic link 'configs/c.1/ecm.usb0' already exists. Skipping link creation."
 fi
 
-# Move to the multimode-epaper-frame directory
+# Move back to the cloned directory
 cd "$HOME/multimode-epaper-frame" || exit
 
 # Make Python scripts executable
+echo "Making Python scripts executable..."
 chmod +x scripts/*.py
 
 # Run configuration scripts interactively
+echo "Running configuration scripts interactively..."
+
+# Function to run a configuration script and wait for user input
+run_config_script() {
+  local script_path="$1"
+  echo "Running $script_path..."
+  python3 "$script_path"
+  if [ $? -ne 0 ]; then
+    echo "Error running $script_path. Please check the script and try again."
+    exit 1
+  fi
+  echo "Completed $script_path"
+}
+
+# Ensure running in an interactive shell
 if [ -t 1 ]; then
   echo "Interactive shell detected."
 else
@@ -209,11 +221,9 @@ else
   exit 1
 fi
 
-for script in config/dadjokes_showerthoughts_config.py config/weatherstation_config.py config/crontab_config.py; do
-  echo "Running $script..."
-  python3 "$script"
-  wait $!
-  echo "Completed $script"
-done
+# Run each configuration script individually and wait for it to finish
+run_config_script "config/dadjokes_showerthoughts_config.py"
+run_config_script "config/weatherstation_config.py"
+run_config_script "config/crontab_config.py"
 
-echo "Setup Complete. Check your individual scripts and crontab for proper functionality."
+echo "Setup complete. Please reboot your system to apply all changes."
