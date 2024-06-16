@@ -198,32 +198,10 @@ cd "$HOME/multimode-epaper-frame" || exit
 echo "Making Python scripts executable..."
 chmod +x scripts/*.py
 
-# Run configuration scripts interactively
-echo "Running configuration scripts interactively..."
-
-# Function to run a configuration script and wait for user input
-run_config_script() {
-  local script_path="$1"
-  echo "Running $script_path..."
-  python3 "$script_path"
-  if [ $? -ne 0 ]; then
-    echo "Error running $script_path. Please check the script and try again."
-    exit 1
-  fi
-  echo "Completed $script_path"
-}
-
-# Ensure running in an interactive shell
-if [ -t 1 ]; then
-  echo "Interactive shell detected."
-else
-  echo "No interactive shell detected. Please run the configuration scripts manually."
-  exit 1
-fi
-
-# Run each configuration script individually and wait for it to finish
-run_config_script "config/dadjokes_showerthoughts_config.py"
-run_config_script "config/weatherstation_config.py"
-run_config_script "config/crontab_config.py"
+# Run configuration scripts
+echo "Running configuration scripts..."
+retry python3 config/dadjokes_showerthoughts_config.py
+retry python3 config/weatherstation_config.py
+retry python3 config/crontab_config.py
 
 echo "Setup complete. Please reboot your system to apply all changes."
