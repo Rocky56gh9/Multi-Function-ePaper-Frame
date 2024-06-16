@@ -1,22 +1,17 @@
-#!/bin/bash
+import os
+import subprocess
 
-# Ensure the scripts are executable
-chmod +x config/*.py
+def run_script(script_name):
+    print(f"Running {script_name}...")
+    subprocess.run(['python3', script_name], check=True)
 
-# Change to the config directory
-cd config || exit
+scripts = [
+    'config/dadjokes_showerthoughts_config.py',
+    'config/weatherstation_config.py',
+    'config/crontab_config.py'
+]
 
-# Run each configuration script sequentially
-echo "Running dadjokes_showerthoughts_config.py..."
-python3 dadjokes_showerthoughts_config.py
-echo "Completed dadjokes_showerthoughts_config.py"
+for script in scripts:
+    run_script(script)
 
-echo "Running weatherstation_config.py..."
-python3 weatherstation_config.py
-echo "Completed weatherstation_config.py"
-
-echo "Running crontab_config.py..."
-python3 crontab_config.py
-echo "Completed crontab_config.py"
-
-echo "All configuration scripts have been run."
+print("All configuration scripts have been run.")
