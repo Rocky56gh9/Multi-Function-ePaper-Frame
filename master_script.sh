@@ -19,16 +19,6 @@ fi
 # Change to the repository directory
 cd $LOCAL_DIR || { echo "Failed to change directory to $LOCAL_DIR. Exiting."; exit 1; }
 
-# Download setup_project.sh from the repository
-echo "Downloading setup_project.sh..."
-curl -sL https://raw.githubusercontent.com/Rocky56gh9/multimode-epaper-frame/main/setup_project.sh -o setup_project.sh
-
-# Check if setup_project.sh was downloaded successfully
-if [ ! -f setup_project.sh ]; then
-  echo "Failed to download setup_project.sh. Exiting."
-  exit 1
-fi
-
 # Make setup_project.sh executable
 chmod +x setup_project.sh
 
