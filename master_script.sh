@@ -2,11 +2,14 @@
 
 echo "Starting master_script.sh..."
 
-# Download setup_project.sh
-echo "Downloading setup_project.sh..."
-curl -sL https://raw.githubusercontent.com/Rocky56gh9/multimode-epaper-frame/main/setup_project.sh -o setup_project.sh
+# Define the URL for the setup_project.sh script
+SETUP_SCRIPT_URL="https://raw.githubusercontent.com/Rocky56gh9/multimode-epaper-frame/main/setup_project.sh"
 
-# Check if setup_project.sh was downloaded
+# Download setup_project.sh
+echo "Downloading setup_project.sh from $SETUP_SCRIPT_URL..."
+curl -sL $SETUP_SCRIPT_URL -o setup_project.sh
+
+# Check if setup_project.sh was downloaded successfully
 if [ ! -f setup_project.sh ]; then
   echo "Failed to download setup_project.sh. Exiting."
   exit 1
