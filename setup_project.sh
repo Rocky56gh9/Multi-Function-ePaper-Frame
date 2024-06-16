@@ -198,7 +198,7 @@ sleep 5
 cd "$HOME/multimode-epaper-frame" || exit
 
 # Make run_all_configs.py executable and run it
-chmod +x run_all_configs.py
-./run_all_configs.py
+chmod +x run_all_configs.sh
+./run_all_configs.sh
 
 echo "Project Setup Complete. Please reboot your system to apply all changes."
