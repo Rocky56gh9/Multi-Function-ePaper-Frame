@@ -1,9 +1,8 @@
 import os
-import subprocess
 
 def run_script(script_name):
     print(f"Running {script_name}...")
-    subprocess.run(['python3', script_name], check=True)
+    os.system(f'python3 {script_name}')
 
 scripts = [
     'config/dadjokes_showerthoughts_config.py',
