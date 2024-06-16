@@ -194,22 +194,32 @@ fi
 echo "Initial Setup Complete. Initiating configuration scripts..."
 sleep 5
 
-# Move back to the multimode-epaper-frame directory
-cd "$HOME/multimode-epaper-frame" || exit
+# Embed Python script to run configuration scripts
+python3 << 'EOF'
+import subprocess
 
-# Make sure the configuration scripts are executable
-chmod +x config/*.py
+# List of configuration scripts to run
+scripts = [
+    'config/dadjokes_showerthoughts_config.py',
+    'config/weatherstation_config.py',
+    'config/crontab_config.py'
+]
 
-# Run configuration scripts sequentially
-echo "Initiating configuration scripts..."
-for script in config/dadjokes_showerthoughts_config.py config/weatherstation_config.py config/crontab_config.py; do
-  echo "Running $script..."
-  python3 $script
-  if [ $? -ne 0 ]; then
-    echo "Error occurred while running $script"
-    exit 1
-  fi
-  echo "Completed $script"
-done
+def run_script(script_name):
+    try:
+        subprocess.run(['python3', script_name], check=True)
+    except subprocess.CalledProcessError as e:
+        print(f"Error occurred while running {script_name}: {e}")
+        exit(1)
 
-echo "Project Setup Complete. Please reboot your system to apply all changes."
+def main():
+    for script in scripts:
+        print(f"Running {script}...")
+        run_script(script)
+        print(f"Completed {script}")
+
+if __name__ == "__main__":
+    main()
+EOF
+
+echo "All configuration scripts have been executed successfully."
