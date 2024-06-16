@@ -220,4 +220,4 @@ echo "Running crontab_config.py..."
 wait
 echo "Completed crontab_config.py"
 
-echo "Test complete. Please check the outputs."
+echo "Setup Complete. Check your individual scripts and crontab for proper functionality."
