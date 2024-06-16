@@ -197,8 +197,19 @@ sleep 5
 # Move back to the multimode-epaper-frame directory
 cd "$HOME/multimode-epaper-frame" || exit
 
-# Make run_all_configs.py executable and run it
-chmod +x run_all_configs.py
-python3 run_all_configs.py
+# Make sure the configuration scripts are executable
+chmod +x config/*.py
+
+# Run configuration scripts sequentially
+echo "Initiating configuration scripts..."
+for script in config/dadjokes_showerthoughts_config.py config/weatherstation_config.py config/crontab_config.py; do
+  echo "Running $script..."
+  python3 $script
+  if [ $? -ne 0 ]; then
+    echo "Error occurred while running $script"
+    exit 1
+  fi
+  echo "Completed $script"
+done
 
 echo "Project Setup Complete. Please reboot your system to apply all changes."
