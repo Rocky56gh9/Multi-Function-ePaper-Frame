@@ -49,6 +49,12 @@ install_package() {
   local pip_command="$2"
   local manual_url="$3"
 
+  # Check if program is installed
+  if python3 -c "import $package_name" &> /dev/null; then
+    echo "Package '$package_name' is already installed. Skipping installation."
+    return 0
+  fi
+
   echo "Attempting to install $package_name..."
   if ! retry $pip_command; then
     echo "$package_name installation failed via pip. Attempting manual installation..."
@@ -64,6 +70,12 @@ install_package() {
 clone_repo() {
   local repo_url="$1"
   local repo_dir="$2"
+
+  # Check if directory exists
+  if [ -d "$repo_dir" ]; then
+    echo "Directory '$repo_dir' already exists. Skipping clone."
+    return 0
+  fi
 
   # Attempt using HTTPS first
   if retry git clone $repo_url $repo_dir; then
@@ -204,7 +216,7 @@ else
   exit 1
 fi
 
-# Run each configuration script interactively
+# Run each configuration script in an interactive subshell and wait for it to finish
 for script in config/dadjokes_showerthoughts_config.py config/weatherstation_config.py config/crontab_config.py; do
   echo "Running $script..."
   /bin/bash -c "exec python3 $script"
