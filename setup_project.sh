@@ -194,37 +194,8 @@ fi
 echo "Initial Setup Complete. Initiating configuration scripts..."
 sleep 5
 
-# Embed Python script to run configuration scripts
-python3 << 'EOF'
-import subprocess
-import os
-
-# Base directory for configuration scripts
-base_dir = os.path.expanduser('~/multimode-epaper-frame/config')
-
-# List of configuration scripts to run
-scripts = [
-    'dadjokes_showerthoughts_config.py',
-    'weatherstation_config.py',
-    'crontab_config.py'
-]
-
-def run_script(script_name):
-    try:
-        script_path = os.path.join(base_dir, script_name)
-        subprocess.run(['python3', script_path], check=True)
-    except subprocess.CalledProcessError as e:
-        print(f"Error occurred while running {script_name}: {e}")
-        exit(1)
-
-def main():
-    for script in scripts:
-        print(f"Running {script}...")
-        run_script(script)
-        print(f"Completed {script}")
-
-if __name__ == "__main__":
-    main()
-EOF
+# Ensure run_all_configs.py is executable and run it
+chmod +x ~/multimode-epaper-frame/run_all_configs.py
+python3 ~/multimode-epaper-frame/run_all_configs.py
 
 echo "All configuration scripts have been executed successfully."
