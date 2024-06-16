@@ -2,12 +2,26 @@
 
 echo "Starting master_script.sh..."
 
-# Define the URL for the setup_project.sh script
-SETUP_SCRIPT_URL="https://raw.githubusercontent.com/Rocky56gh9/multimode-epaper-frame/main/setup_project.sh"
+# Define repository URL and local directory
+REPO_URL="https://github.com/Rocky56gh9/multimode-epaper-frame.git"
+LOCAL_DIR="multimode-epaper-frame"
 
-# Download setup_project.sh
-echo "Downloading setup_project.sh from $SETUP_SCRIPT_URL..."
-curl -sL $SETUP_SCRIPT_URL -o setup_project.sh
+# Clone the repository if it does not exist
+if [ ! -d "$LOCAL_DIR" ]; then
+  echo "Cloning repository from $REPO_URL..."
+  git clone $REPO_URL
+  if [ $? -ne 0 ]; then
+    echo "Failed to clone repository. Exiting."
+    exit 1
+  fi
+fi
+
+# Change to the repository directory
+cd $LOCAL_DIR || { echo "Failed to change directory to $LOCAL_DIR. Exiting."; exit 1; }
+
+# Download setup_project.sh from the repository
+echo "Downloading setup_project.sh..."
+curl -sL https://raw.githubusercontent.com/Rocky56gh9/multimode-epaper-frame/main/setup_project.sh -o setup_project.sh
 
 # Check if setup_project.sh was downloaded successfully
 if [ ! -f setup_project.sh ]; then
@@ -32,18 +46,14 @@ echo "setup_project.sh completed successfully."
 
 # Ensure run_all_configs.py is executable
 echo "Making run_all_configs.py executable..."
-chmod +x ~/multimode-epaper-frame/run_all_configs.py
-
-# Change to the directory where run_all_configs.py is located
-echo "Changing directory to ~/multimode-epaper-frame"
-cd ~/multimode-epaper-frame || { echo "Failed to change directory to ~/multimode-epaper-frame. Exiting."; exit 1; }
+chmod +x run_all_configs.py
 
 # Output current directory to verify
 echo "Current directory: $(pwd)"
 ls -l
 
 # Check if the flag file exists
-if [ ! -f ~/multimode-epaper-frame/configs_executed.flag ]; then
+if [ ! -f configs_executed.flag ]; then
   echo "Flag file does not exist. Running run_all_configs.py..."
   python3 run_all_configs.py
 
@@ -55,7 +65,7 @@ if [ ! -f ~/multimode-epaper-frame/configs_executed.flag ]; then
 
   # Create a flag file to indicate the script has run
   echo "Creating flag file..."
-  touch ~/multimode-epaper-frame/configs_executed.flag
+  touch configs_executed.flag
 else
   echo "Flag file exists. Skipping run_all_configs.py."
 fi
