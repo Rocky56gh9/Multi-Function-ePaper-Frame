@@ -197,17 +197,22 @@ sleep 5
 # Embed Python script to run configuration scripts
 python3 << 'EOF'
 import subprocess
+import os
+
+# Base directory for configuration scripts
+base_dir = os.path.expanduser('~/multimode-epaper-frame/config')
 
 # List of configuration scripts to run
 scripts = [
-    'config/dadjokes_showerthoughts_config.py',
-    'config/weatherstation_config.py',
-    'config/crontab_config.py'
+    'dadjokes_showerthoughts_config.py',
+    'weatherstation_config.py',
+    'crontab_config.py'
 ]
 
 def run_script(script_name):
     try:
-        subprocess.run(['python3', script_name], check=True)
+        script_path = os.path.join(base_dir, script_name)
+        subprocess.run(['python3', script_path], check=True)
     except subprocess.CalledProcessError as e:
         print(f"Error occurred while running {script_name}: {e}")
         exit(1)
