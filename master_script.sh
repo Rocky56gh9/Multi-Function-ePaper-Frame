@@ -9,6 +9,8 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
+echo "setup_project.sh completed successfully."
+
 # Ensure run_all_configs.py is executable
 chmod +x ~/multimode-epaper-frame/run_all_configs.py
 
@@ -20,6 +22,7 @@ echo "Current directory: $(pwd)"
 ls -l
 
 # Run the script
+echo "Running run_all_configs.py..."
 python3 run_all_configs.py
 
 # Check the exit status of run_all_configs.py
