@@ -192,4 +192,3 @@ else
 fi
 
 echo "Initial Setup Complete. Initiating configuration scripts..."
-sleep 5
