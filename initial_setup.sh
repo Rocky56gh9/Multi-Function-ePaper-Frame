@@ -16,7 +16,6 @@ echo "Please enter the required information when prompted."
 
 # Collect information
 read -p "Enter your Reddit API client ID: " REDDIT_CLIENT_ID
-read -p "Enter your Reddit API key: " REDDIT_API_KEY
 read -p "Enter your Reddit client secret: " REDDIT_CLIENT_SECRET
 read -p "Enter your Reddit user agent: " REDDIT_USER_AGENT
 read -p "Enter your OpenWeather API key: " OPENWEATHER_API_KEY
@@ -25,7 +24,7 @@ read -p "Enter your country code (e.g., US): " COUNTRY_CODE
 read -p "Enter sun signs separated by commas (e.g., aquarius,aries,cancer): " SUN_SIGNS
 
 # Export environment variables for current session
-export REDDIT_CLIENT_ID REDDIT_API_KEY REDDIT_CLIENT_SECRET REDDIT_USER_AGENT OPENWEATHER_API_KEY ZIP_CODE COUNTRY_CODE SUN_SIGNS
+export REDDIT_CLIENT_ID REDDIT_CLIENT_SECRET REDDIT_USER_AGENT OPENWEATHER_API_KEY ZIP_CODE COUNTRY_CODE SUN_SIGNS
 
 # Additional variables for crontab_config.py
 echo "Please select the scripts to run at specified times:"
