@@ -24,7 +24,7 @@ read -p "Enter your country code (e.g., US): " COUNTRY_CODE
 read -p "Enter sun signs separated by commas (e.g., aquarius,aries,cancer): " SUN_SIGNS
 
 # Export environment variables for current session
-export REDDIT_CLIENT_ID REDDIT_CLIENT_SECRET REDDIT_USER_AGENT OPENWEATHER_API_KEY ZIP_CODE COUNTRY_CODE SUN_SIGNS
+export REDDIT_CLIENT_ID REDDIT_API_KEY REDDIT_CLIENT_SECRET REDDIT_USER_AGENT OPENWEATHER_API_KEY ZIP_CODE COUNTRY_CODE SUN_SIGNS
 
 # Additional variables for crontab_config.py
 echo "Please select the scripts to run at specified times:"
@@ -42,7 +42,7 @@ case $SCRIPT_TOP_HOUR_NUM in
     1) SCRIPT_TOP_HOUR="scripts/dadjokes.py" ;;
     2) SCRIPT_TOP_HOUR="scripts/showerthoughts.py" ;;
     3) SCRIPT_TOP_HOUR="scripts/weatherstation.py" ;;
-    4) SCRIPT_TOP_HOUR="horoscope" ;;
+    4) SCRIPT_TOP_HOUR="scripts/horoscope.py" ;;
     *) echo "Invalid selection for top of the hour script." ; exit 1 ;;
 esac
 
@@ -50,7 +50,7 @@ case $SCRIPT_15_MIN_NUM in
     1) SCRIPT_15_MIN="scripts/dadjokes.py" ;;
     2) SCRIPT_15_MIN="scripts/showerthoughts.py" ;;
     3) SCRIPT_15_MIN="scripts/weatherstation.py" ;;
-    4) SCRIPT_15_MIN="horoscope" ;;
+    4) SCRIPT_15_MIN="scripts/horoscope.py" ;;
     *) echo "Invalid selection for 15 past the hour script." ; exit 1 ;;
 esac
 
@@ -58,7 +58,7 @@ case $SCRIPT_30_MIN_NUM in
     1) SCRIPT_30_MIN="scripts/dadjokes.py" ;;
     2) SCRIPT_30_MIN="scripts/showerthoughts.py" ;;
     3) SCRIPT_30_MIN="scripts/weatherstation.py" ;;
-    4) SCRIPT_30_MIN="horoscope" ;;
+    4) SCRIPT_30_MIN="scripts/horoscope.py" ;;
     *) echo "Invalid selection for 30 past the hour script." ; exit 1 ;;
 esac
 
@@ -66,7 +66,7 @@ case $SCRIPT_45_MIN_NUM in
     1) SCRIPT_45_MIN="scripts/dadjokes.py" ;;
     2) SCRIPT_45_MIN="scripts/showerthoughts.py" ;;
     3) SCRIPT_45_MIN="scripts/weatherstation.py" ;;
-    4) SCRIPT_45_MIN="horoscope" ;;
+    4) SCRIPT_45_MIN="scripts/horoscope.py" ;;
     *) echo "Invalid selection for 45 past the hour script." ; exit 1 ;;
 esac
 
@@ -88,9 +88,13 @@ else
 fi
 cd $REPO_DIR
 
-# Clone the e-Paper repository with robust logic
-echo "Cloning e-Paper repository..."
-clone_repo "https://github.com/waveshare/e-Paper.git" "e-Paper"
+# Clone the e-Paper repository into the multimode-epaper-frame directory
+if [ -d "e-Paper" ]; then
+    echo "The directory 'e-Paper' already exists. Skipping clone."
+else
+    echo "Cloning the e-Paper repository..."
+    git clone https://github.com/waveshare/e-Paper.git
+fi
 
 # Execute setup scripts
 echo "Running setup scripts..."
