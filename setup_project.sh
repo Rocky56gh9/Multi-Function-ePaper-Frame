@@ -173,4 +173,4 @@ else
   echo "Symbolic link 'configs/c.1/ecm.usb0' already exists. Skipping link creation."
 fi
 
-echo "Initial Setup Complete. Please run the configuration scripts manually."
+echo "Initial Setup Complete. Please run the configuration scripts."
