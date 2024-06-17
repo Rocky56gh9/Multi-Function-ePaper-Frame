@@ -21,10 +21,13 @@ read -p "Enter your Reddit user agent: " REDDIT_USER_AGENT
 read -p "Enter your OpenWeather API key: " OPENWEATHER_API_KEY
 read -p "Enter your ZIP code: " ZIP_CODE
 read -p "Enter your country code (e.g., US): " COUNTRY_CODE
+
+# List all possible sun signs for the user
+echo "Possible sun signs: aquarius, aries, cancer, capricorn, gemini, leo, libra, pisces, sagittarius, scorpio, taurus, virgo"
 read -p "Enter sun signs separated by commas (e.g., aquarius,aries,cancer): " SUN_SIGNS
 
 # Export environment variables for current session
-export REDDIT_CLIENT_ID REDDIT_API_KEY REDDIT_CLIENT_SECRET REDDIT_USER_AGENT OPENWEATHER_API_KEY ZIP_CODE COUNTRY_CODE SUN_SIGNS
+export REDDIT_CLIENT_ID REDDIT_CLIENT_SECRET REDDIT_USER_AGENT OPENWEATHER_API_KEY ZIP_CODE COUNTRY_CODE SUN_SIGNS
 
 # Additional variables for crontab_config.py
 echo "Please select the scripts to run at specified times:"
@@ -42,7 +45,7 @@ case $SCRIPT_TOP_HOUR_NUM in
     1) SCRIPT_TOP_HOUR="scripts/dadjokes.py" ;;
     2) SCRIPT_TOP_HOUR="scripts/showerthoughts.py" ;;
     3) SCRIPT_TOP_HOUR="scripts/weatherstation.py" ;;
-    4) SCRIPT_TOP_HOUR="scripts/horoscope.py" ;;
+    4) SCRIPT_TOP_HOUR="scripts/horoscope_generic.py" ;;  # Placeholder, not used in this context
     *) echo "Invalid selection for top of the hour script." ; exit 1 ;;
 esac
 
@@ -50,7 +53,7 @@ case $SCRIPT_15_MIN_NUM in
     1) SCRIPT_15_MIN="scripts/dadjokes.py" ;;
     2) SCRIPT_15_MIN="scripts/showerthoughts.py" ;;
     3) SCRIPT_15_MIN="scripts/weatherstation.py" ;;
-    4) SCRIPT_15_MIN="scripts/horoscope.py" ;;
+    4) SCRIPT_15_MIN="scripts/horoscope_generic.py" ;;  # Placeholder, not used in this context
     *) echo "Invalid selection for 15 past the hour script." ; exit 1 ;;
 esac
 
@@ -58,7 +61,7 @@ case $SCRIPT_30_MIN_NUM in
     1) SCRIPT_30_MIN="scripts/dadjokes.py" ;;
     2) SCRIPT_30_MIN="scripts/showerthoughts.py" ;;
     3) SCRIPT_30_MIN="scripts/weatherstation.py" ;;
-    4) SCRIPT_30_MIN="scripts/horoscope.py" ;;
+    4) SCRIPT_30_MIN="scripts/horoscope_generic.py" ;;  # Placeholder, replaced with specific horoscopes
     *) echo "Invalid selection for 30 past the hour script." ; exit 1 ;;
 esac
 
@@ -66,7 +69,7 @@ case $SCRIPT_45_MIN_NUM in
     1) SCRIPT_45_MIN="scripts/dadjokes.py" ;;
     2) SCRIPT_45_MIN="scripts/showerthoughts.py" ;;
     3) SCRIPT_45_MIN="scripts/weatherstation.py" ;;
-    4) SCRIPT_45_MIN="scripts/horoscope.py" ;;
+    4) SCRIPT_45_MIN="scripts/horoscope_generic.py" ;;  # Placeholder, not used in this context
     *) echo "Invalid selection for 45 past the hour script." ; exit 1 ;;
 esac
 
@@ -102,5 +105,32 @@ fi
 
 # python3 run_all_configs.py
 # python3 config/crontab_config.py
+
+# Logic to evenly distribute horoscopes
+IFS=',' read -ra sun_signs_array <<< "$SUN_SIGNS"
+num_signs=${#sun_signs_array[@]}
+start_hour=$(echo $START_TIME | cut -d: -f1)
+start_minute=$(echo $START_TIME | cut -d: -f2)
+end_hour=$(echo $END_TIME | cut -d: -f1)
+end_minute=$(echo $END_TIME | cut -d: -f2)
+
+total_minutes=$(( (end_hour * 60 + end_minute) - (start_hour * 60 + start_minute) ))
+interval=$(( total_minutes / num_signs ))
+
+current_time=$((start_hour * 60 + start_minute))
+
+for sign in "${sun_signs_array[@]}"; do
+  hour=$(( current_time / 60 ))
+  minute=$(( current_time % 60 ))
+  script_name="scripts/horoscope_${sign}.py"
+  (crontab -l 2>/dev/null; echo "$minute $hour * * * cd $PWD && python3 $script_name") | crontab -
+  current_time=$(( current_time + interval ))
+done
+
+# Schedule the other scripts
+(crontab -l 2>/dev/null; echo "0 7-23 * * * cd $PWD && python3 $SCRIPT_TOP_HOUR") | crontab -
+(crontab -l 2>/dev/null; echo "15 7-23 * * * cd $PWD && python3 $SCRIPT_15_MIN") | crontab -
+(crontab -l 2>/dev/null; echo "30 7-23 * * * cd $PWD && python3 $SCRIPT_30_MIN") | crontab -
+(crontab -l 2>/dev/null; echo "45 7-23 * * * cd $PWD && python3 $SCRIPT_45_MIN") | crontab -
 
 echo "Setup completed successfully."
