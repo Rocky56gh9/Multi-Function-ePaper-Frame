@@ -88,6 +88,10 @@ else
 fi
 cd $REPO_DIR
 
+# Clone the e-Paper repository with robust logic
+echo "Cloning e-Paper repository..."
+clone_repo "https://github.com/waveshare/e-Paper.git" "e-Paper"
+
 # Execute setup scripts
 echo "Running setup scripts..."
 bash setup_project.sh
