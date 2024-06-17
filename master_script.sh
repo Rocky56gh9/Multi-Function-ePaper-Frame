@@ -4,7 +4,8 @@ echo "Starting master_script.sh..."
 
 # Define URLs
 SETUP_PROJECT_URL="https://raw.githubusercontent.com/Rocky56gh9/multimode-epaper-frame/main/setup_project.sh"
-RUN_ALL_CONFIGS_SCRIPT="run_all_configs.py"
+REPO_DIR="multimode-epaper-frame"
+RUN_ALL_CONFIGS_SCRIPT="$REPO_DIR/run_all_configs.py"
 
 # Download and run setup_project.sh
 echo "Downloading setup_project.sh..."
@@ -32,12 +33,8 @@ fi
 echo "setup_project.sh completed successfully."
 
 # Ensure run_all_configs.py is executable
-cd multimode-epaper-frame || { echo "Failed to change directory to multimode-epaper-frame. Exiting."; exit 1; }
+echo "Making run_all_configs.py executable..."
 chmod +x $RUN_ALL_CONFIGS_SCRIPT
-
-# Explicitly prompt the user before running the configuration scripts
-echo "Press Enter to run the configuration scripts."
-read -r
 
 # Run the configuration scripts
 echo "Running configuration scripts..."
