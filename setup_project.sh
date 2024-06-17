@@ -192,9 +192,3 @@ else
 fi
 
 echo "Initial Setup Complete."
-
-# Prompt user to run the configuration scripts manually
-echo "Please run the following commands to complete the setup:"
-echo "cd ~/multimode-epaper-frame"
-echo "chmod +x run_all_configs.py"
-echo "python3 run_all_configs.py"
