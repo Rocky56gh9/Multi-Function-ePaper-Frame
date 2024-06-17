@@ -191,11 +191,12 @@ else
   echo "Symbolic link 'configs/c.1/ecm.usb0' already exists. Skipping link creation."
 fi
 
-echo "Initial Setup Complete. Pausing briefly..."
+echo "Initial Setup Complete. Initiating configuration scripts..."
 
-sleep 5
+sleep 2
 
-# Ensure run_all_configs.py is executable
+# Ensure run_all_configs.py is executable and in the correct directory
+cd ~/multimode-epaper-frame || exit
 chmod +x run_all_configs.py
 
 # Explicitly prompt the user before running the configuration scripts
