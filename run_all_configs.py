@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import subprocess
 
 # List of configuration scripts to run
