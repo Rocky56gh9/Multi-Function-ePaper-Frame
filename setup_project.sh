@@ -1,15 +1,35 @@
 #!/bin/bash
 
+# Function to retry commands
+retry() {
+  local n=1
+  local max=5
+  local delay=5
+  while true; do
+    "$@" && break || {
+      if [[ $n -lt $max ]]; then
+        ((n++))
+        echo "Command failed. Attempt $n/$max:"
+        sleep $delay
+        delay=$((delay * 2))
+      else
+        echo "The command has failed after $n attempts."
+        return 1
+      fi
+    }
+  done
+}
+
 # Install git
 sudo apt-get update --fix-missing && \
 sudo apt-get install -y git
 
-# Clone the multimode-epaper-frame repository
-git clone https://github.com/Rocky56gh9/multimode-epaper-frame.git
+# Retry the multimode-epaper-frame repository clone
+retry git clone https://github.com/Rocky56gh9/multimode-epaper-frame.git
 
 # Clone the e-Paper repository in the multimode-epaper-frame directory
 cd multimode-epaper-frame || exit
-git clone https://github.com/waveshare/e-Paper.git
+retry git clone https://github.com/waveshare/e-Paper.git
 
 # Move back to the root directory
 cd ..
