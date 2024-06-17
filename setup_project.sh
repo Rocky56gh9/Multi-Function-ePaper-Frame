@@ -20,18 +20,6 @@ retry() {
   done
 }
 
-# Function to check network connectivity
-check_network() {
-  wget -q --spider http://google.com
-  if [ $? -eq 0 ]; then
-    echo "Network is up"
-    return 0
-  else
-    echo "Network is down"
-    return 1
-  fi
-}
-
 # Function to manually download and install a Python package
 manual_install_package() {
   local package_name="$1"
@@ -99,12 +87,6 @@ clone_repo() {
 
 # Ensure the local bin is in PATH
 export PATH=$PATH:$HOME/.local/bin
-
-# Check network connectivity
-if ! check_network; then
-  echo "Network check failed. Please ensure you are connected to the internet."
-  exit 1
-fi
 
 # Execute commands with retry logic
 retry sudo apt-get update --fix-missing && \
