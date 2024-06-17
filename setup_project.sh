@@ -20,6 +20,18 @@ retry() {
   done
 }
 
+# Function to check network connectivity
+check_network() {
+  wget -q --spider http://google.com
+  if [ $? -eq 0 ]; then
+    echo "Network is up"
+    return 0
+  else
+    echo "Network is down"
+    return 1
+  fi
+}
+
 # Function to manually download and install a Python package
 manual_install_package() {
   local package_name="$1"
