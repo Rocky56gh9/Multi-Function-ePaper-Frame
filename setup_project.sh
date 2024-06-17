@@ -191,4 +191,10 @@ else
   echo "Symbolic link 'configs/c.1/ecm.usb0' already exists. Skipping link creation."
 fi
 
-echo "Initial Setup Complete.
+echo "Initial Setup Complete."
+
+# Prompt user to run the configuration scripts manually
+echo "Please run the following commands to complete the setup:"
+echo "cd ~/multimode-epaper-frame"
+echo "chmod +x run_all_configs.py"
+echo "python3 run_all_configs.py"
