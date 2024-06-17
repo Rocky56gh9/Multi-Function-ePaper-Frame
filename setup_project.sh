@@ -153,6 +153,7 @@ if [ ${#failed_packages[@]} -ne 0 ]; then
 else
   echo "All packages installed successfully."
 fi
+cd $REPO_DIR
 
 # Clone the e-Paper repository with robust logic
 echo "Cloning e-Paper repository..."
