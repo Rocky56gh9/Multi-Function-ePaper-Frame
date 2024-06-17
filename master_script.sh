@@ -36,14 +36,7 @@ echo "setup_project.sh completed successfully."
 echo "Making run_all_configs.py executable..."
 chmod +x $RUN_ALL_CONFIGS_SCRIPT
 
-# Run the configuration scripts
-echo "Running configuration scripts..."
-python3 $RUN_ALL_CONFIGS_SCRIPT
-
-# Check the exit status of run_all_configs.py
-if [ $? -ne 0 ]; then
-  echo "run_all_configs.py encountered an error. Exiting."
-  exit 1
-fi
-
-echo "All configuration scripts have been executed successfully."
+# Run the configuration scripts interactively
+echo "Running configuration scripts interactively..."
+cd $REPO_DIR
+python3 run_all_configs.py
