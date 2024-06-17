@@ -10,7 +10,7 @@ retry() {
       if [[ $n -lt $max ]]; then
         ((n++))
         echo "Command failed. Attempt $n/$max:"
-        sleep $delay;
+        sleep $delay
         delay=$((delay * 2))  # Exponential backoff
       else
         echo "The command has failed after $n attempts."
