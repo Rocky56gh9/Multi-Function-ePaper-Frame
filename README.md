@@ -65,17 +65,15 @@ I have set up Amazon referral links to all of the components I used, which were 
    ```
 
 6. **Install Components and Set Up Configurations**
-Copy and paste the following into your terminal to install all necessary components, clone the repository, and run the configuration scripts automatically:
+Copy and paste the following into your terminal to install all necessary components and clone the required repositories:
 
      ```bash
      curl -sL https://raw.githubusercontent.com/Rocky56gh9/multimode-epaper-frame/main/setup_project.sh | bash
      ```     
-   - The setup script installs all of the necessary packages and enables access to the device from a local machine over USB using Gadget mode. <b>This will take quite a while to run</b>.
-   - The script has built-in retries due to the number of dependencies that need to be installed. If you're still seeing errors or things are not working as expected, try running the full setup script again.
-   - After installing all dependencies, the setup script will automatically call the required configuration scripts and templates and <b>prompt you for the inputs needed for the project</b>.
+The setup script installs all of the necessary packages and enables access to the device from a local machine over USB using Gadget mode. <b>This will take a while to run</b>.
 
 # Adding Your Configurations
-Have this information in hand as the setup script runs, so you're ready to enter the data when prompted.
+Gather the following information before running the configuration scripts. Once in hand, you're ready to run the configuration scripts.
 
    - API keys
       - Reddit: client_id, client_secret, and user_agent
@@ -85,6 +83,8 @@ Have this information in hand as the setup script runs, so you're ready to enter
 
    - Country Code: two-letter country code, e.g., "us"
 
+   - One or more horoscope sun signs you want displayed
+
    - Preferred Schedule
       - What time to start running scripts (24-hour, HH:MM)
       - What time to stop running scripts and display the sleep image (24-hour, HH:MM)
@@ -92,6 +92,10 @@ Have this information in hand as the setup script runs, so you're ready to enter
 
 <b>NOTE</b>: For the horoscopes, you can add as many as you'd like. The script will ask you for the one or more zodiac signs to include. The cron job will automatically distribute them across the day. For example, if you entered two zodiac signs and specified the horoscope to run at half past the hour, they would alternate every other hour throughout the day between your defined start and end times.
 
+When you're ready, initiate the configuration scripts by entering this in the terminal:
+```bash
+chmod +x multimode-epaper-frame/run_all_configs.py && ./multimode-epaper-frame/run_all_configs.py
+```
 To change configurations after initial setup, navigate to the `config` folder to access the inidividual scripts. For example, if you want to change the location for the Weatherstation, run that configuration script to change the zip code.
 
 # Physical Assembly
