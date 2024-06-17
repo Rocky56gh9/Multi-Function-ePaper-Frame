@@ -97,10 +97,10 @@ else
 fi
 
 # Execute setup scripts
-echo "Running setup scripts..."
-bash setup_project.sh
+# echo "Running setup scripts..."
+# bash setup_project.sh
 
-python3 run_all_configs.py
-python3 config/crontab_config.py
+# python3 run_all_configs.py
+# python3 config/crontab_config.py
 
 echo "Setup completed successfully."
