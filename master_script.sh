@@ -1,42 +1,26 @@
 #!/bin/bash
 
-echo "Starting master_script.sh..."
+# Step 0: Ensure git and python3 are installed
+sudo apt-get update
+sudo apt-get install -y git python3
 
-# Define URLs
-SETUP_PROJECT_URL="https://raw.githubusercontent.com/Rocky56gh9/multimode-epaper-frame/main/setup_project.sh"
+# Define the GitHub repository URL
+REPO_URL="https://github.com/Rocky56gh9/multimode-epaper-frame.git"
 REPO_DIR="multimode-epaper-frame"
-RUN_ALL_CONFIGS_SCRIPT="$REPO_DIR/run_all_configs.py"
 
-# Download and run setup_project.sh
-echo "Downloading setup_project.sh..."
-curl -sL $SETUP_PROJECT_URL -o setup_project.sh
+# Step 1: Clone the repository
+git clone $REPO_URL
+echo "Repository cloned successfully."
 
-# Check if setup_project.sh was downloaded successfully
-if [ ! -f setup_project.sh ]; then
-  echo "Failed to download setup_project.sh. Exiting."
-  exit 1
-fi
-
-# Make setup_project.sh executable
-chmod +x setup_project.sh
-
-# Run setup_project.sh
-echo "Running setup_project.sh..."
-./setup_project.sh
-
-# Check the exit status of setup_project.sh
-if [ $? -ne 0 ]; then
-  echo "setup_project.sh encountered an error. Exiting."
-  exit 1
-fi
-
-echo "setup_project.sh completed successfully."
-
-# Ensure run_all_configs.py is executable
-echo "Making run_all_configs.py executable..."
-chmod +x $RUN_ALL_CONFIGS_SCRIPT
-
-# Run the configuration scripts interactively
-echo "Running configuration scripts interactively..."
+# Step 2: Navigate to the repository directory
 cd $REPO_DIR
+
+# Step 3: Run the setup_project.sh script
+echo "Starting setup..."
+./setup_project.sh
+echo "Setup completed successfully."
+
+# Step 4: Run the run_all_configs.py Python script interactively
+echo "Starting configuration..."
 python3 run_all_configs.py
+echo "Configuration completed successfully."
