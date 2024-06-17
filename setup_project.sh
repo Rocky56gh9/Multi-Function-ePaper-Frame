@@ -1,20 +1,24 @@
 #!/bin/bash
 
-# Update and install necessary packages
+# Install git
 sudo apt-get update --fix-missing && \
-sudo apt-get install -y git libjpeg-dev libopenjp2-7 python3-pip
+sudo apt-get install -y git
 
 # Clone the multimode-epaper-frame repository
 git clone https://github.com/Rocky56gh9/multimode-epaper-frame.git
 
-# Move to the cloned directory
+# Clone the e-Paper repository in the multimode-epaper-frame directory
 cd multimode-epaper-frame || exit
+git clone https://github.com/waveshare/e-Paper.git
+
+# Move back to the root directory
+cd ..
+
+# Install necessary packages
+sudo apt-get install -y libjpeg-dev libopenjp2-7 python3-pip
 
 # Install Python packages
 pip3 install --no-cache-dir Pillow pytz bs4 praw python-crontab RPi.GPIO spidev timezonefinder
-
-# Clone the e-Paper repository in the multimode-epaper-frame directory
-git clone https://github.com/waveshare/e-Paper.git
 
 # Enable USB gadget mode
 echo "Enabling USB gadget mode..."
