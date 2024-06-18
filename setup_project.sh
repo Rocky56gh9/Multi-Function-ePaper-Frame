@@ -24,8 +24,17 @@ retry() {
 sudo apt-get update --fix-missing && \
 sudo apt-get install -y git
 
+# Set git configuration to handle large files and slow connections
+git config --global http.postBuffer 524288000
+
 # Retry the multimode-epaper-frame repository clone
 retry git clone https://github.com/Rocky56gh9/multimode-epaper-frame.git
+
+# Check if the clone was successful before proceeding
+if [ ! -d "multimode-epaper-frame" ]; then
+  echo "Failed to clone multimode-epaper-frame repository. Exiting."
+  exit 1
+fi
 
 # Clone the e-Paper repository in the multimode-epaper-frame directory
 cd multimode-epaper-frame || exit
