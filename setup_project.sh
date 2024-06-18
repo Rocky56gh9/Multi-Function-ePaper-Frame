@@ -1,12 +1,14 @@
 #!/bin/bash
 
-# Function to retry commands
-retry() {
+# Function to retry commands with timeout
+retry_with_timeout() {
+  local timeout=$1
+  shift
   local n=1
   local max=5
   local delay=5
   while true; do
-    "$@" && break || {
+    timeout $timeout "$@" && break || {
       if [[ $n -lt $max ]]; then
         ((n++))
         echo "Command failed. Attempt $n/$max:"
@@ -27,18 +29,20 @@ sudo apt-get install -y git
 # Set git configuration to handle large files and slow connections
 git config --global http.postBuffer 524288000
 
-# Retry the multimode-epaper-frame repository clone
-retry git clone https://github.com/Rocky56gh9/multimode-epaper-frame.git
+# Retry the multimode-epaper-frame repository clone with a timeout of 2 minutes
+retry_with_timeout 120 git clone https://github.com/Rocky56gh9/multimode-epaper-frame.git
 
-# Check if the clone was successful before proceeding
+# Check if the clone was successful, otherwise download and unzip
 if [ ! -d "multimode-epaper-frame" ]; then
-  echo "Failed to clone multimode-epaper-frame repository. Exiting."
-  exit 1
+  echo "git clone failed. Attempting to download ZIP file."
+  retry_with_timeout 120 wget https://github.com/Rocky56gh9/multimode-epaper-frame/archive/main.zip -O multimode-epaper-frame.zip
+  unzip multimode-epaper-frame.zip
+  mv multimode-epaper-frame-main multimode-epaper-frame
 fi
 
 # Clone the e-Paper repository in the multimode-epaper-frame directory
 cd multimode-epaper-frame || exit
-retry git clone https://github.com/waveshare/e-Paper.git
+retry_with_timeout 120 git clone https://github.com/waveshare/e-Paper.git
 
 # Move back to the root directory
 cd ..
