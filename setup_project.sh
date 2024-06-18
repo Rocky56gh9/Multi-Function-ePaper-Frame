@@ -22,11 +22,8 @@ retry_with_timeout() {
   done
 }
 
-# Install git and essential packages in parallel
-{
-  sudo apt-get update --fix-missing &&
-  sudo apt-get install -y git libjpeg-dev libopenjp2-7 python3-pip
-} &
+# Install git and essential packages
+sudo apt-get update --fix-missing && sudo apt-get install -y git libjpeg-dev libopenjp2-7 python3-pip
 
 # Set git configuration to handle large files and slow connections
 git config --global http.postBuffer 524288000
@@ -53,7 +50,7 @@ cd ..
 pip3 install --no-cache-dir Pillow pytz bs4 praw python-crontab RPi.GPIO spidev timezonefinder
 
 # Enable USB gadget mode
-{
+(
   echo "Enabling USB gadget mode..."
   sudo modprobe libcomposite
   sudo mkdir -p /sys/kernel/config/usb_gadget/g1
@@ -81,13 +78,13 @@ pip3 install --no-cache-dir Pillow pytz bs4 praw python-crontab RPi.GPIO spidev 
   else
     echo "Symbolic link 'configs/c.1/ecm.usb0' already exists. Skipping link creation."
   fi
-} &
+) &
 
 # Enable SPI interface
-{
+(
   echo "Enabling SPI interface..."
   sudo raspi-config nonint do_spi 0
-} &
+) &
 
 # Wait for background processes to complete
 wait
