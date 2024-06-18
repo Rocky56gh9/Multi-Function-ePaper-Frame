@@ -30,19 +30,19 @@ sudo apt-get install -y git
 git config --global http.postBuffer 524288000
 
 # Retry the multimode-epaper-frame repository clone with a timeout of 2 minutes
-retry_with_timeout 120 git clone https://github.com/Rocky56gh9/multimode-epaper-frame.git
+retry_with_timeout 90 git clone https://github.com/Rocky56gh9/multimode-epaper-frame.git
 
 # Check if the clone was successful, otherwise download and unzip
 if [ ! -d "multimode-epaper-frame" ]; then
   echo "git clone failed. Attempting to download ZIP file."
-  retry_with_timeout 120 wget https://github.com/Rocky56gh9/multimode-epaper-frame/archive/main.zip -O multimode-epaper-frame.zip
+  retry_with_timeout 90 wget https://github.com/Rocky56gh9/multimode-epaper-frame/archive/main.zip -O multimode-epaper-frame.zip
   unzip multimode-epaper-frame.zip
   mv multimode-epaper-frame-main multimode-epaper-frame
 fi
 
 # Clone the e-Paper repository in the multimode-epaper-frame directory
 cd multimode-epaper-frame || exit
-retry_with_timeout 120 git clone https://github.com/waveshare/e-Paper.git
+retry_with_timeout 90 git clone https://github.com/waveshare/e-Paper.git
 
 # Move back to the root directory
 cd ..
