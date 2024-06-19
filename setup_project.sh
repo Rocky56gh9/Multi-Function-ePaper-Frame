@@ -140,6 +140,17 @@ fi
 echo "Cloning e-Paper repository..."
 clone_repo "https://github.com/waveshare/e-Paper.git" "e-Paper"
 
+# Ensure the e-Paper repository is unzipped
+if [ -f "e-Paper.zip" ]; then
+  echo "Unzipping e-Paper.zip..."
+  unzip e-Paper.zip
+fi
+
+# Install the waveshare-epd package
+echo "Installing waveshare-epd package..."
+pip3 install --upgrade pip
+pip3 install waveshare-epd
+
 # Enable SPI interface
 echo "Enabling SPI interface..."
 retry sudo raspi-config nonint do_spi 0
@@ -173,4 +184,4 @@ else
   echo "Symbolic link 'configs/c.1/ecm.usb0' already exists. Skipping link creation."
 fi
 
-echo "Initial Setup Complete. Please run the configuration scripts manually."
+echo "Initial Setup Complete. Please run the configuration scripts by entering the following in the terminal:  cd ~/multimode-epaper-frame && chmod +x run_all_configs.py && ./run_all_configs.py"
