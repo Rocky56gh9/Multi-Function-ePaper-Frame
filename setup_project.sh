@@ -109,7 +109,7 @@ fi
 # Execute commands with retry logic
 retry sudo apt-get update --fix-missing && \
 retry sudo apt-get install -y git python3-pip && \
-git config --global http.postBuffer 1048576000 && \
+git config --global http.postBuffer 524288000 && \  # Reduced buffer size
 retry sudo apt-get install -y git-lfs && \
 git lfs install && \
 clone_repo "https://github.com/Rocky56gh9/multimode-epaper-frame.git" "multimode-epaper-frame"
@@ -190,6 +190,27 @@ if [ ! -L configs/c.1/ecm.usb0 ]; then
 else
   echo "Symbolic link 'configs/c.1/ecm.usb0' already exists. Skipping link creation."
 fi
+
+echo "Initial Setup Complete. Initiating configuration scripts..."
+sleep 5
+
+# Move back to the multimode-epaper-frame directory
+cd "$HOME/multimode-epaper-frame" || exit
+
+# Make sure the configuration scripts are executable
+chmod +x config/*.py
+
+# Run configuration scripts sequentially
+echo "Initiating configuration scripts..."
+for script in config/dadjokes_showerthoughts_config.py config/weatherstation_config.py config/crontab_config.py; do
+  echo "Running $script..."
+  python3 $script
+  if [ $? -ne 0 ]; then
+    echo "Error occurred while running $script"
+    exit 1
+  fi
+  echo "Completed $script"
+done
 
 echo "Initial Setup Complete.
 Please run the configuration scripts by entering the following in the terminal:
