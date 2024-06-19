@@ -191,26 +191,6 @@ else
   echo "Symbolic link 'configs/c.1/ecm.usb0' already exists. Skipping link creation."
 fi
 
-echo "Initial Setup Complete. Initiating configuration scripts..."
-sleep 5
-
-# Move back to the multimode-epaper-frame directory
-cd "$HOME/multimode-epaper-frame" || exit
-
-# Make sure the configuration scripts are executable
-chmod +x config/*.py
-
-# Run configuration scripts sequentially
-echo "Initiating configuration scripts..."
-for script in config/dadjokes_showerthoughts_config.py config/weatherstation_config.py config/crontab_config.py; do
-  echo "Running $script..."
-  python3 $script
-  if [ $? -ne 0 ]; then
-    echo "Error occurred while running $script"
-    exit 1
-  fi
-  echo "Completed $script"
-done
 
 echo "Initial Setup Complete.
 Please run the configuration scripts by entering the following in the terminal:
