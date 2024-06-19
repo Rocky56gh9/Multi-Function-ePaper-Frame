@@ -20,6 +20,18 @@ retry() {
   done
 }
 
+# Function to check network connectivity
+check_network() {
+  wget -q --spider http://google.com
+  if [ $? -eq 0 ]; then
+    echo "Network is up"
+    return 0
+  else
+    echo "Network is down"
+    return 1
+  fi
+}
+
 # Function to manually download and install a Python package
 manual_install_package() {
   local package_name="$1"
@@ -88,13 +100,11 @@ clone_repo() {
 # Ensure the local bin is in PATH
 export PATH=$PATH:$HOME/.local/bin
 
-# Increase git buffer size
-git config --global http.postBuffer 1048576000
-
-# Enable parallel downloads for APT
-echo 'Acquire::Queue-Mode "host";' | sudo tee /etc/apt/apt.conf.d/99parallel-downloads
-echo 'APT::Acquire::Retries "5";' | sudo tee -a /etc/apt/apt.conf.d/99parallel-downloads
-echo 'Acquire::Retries "3";' | sudo tee -a /etc/apt/apt.conf.d/99parallel-downloads
+# Check network connectivity
+if ! check_network; then
+  echo "Network check failed. Please ensure you are connected to the internet."
+  exit 1
+fi
 
 # Execute commands with retry logic
 retry sudo apt-get update --fix-missing && \
@@ -147,12 +157,6 @@ fi
 # Clone the e-Paper repository with robust logic
 echo "Cloning e-Paper repository..."
 clone_repo "https://github.com/waveshare/e-Paper.git" "e-Paper"
-
-# Ensure the e-Paper repository is unzipped
-if [ -f "e-Paper.zip" ]; then
-  echo "Unzipping e-Paper.zip..."
-  unzip e-Paper.zip
-fi
 
 # Enable SPI interface
 echo "Enabling SPI interface..."
