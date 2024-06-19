@@ -94,7 +94,7 @@ Gather the following information before running the configuration scripts. Once 
 
 When you're ready, initiate the configuration scripts by entering this in the terminal:
 ```bash
-chmod +x multimode-epaper-frame/run_all_configs.py && ./multimode-epaper-frame/run_all_configs.py
+cd ~/multimode-epaper-frame && chmod +x run_all_configs.py && ./run_all_configs.py
 ```
 To change configurations after initial setup, navigate to the `config` folder to access the inidividual scripts. For example, if you want to change the location for the Weatherstation, run that configuration script to change the zip code.
 
