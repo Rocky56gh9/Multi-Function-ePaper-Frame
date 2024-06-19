@@ -13,11 +13,8 @@ SHOWERTHOUGHTS_SCRIPTS_PATH = os.path.join(script_dir, '../scripts/showerthought
 
 def configure_scripts():
     print("\nConfiguring Reddit Scripts")
-    print() 
     client_id = input("Enter your Reddit API client ID: ")
-    print()
     client_secret = input("Enter your Reddit API client secret: ")
-    print()
     user_agent = input("Enter your Reddit API user agent: ")
 
     home_dir = os.getenv("HOME")
@@ -42,7 +39,6 @@ def configure_scripts():
         file.write(showerthoughts_script_content)
 
     print(f"\nGenerated dad jokes script: {DADJOKES_SCRIPTS_PATH}")
-    print()
     print(f"Generated shower thoughts script: {SHOWERTHOUGHTS_SCRIPTS_PATH}")
 
 def main():
