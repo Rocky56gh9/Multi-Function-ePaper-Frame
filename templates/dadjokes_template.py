@@ -151,4 +151,3 @@ except KeyboardInterrupt:
     logging.info("ctrl + c:")
     epd7in5b_V2.epdconfig.module_exit()
     exit()
-
