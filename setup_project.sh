@@ -88,10 +88,18 @@ clone_repo() {
 # Ensure the local bin is in PATH
 export PATH=$PATH:$HOME/.local/bin
 
+# Increase git buffer size
+git config --global http.postBuffer 1048576000
+
+# Enable parallel downloads for APT
+echo 'Acquire::Queue-Mode "host";' | sudo tee /etc/apt/apt.conf.d/99parallel-downloads
+echo 'APT::Acquire::Retries "5";' | sudo tee -a /etc/apt/apt.conf.d/99parallel-downloads
+echo 'Acquire::Retries "3";' | sudo tee -a /etc/apt/apt.conf.d/99parallel-downloads
+
 # Execute commands with retry logic
 retry sudo apt-get update --fix-missing && \
 retry sudo apt-get install -y git python3-pip && \
-git config --global http.postBuffer 524288000 && \
+git config --global http.postBuffer 1048576000 && \
 retry sudo apt-get install -y git-lfs && \
 git lfs install && \
 clone_repo "https://github.com/Rocky56gh9/multimode-epaper-frame.git" "multimode-epaper-frame"
@@ -146,11 +154,6 @@ if [ -f "e-Paper.zip" ]; then
   unzip e-Paper.zip
 fi
 
-# Install the waveshare-epd package
-echo "Installing waveshare-epd package..."
-pip3 install --upgrade pip
-pip3 install waveshare-epd
-
 # Enable SPI interface
 echo "Enabling SPI interface..."
 retry sudo raspi-config nonint do_spi 0
@@ -184,4 +187,6 @@ else
   echo "Symbolic link 'configs/c.1/ecm.usb0' already exists. Skipping link creation."
 fi
 
-echo "Initial Setup Complete. Please run the configuration scripts by entering the following in the terminal:  cd ~/multimode-epaper-frame && chmod +x run_all_configs.py && ./run_all_configs.py"
+echo "Initial Setup Complete.
+Please run the configuration scripts by entering the following in the terminal:
+cd ~/multimode-epaper-frame && chmod +x run_all_configs.py && ./run_all_configs.py"
