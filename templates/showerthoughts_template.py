@@ -83,7 +83,7 @@ try:
     mirrored_header_image = header_image.transpose(Image.FLIP_LEFT_RIGHT)
 
     # Define positions for the images
-    positions = [(25, 0), (25, 400), (695, 0), (695, 400)]  # Top left, top right, bottom left, bottom right
+    positions = [(25, 0), (25, 400), (695, 0), (695, 400)]
 
     # Paste the original image at top right and bottom right positions
     for pos in [positions[2], positions[3]]:
@@ -112,7 +112,7 @@ try:
     draw_red.text((title_x, title_y), title_text, font=title_font, fill=0)
 
     footer_width, footer_height = calculate_text_size(footer_text, footer_font)
-    footer_x = (800 - footer_width) // 2  # Center align
+    footer_x = (800 - footer_width) // 2
     footer_y = 415
     draw_red.text((footer_x, footer_y), footer_text, font=footer_font, fill=0)
 
