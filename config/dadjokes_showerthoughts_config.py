@@ -40,9 +40,11 @@ def configure_scripts():
 
     print(f"\nGenerated dad jokes script: {DADJOKES_SCRIPTS_PATH}")
     print(f"Generated shower thoughts script: {SHOWERTHOUGHTS_SCRIPTS_PATH}")
+    print()
 
 def main():
     print("\nScript Configuration Interface")
+    print()
     configure_scripts()
 
 if __name__ == "__main__":
