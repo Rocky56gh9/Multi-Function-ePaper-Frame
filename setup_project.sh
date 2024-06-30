@@ -121,6 +121,15 @@ cd multimode-epaper-frame || exit
 echo "Installing necessary packages..."
 retry sudo apt-get install -y libjpeg-dev libopenjp2-7 python3-pip
 
+# Install Raspberry Pi Connect
+echo "Installing Raspberry Pi Connect..."
+retry sudo apt-get install -y rpi-connect
+
+# Enable and start the Raspberry Pi Connect service
+echo "Enabling and starting Raspberry Pi Connect service..."
+sudo systemctl enable rpi-connect
+sudo systemctl start rpi-connect
+
 # Install Python packages with fallback logic
 failed_packages=()
 
@@ -192,6 +201,7 @@ else
 fi
 
 
-echo "Initial Setup Complete.
-Please run the configuration scripts by entering the following in the terminal:
-cd ~/multimode-epaper-frame && chmod +x run_all_configs.py && ./run_all_configs.py"
+echo "Initial Setup Complete."
+echo "Please run the configuration scripts by entering the following in the terminal:"
+echo ""
+echo "cd ~/multimode-epaper-frame && chmod +x run_all_configs.py && ./run_all_configs.py"
