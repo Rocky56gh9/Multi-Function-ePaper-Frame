@@ -59,7 +59,7 @@ def get_script_for_time(time_label):
 
 def get_time(prompt):
     print(f"\n\n{prompt}")
-    time_input = input("Enter time in HH:MM format (24-hour clock, e.g., 07:00): ").strip()
+    time_input = input("Enter time in HH:MM format (24-hour clock, e.g., 14:30): ").strip()
     try:
         hours, minutes = map(int, time_input.split(':'))
         if 0 <= hours < 24 and 0 <= minutes < 60:
