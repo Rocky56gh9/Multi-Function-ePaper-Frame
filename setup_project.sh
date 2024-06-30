@@ -125,10 +125,20 @@ retry sudo apt-get install -y libjpeg-dev libopenjp2-7 python3-pip
 echo "Installing Raspberry Pi Connect..."
 retry sudo apt-get install -y rpi-connect
 
-# Enable and start the Raspberry Pi Connect service
-echo "Enabling and starting Raspberry Pi Connect service..."
-sudo systemctl enable rpi-connect
-sudo systemctl start rpi-connect
+
+# Enable user lingering
+loginctl enable-linger $USER
+
+# Start the Raspberry Pi Connect service for the current user
+echo "Starting the Raspberry Pi Connect service for the current user..."
+systemctl --user enable rpi-connect
+systemctl --user start rpi-connect
+
+# Create a virtual environment
+python3 -m venv venv
+
+# Activate the virtual environment
+source venv/bin/activate
 
 # Install Python packages with fallback logic
 failed_packages=()
@@ -162,6 +172,9 @@ if [ ${#failed_packages[@]} -ne 0 ]; then
 else
   echo "All packages installed successfully."
 fi
+
+# Deactivate the virtual environment
+deactivate
 
 # Clone the e-Paper repository with robust logic
 echo "Cloning e-Paper repository..."
