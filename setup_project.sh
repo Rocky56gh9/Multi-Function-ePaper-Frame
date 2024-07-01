@@ -119,7 +119,7 @@ cd multimode-epaper-frame || exit
 
 # Install necessary packages
 echo "Installing necessary packages..."
-retry sudo apt-get install -y libjpeg-dev libopenjp2-7 python3-pip libopenblas-base libopenblas-dev
+retry sudo apt-get install -y libjpeg-dev libopenjp2-7 python3-pip
 
 # Install Python packages with fallback logic
 failed_packages=()
@@ -161,18 +161,6 @@ clone_repo "https://github.com/waveshare/e-Paper.git" "e-Paper"
 # Enable SPI interface
 echo "Enabling SPI interface..."
 retry sudo raspi-config nonint do_spi 0
-
-# Install Raspberry Pi Connect
-echo "Installing Raspberry Pi Connect..."
-retry sudo apt-get install -y rpi-connect
-
-# Enable user lingering
-loginctl enable-linger $USER
-
-# Start the Raspberry Pi Connect service for the current user
-echo "Starting the Raspberry Pi Connect service for the current user..."
-systemctl --user enable rpi-connect
-systemctl --user start rpi-connect
 
 # Configure USB access
 echo "Configuring device for USB access..."
