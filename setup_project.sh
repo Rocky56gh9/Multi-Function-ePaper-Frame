@@ -38,7 +38,7 @@ install_package() {
   local pip_command="$2"
 
   echo "Attempting to install $package_name..."
-  retry $pip_command
+  retry $pip_command --break-system-packages
   if [ $? -ne 0 ]; then
     echo "$package_name installation failed."
     return 1
@@ -88,18 +88,6 @@ git lfs install
 clone_repo "https://github.com/Rocky56gh9/multimode-epaper-frame.git" "multimode-epaper-frame"
 
 cd multimode-epaper-frame || exit
-
-# Install Raspberry Pi Connect
-echo "Installing Raspberry Pi Connect..."
-retry sudo apt-get install -y rpi-connect
-
-# Enable user lingering
-loginctl enable-linger $USER
-
-# Start the Raspberry Pi Connect service for the current user
-echo "Starting the Raspberry Pi Connect service for the current user..."
-systemctl --user enable rpi-connect
-systemctl --user start rpi-connect
 
 # Install necessary packages
 echo "Installing necessary packages..."
@@ -153,6 +141,18 @@ if [ ! -L configs/c.1/ecm.usb0 ]; then
 else
   echo "Symbolic link 'configs/c.1/ecm.usb0' already exists. Skipping link creation."
 fi
+
+# Install Raspberry Pi Connect
+echo "Installing Raspberry Pi Connect..."
+retry sudo apt-get install -y rpi-connect
+
+# Enable user lingering
+loginctl enable-linger $USER
+
+# Start the Raspberry Pi Connect service for the current user
+echo "Starting the Raspberry Pi Connect service for the current user..."
+systemctl --user enable rpi-connect
+systemctl --user start rpi-connect
 
 echo "Initial Setup Complete. Initiating configuration scripts..."
 sleep 5
