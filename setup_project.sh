@@ -119,7 +119,7 @@ cd multimode-epaper-frame || exit
 
 # Install necessary packages
 echo "Installing necessary packages..."
-retry sudo apt-get install -y libjpeg-dev libopenjp2-7 python3-pip
+retry sudo apt-get install -y libjpeg-dev libopenjp2-7 python3-pip libopenblas-base libopenblas-dev
 
 # Install Python packages with fallback logic
 failed_packages=()
