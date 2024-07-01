@@ -119,7 +119,7 @@ cd multimode-epaper-frame || exit
 
 # Install necessary packages
 echo "Installing necessary packages..."
-retry sudo apt-get install -y libjpeg-dev libopenjp2-7 python3-pip libopenblas-base libopenblas-dev
+retry sudo apt-get install -y python3-pip libjpeg-dev libopenjp2-7 libopenblas-base libopenblas-dev
 
 # Verify pip3 installation
 if ! command -v pip3 &> /dev/null; then
