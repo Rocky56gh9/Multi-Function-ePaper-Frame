@@ -108,7 +108,7 @@ fi
 
 # Execute commands with retry logic
 retry sudo apt-get update --fix-missing && \
-retry sudo apt-get install -y git && \
+retry sudo apt-get install -y git python3-pip && \
 git config --global http.postBuffer 524288000 && \
 retry sudo apt-get install -y git-lfs && \
 git lfs install && \
