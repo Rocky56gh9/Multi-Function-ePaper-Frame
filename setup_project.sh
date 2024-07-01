@@ -213,7 +213,6 @@ else
 fi
 
 
-echo "Initial Setup Complete."
-echo "Please run the configuration scripts by entering the following in the terminal:"
+echo "Initial Setup Complete. Please run the configuration scripts by entering the following in the terminal:"
 echo ""
 echo "cd ~/multimode-epaper-frame && chmod +x run_all_configs.py && ./run_all_configs.py"
