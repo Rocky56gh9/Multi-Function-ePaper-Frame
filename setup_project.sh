@@ -10,7 +10,7 @@ retry() {
       if [[ $n -lt $max ]]; then
         ((n++))
         echo "Command failed. Attempt $n/$max:"
-        sleep $delay;
+        sleep $delay
         delay=$((delay * 2))  # Exponential backoff
       else
         echo "The command has failed after $n attempts."
@@ -119,7 +119,13 @@ cd multimode-epaper-frame || exit
 
 # Install necessary packages
 echo "Installing necessary packages..."
-retry sudo apt-get install -y libjpeg-dev libopenjp2-7 python3-pip
+retry sudo apt-get install -y libjpeg-dev libopenjp2-7 python3-pip libopenblas-base libopenblas-dev
+
+# Verify pip3 installation
+if ! command -v pip3 &> /dev/null; then
+  echo "pip3 could not be found. Please ensure python3-pip is installed correctly."
+  exit 1
+fi
 
 # Install Python packages with fallback logic
 failed_packages=()
@@ -161,6 +167,18 @@ clone_repo "https://github.com/waveshare/e-Paper.git" "e-Paper"
 # Enable SPI interface
 echo "Enabling SPI interface..."
 retry sudo raspi-config nonint do_spi 0
+
+# Install Raspberry Pi Connect
+echo "Installing Raspberry Pi Connect..."
+retry sudo apt-get install -y rpi-connect
+
+# Enable user lingering
+loginctl enable-linger $USER
+
+# Start the Raspberry Pi Connect service for the current user
+echo "Starting the Raspberry Pi Connect service for the current user..."
+systemctl --user enable rpi-connect
+systemctl --user start rpi-connect
 
 # Configure USB access
 echo "Configuring device for USB access..."
