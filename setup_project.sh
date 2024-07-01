@@ -32,21 +32,35 @@ check_network() {
   fi
 }
 
-# Function to install a package with retries
+# Function to manually download and install a Python package
+manual_install_package() {
+  local package_name="$1"
+  local package_url="$2"
+
+  echo "Manually downloading and installing $package_name..."
+  wget $package_url -O ${package_name}.tar.gz
+  tar -xzf ${package_name}.tar.gz
+  pip3 install --no-cache-dir ${package_name}*
+}
+
+# Function to install a package with retries and manual fallback
 install_package() {
   local package_name="$1"
   local pip_command="$2"
+  local manual_url="$3"
 
   echo "Attempting to install $package_name..."
-  retry $pip_command --break-system-packages
-  if [ $? -ne 0 ]; then
-    echo "$package_name installation failed."
-    return 1
+  if ! retry $pip_command; then
+    echo "$package_name installation failed via pip. Attempting manual installation..."
+    if ! manual_install_package "$package_name" "$manual_url"; then
+      echo "$package_name manual installation also failed."
+      return 1
+    fi
   fi
   return 0
 }
 
-# Function to clone the repository
+# Function to clone the repository with retries and fallbacks
 clone_repo() {
   local repo_url="$1"
   local repo_dir="$2"
@@ -56,18 +70,31 @@ clone_repo() {
     return 0
   fi
 
+  # Attempt using HTTPS first
   if retry git clone $repo_url $repo_dir; then
     return 0
   fi
 
+  # If HTTPS fails, try using SSH if the user has SSH access configured
   if [ -f "$HOME/.ssh/id_rsa" ]; then
     local ssh_url=${repo_url/https:\/\/github.com\//git@github.com:}
     echo "Trying to clone using SSH: $ssh_url"
-    retry git clone $ssh_url $repo_dir
-  else
-    echo "SSH not configured. Cloning via HTTPS failed."
-    return 1
+    if retry git clone $ssh_url $repo_dir; then
+      return 0
+    fi
   fi
+
+  # As a last resort, try downloading the repository as a ZIP file and extracting it
+  local zip_url=${repo_url}/archive/main.zip
+  echo "Trying to download and unzip: $zip_url"
+  if retry wget $zip_url -O ${repo_dir}.zip; then
+    unzip ${repo_dir}.zip
+    mv ${repo_dir}-main $repo_dir
+    return 0
+  fi
+
+  echo "Failed to clone the repository."
+  return 1
 }
 
 # Ensure the local bin is in PATH
@@ -80,26 +107,40 @@ if ! check_network; then
 fi
 
 # Execute commands with retry logic
-retry sudo apt-get update --fix-missing
-retry sudo apt-get install -y git libjpeg-dev libopenjp2-7 python3-pip git-lfs
-git config --global http.postBuffer 524288000
-git lfs install
-
+retry sudo apt-get update --fix-missing && \
+retry sudo apt-get install -y git libjpeg-dev libopenjp2-7 python3-pip git-lfs && \
+git config --global http.postBuffer 524288000 && \
+git lfs install && \
 clone_repo "https://github.com/Rocky56gh9/multimode-epaper-frame.git" "multimode-epaper-frame"
 
+# Move to the cloned directory
 cd multimode-epaper-frame || exit
 
-# Install necessary Python packages
+# Install necessary Python packages with fallback logic
 echo "Installing necessary packages..."
-required_packages=("Pillow" "pytz" "beautifulsoup4" "praw" "python-crontab" "RPi.GPIO" "spidev" "timezonefinder")
 failed_packages=()
 
-for pkg in "${required_packages[@]}"; do
-  if ! install_package "$pkg" "pip3 install --no-cache-dir $pkg"; then
-    failed_packages+=("$pkg")
-  fi
-done
+install_package "Pillow" "pip3 install --no-cache-dir Pillow" "https://files.pythonhosted.org/packages/58/b7/ece20939f84f3a4f9d6b344df82d30e0ed4b35a5e58e9a4b7b15c7870c2b/Pillow-8.1.2.tar.gz" || failed_packages+=("Pillow")
+install_package "pytz" "pip3 install --no-cache-dir pytz" "https://files.pythonhosted.org/packages/41/aa/0b509ee60282b11d6a09c218beeb24c8f2281a2e8d7b708d9d44bb2dfdeb/pytz-2024.1.tar.gz" || failed_packages+=("pytz")
+install_package "bs4" "pip3 install --no-cache-dir bs4" "https://files.pythonhosted.org/packages/91/f7/5e1a6e20b7edc17219f3fd1c10fc8c1708a80c867b09f2e2f5aaf8d03b65/beautifulsoup4-4.12.3.tar.gz" || failed_packages+=("bs4")
+install_package "praw" "pip3 install --no-cache-dir praw" "https://files.pythonhosted.org/packages/2d/49/1f8ea5e875cf1a31c4b9d4f0e293c1e2c64c98a0f85ed19fd0f0c4f4ff8e/praw-7.7.1.tar.gz" || failed_packages+=("praw")
+install_package "crontab" "pip3 install --no-cache-dir crontab" "https://files.pythonhosted.org/packages/fb/35/5a63ea0ed7c91f2a0c71e62a7f85edff6ef0efb99f8954781a3429cbfb69/python-crontab-2.5.1.tar.gz" || failed_packages+=("crontab")
+install_package "RPi.GPIO" "sudo pip3 install --no-cache-dir RPi.GPIO" "https://files.pythonhosted.org/packages/fd/57/3a2a4b1dc42b55c01e2b82ddda12e3b0e7ecb9ffb9f1c54e4785e89a6f6b/RPi.GPIO-0.7.1.tar.gz" || failed_packages+=("RPi.GPIO")
+install_package "spidev" "sudo pip3 install --no-cache-dir spidev" "https://files.pythonhosted.org/packages/6b/2e/60a5e29b8e1cb8d7e6b8cfc8a1251156a2b8f5b8c6cbe5cbdf979117f143/spidev-3.5.tar.gz" || failed_packages+=("spidev")
 
+# Attempt to install timezonefinder with different methods
+echo "Attempting to install timezonefinder..."
+retry pip3 install --timeout 120 --no-cache-dir timezonefinder || {
+  echo "Installing timezonefinder from source..."
+  if ! retry manual_install_package "timezonefinder" "https://files.pythonhosted.org/packages/2b/f7/10e278b8ef145da2e7f1480d7180b296ec53535985dc3bc5844f7191d9a0/timezonefinder-6.5.0.tar.gz"; then
+    echo "timezonefinder installation failed. Trying alternative source..."
+    if ! retry manual_install_package "timezonefinder" "https://pypi.python.org/packages/source/t/timezonefinder/timezonefinder-6.5.0.tar.gz"; then
+      failed_packages+=("timezonefinder")
+    fi
+  fi
+}
+
+# Check if there are any failed packages
 if [ ${#failed_packages[@]} -ne 0 ]; then
   echo "The following packages failed to install:"
   for pkg in "${failed_packages[@]}"; do
@@ -109,6 +150,11 @@ else
   echo "All packages installed successfully."
 fi
 
+# Clone the e-Paper repository with robust logic
+echo "Cloning e-Paper repository..."
+clone_repo "https://github.com/waveshare/e-Paper.git" "e-Paper"
+
+# Enable SPI interface
 echo "Enabling SPI interface..."
 retry sudo raspi-config nonint do_spi 0
 
@@ -124,23 +170,11 @@ echo "Starting the Raspberry Pi Connect service for the current user..."
 systemctl --user enable rpi-connect
 systemctl --user start rpi-connect
 
-echo "Initial Setup Complete. Initiating configuration scripts..."
-sleep 5
-
+# Move back to the multimode-epaper-frame directory
 cd "$HOME/multimode-epaper-frame" || exit
 
+# Make sure the configuration scripts are executable
 chmod +x config/*.py
-
-echo "Initiating configuration scripts..."
-for script in config/dadjokes_showerthoughts_config.py config/weatherstation_config.py config/crontab_config.py; do
-  echo "Running $script..."
-  python3 $script
-  if [ $? -ne 0 ]; then
-    echo "Error occurred while running $script"
-    exit 1
-  fi
-  echo "Completed $script"
-done
 
 echo "Initial Setup Complete. Please run the configuration scripts by entering the following in the terminal:"
 echo ""
