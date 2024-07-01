@@ -116,6 +116,12 @@ clone_repo "https://github.com/Rocky56gh9/multimode-epaper-frame.git" "multimode
 # Move to the cloned directory
 cd multimode-epaper-frame || exit
 
+# Create and activate virtual environment
+python3 -m venv venv
+
+# Activate the virtual environment
+source venv/bin/activate
+
 # Install necessary Python packages with fallback logic
 echo "Installing necessary packages..."
 failed_packages=()
