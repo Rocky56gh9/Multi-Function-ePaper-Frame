@@ -89,6 +89,18 @@ clone_repo "https://github.com/Rocky56gh9/multimode-epaper-frame.git" "multimode
 
 cd multimode-epaper-frame || exit
 
+# Install Raspberry Pi Connect
+echo "Installing Raspberry Pi Connect..."
+retry sudo apt-get install -y rpi-connect
+
+# Enable user lingering
+loginctl enable-linger $USER
+
+# Start the Raspberry Pi Connect service for the current user
+echo "Starting the Raspberry Pi Connect service for the current user..."
+systemctl --user enable rpi-connect
+systemctl --user start rpi-connect
+
 # Install necessary packages
 echo "Installing necessary packages..."
 required_packages=("Pillow" "pytz" "beautifulsoup4" "praw" "python-crontab" "RPi.GPIO" "spidev" "timezonefinder")
@@ -148,17 +160,6 @@ sleep 5
 cd "$HOME/multimode-epaper-frame" || exit
 
 chmod +x config/*.py
-
-echo "Initiating configuration scripts..."
-for script in config/dadjokes_showerthoughts_config.py config/weatherstation_config.py config/crontab_config.py; do
-  echo "Running $script..."
-  python3 $script
-  if [ $? -ne 0 ]; then
-    echo "Error occurred while running $script"
-    exit 1
-  fi
-  echo "Completed $script"
-done
 
 echo "Initial Setup Complete. Please run the configuration scripts by entering the following in the terminal:"
 echo ""
