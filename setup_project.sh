@@ -89,7 +89,7 @@ clone_repo "https://github.com/Rocky56gh9/multimode-epaper-frame.git" "multimode
 
 cd multimode-epaper-frame || exit
 
-# Install necessary packages
+# Install necessary Python packages
 echo "Installing necessary packages..."
 required_packages=("Pillow" "pytz" "beautifulsoup4" "praw" "python-crontab" "RPi.GPIO" "spidev" "timezonefinder")
 failed_packages=()
@@ -109,38 +109,8 @@ else
   echo "All packages installed successfully."
 fi
 
-clone_repo "https://github.com/waveshare/e-Paper.git" "e-Paper"
-
 echo "Enabling SPI interface..."
 retry sudo raspi-config nonint do_spi 0
-
-echo "Configuring device for USB access..."
-sudo modprobe libcomposite
-sudo mkdir -p /sys/kernel/config/usb_gadget/g1
-cd /sys/kernel/config/usb_gadget/g1 || exit
-echo 0x1d6b | sudo tee idVendor # Linux Foundation
-echo 0x0104 | sudo tee idProduct # Multifunction Composite Gadget
-echo 0x0100 | sudo tee bcdDevice # v1.0.0
-echo 0x0200 | sudo tee bcdUSB # USB2
-
-sudo mkdir -p strings/0x409
-echo "fedcba9876543210" | sudo tee strings/0x409/serialnumber
-echo "Manufacturer" | sudo tee strings/0x409/manufacturer
-echo "Product" | sudo tee strings/0x409/product
-
-sudo mkdir -p configs/c.1/strings/0x409
-echo "Config 1: ECM network" | sudo tee configs/c.1/strings/0x409/configuration
-echo 250 | sudo tee configs/c.1/MaxPower
-
-sudo mkdir -p functions/ecm.usb0
-echo "DE:AD:BE:EF:00:01" | sudo tee functions/ecm.usb0/host_addr || echo "Skipping host_addr configuration as it is busy."
-echo "DE:AD:BE:EF:00:02" | sudo tee functions/ecm.usb0/dev_addr || echo "Skipping dev_addr configuration as it is busy."
-
-if [ ! -L configs/c.1/ecm.usb0 ]; then
-  sudo ln -s functions/ecm.usb0 configs/c.1/
-else
-  echo "Symbolic link 'configs/c.1/ecm.usb0' already exists. Skipping link creation."
-fi
 
 # Install Raspberry Pi Connect
 echo "Installing Raspberry Pi Connect..."
@@ -160,6 +130,17 @@ sleep 5
 cd "$HOME/multimode-epaper-frame" || exit
 
 chmod +x config/*.py
+
+echo "Initiating configuration scripts..."
+for script in config/dadjokes_showerthoughts_config.py config/weatherstation_config.py config/crontab_config.py; do
+  echo "Running $script..."
+  python3 $script
+  if [ $? -ne 0 ]; then
+    echo "Error occurred while running $script"
+    exit 1
+  fi
+  echo "Completed $script"
+done
 
 echo "Initial Setup Complete. Please run the configuration scripts by entering the following in the terminal:"
 echo ""
