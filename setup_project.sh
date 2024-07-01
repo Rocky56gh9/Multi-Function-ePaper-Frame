@@ -1,166 +1,139 @@
 #!/bin/bash
 
-# Retry function to execute a command and retry if it fails, with exponential backoff
+# Setup basic logging
+LOG_FILE="/var/log/install_script.log"
+exec 3>&1 1>>${LOG_FILE} 2>&1
+
+# Function to log messages
+log() {
+  echo "$(date '+%Y-%m-%d %H:%M:%S') - $1"
+}
+
+# Retry function with exponential backoff
 retry() {
   local n=1
   local max=5
   local delay=5
   while true; do
+    log "Executing command: $*"
     "$@" && break || {
       if [[ $n -lt $max ]]; then
         ((n++))
-        echo "Command failed. Attempt $n/$max:"
+        log "Command failed. Attempt $n/$max."
         sleep $delay
-        delay=$((delay * 2))  # Exponential backoff
+        delay=$((delay * 2))
       else
-        echo "The command has failed after $n attempts."
+        log "The command has failed after $n attempts."
         return 1
       fi
     }
   done
 }
 
-# Function to check network connectivity
+# Check network connectivity
 check_network() {
   wget -q --spider http://google.com
   if [ $? -eq 0 ]; then
-    echo "Network is up"
-    return 0
+    log "Network is up."
   else
-    echo "Network is down"
-    return 1
+    log "Network is down. Check your internet connection."
+    exit 1
   fi
 }
 
-# Function to manually download and install a Python package
+# Manual package installation
 manual_install_package() {
   local package_name="$1"
   local package_url="$2"
-
-  echo "Manually downloading and installing $package_name..."
+  log "Manually downloading and installing $package_name..."
   wget $package_url -O ${package_name}.tar.gz
   tar -xzf ${package_name}.tar.gz
-  pip3 install --no-cache-dir ${package_name}*
+  python3 -m pip install --no-cache-dir ${package_name}*
+  check_package_installation "$package_name"
 }
 
-# Function to install a package with retries and manual fallback
+# Package installation with retry and fallback
 install_package() {
   local package_name="$1"
   local pip_command="$2"
   local manual_url="$3"
-
-  echo "Attempting to install $package_name..."
+  log "Attempting to install $package_name..."
   if ! retry $pip_command; then
-    echo "$package_name installation failed via pip. Attempting manual installation..."
-    if ! manual_install_package "$package_name" "$manual_url"; then
-      echo "$package_name manual installation also failed."
-      return 1
-    fi
+    log "$package_name installation failed via pip. Attempting manual installation..."
+    manual_install_package "$package_name" "$manual_url"
   fi
-  return 0
+  check_package_installation "$package_name"
 }
 
-# Function to clone the repository with retries and fallbacks
+# Clone the repository with retries and fallbacks
 clone_repo() {
   local repo_url="$1"
   local repo_dir="$2"
-
+  log "Cloning repository: $repo_url into $repo_dir"
   if [ -d "$repo_dir" ]; then
-    echo "Directory '$repo_dir' already exists. Skipping clone."
+    log "Directory '$repo_dir' already exists. Skipping clone."
     return 0
   fi
 
-  # Attempt using HTTPS first
   if retry git clone $repo_url $repo_dir; then
     return 0
   fi
 
-  # If HTTPS fails, try using SSH if the user has SSH access configured
-  if [ -f "$HOME/.ssh/id_rsa" ]; then
-    local ssh_url=${repo_url/https:\/\/github.com\//git@github.com:}
-    echo "Trying to clone using SSH: $ssh_url"
-    if retry git clone $ssh_url $repo_dir; then
-      return 0
-    fi
-  fi
-
-  # As a last resort, try downloading the repository as a ZIP file and extracting it
-  local zip_url=${repo_url}/archive/main.zip
-  echo "Trying to download and unzip: $zip_url"
-  if retry wget $zip_url -O ${repo_dir}.zip; then
-    unzip ${repo_dir}.zip
-    mv ${repo_dir}-main $repo_dir
+  local ssh_url=${repo_url/https:\/\/github.com\//git@github.com:}
+  log "Trying to clone using SSH: $ssh_url"
+  if retry git clone $ssh_url $repo_dir; then
     return 0
   fi
 
-  echo "Failed to clone the repository."
+  local zip_url=${repo_url}/archive/main.zip
+  log "Trying to download and unzip: $zip_url"
+  if retry wget $zip_url -O ${repo_dir}.zip && unzip ${repo_dir}.zip && mv ${repo_dir}-main $repo_dir; then
+    return 0
+  fi
+
+  log "Failed to clone the repository."
   return 1
 }
 
-# Ensure the local bin is in PATH
-export PATH=$PATH:$HOME/.local/bin
-
-# Check network connectivity
-if ! check_network; then
-  echo "Network check failed. Please ensure you are connected to the internet."
-  exit 1
-fi
-
-# Execute commands with retry logic
-retry sudo apt-get update --fix-missing && \
-retry sudo apt-get install -y git python3-pip && \
-git config --global http.postBuffer 524288000 && \
-retry sudo apt-get install -y git-lfs && \
-git lfs install && \
-clone_repo "https://github.com/Rocky56gh9/multimode-epaper-frame.git" "multimode-epaper-frame"
-
-# Move to the cloned directory
-cd multimode-epaper-frame || exit
-
-# Install necessary packages
-echo "Installing necessary packages..."
-retry sudo apt-get install -y python3-pip libjpeg-dev libopenjp2-7 libopenblas-base libopenblas-dev
-
-# Verify pip3 installation
-if ! command -v pip3 &> /dev/null; then
-  echo "pip3 could not be found. Please ensure python3-pip is installed correctly."
-  exit 1
-fi
-
-# Install Python packages with fallback logic
-failed_packages=()
-
-install_package "Pillow" "pip3 install --no-cache-dir Pillow" "https://files.pythonhosted.org/packages/58/b7/ece20939f84f3a4f9d6b344df82d30e0ed4b35a5e58e9a4b7b15c7870c2b/Pillow-8.1.2.tar.gz" || failed_packages+=("Pillow")
-install_package "pytz" "pip3 install --no-cache-dir pytz" "https://files.pythonhosted.org/packages/41/aa/0b509ee60282b11d6a09c218beeb24c8f2281a2e8d7b708d9d44bb2dfdeb/pytz-2024.1.tar.gz" || failed_packages+=("pytz")
-install_package "bs4" "pip3 install --no-cache-dir bs4" "https://files.pythonhosted.org/packages/91/f7/5e1a6e20b7edc17219f3fd1c10fc8c1708a80c867b09f2e2f5aaf8d03b65/beautifulsoup4-4.12.3.tar.gz" || failed_packages+=("bs4")
-install_package "praw" "pip3 install --no-cache-dir praw" "https://files.pythonhosted.org/packages/2d/49/1f8ea5e875cf1a31c4b9d4f0e293c1e2c64c98a0f85ed19fd0f0c4f4ff8e/praw-7.7.1.tar.gz" || failed_packages+=("praw")
-install_package "crontab" "pip3 install --no-cache-dir crontab" "https://files.pythonhosted.org/packages/fb/35/5a63ea0ed7c91f2a0c71e62a7f85edff6ef0efb99f8954781a3429cbfb69/python-crontab-2.5.1.tar.gz" || failed_packages+=("crontab")
-install_package "RPi.GPIO" "sudo pip3 install --no-cache-dir RPi.GPIO" "https://files.pythonhosted.org/packages/fd/57/3a2a4b1dc42b55c01e2b82ddda12e3b0e7ecb9ffb9f1c54e4785e89a6f6b/RPi.GPIO-0.7.1.tar.gz" || failed_packages+=("RPi.GPIO")
-install_package "spidev" "sudo pip3 install --no-cache-dir spidev" "https://files.pythonhosted.org/packages/6b/2e/60a5e29b8e1cb8d7e6b8cfc8a1251156a2b8f5b8c6cbe5cbdf979117f143/spidev-3.5.tar.gz" || failed_packages+=("spidev")
-
-# Attempt to install timezonefinder with different methods
-echo "Attempting to install timezonefinder..."
-retry pip3 install --timeout 120 --no-cache-dir timezonefinder || {
-  echo "Installing timezonefinder from source..."
-  if ! retry manual_install_package "timezonefinder" "https://files.pythonhosted.org/packages/2b/f7/10e278b8ef145da2e7f1480d7180b296ec53535985dc3bc5844f7191d9a0/timezonefinder-6.5.0.tar.gz"; then
-    echo "timezonefinder installation failed. Trying alternative source..."
-    if ! retry manual_install_package "timezonefinder" "https://pypi.python.org/packages/source/t/timezonefinder/timezonefinder-6.5.0.tar.gz"; then
-      failed_packages+=("timezonefinder")
-    fi
+# Verify package installation
+check_package_installation() {
+  local package_name="$1"
+  python3 -c "import $package_name" &>/dev/null
+  if [ $? -eq 0 ]; then
+    log "$package_name is installed successfully."
+  else
+    log "$package_name is not installed. Retrying installation..."
+    return 1
   fi
 }
 
-# Check if there are any failed packages
-if [ ${#failed_packages[@]} -ne 0 ]; then
-  echo "The following packages failed to install:"
-  for pkg in "${failed_packages[@]}"; do
-    echo "- $pkg"
-  done
-else
-  echo "All packages installed successfully."
-fi
+# Initialize script
+log "Starting installation script..."
+check_network
 
-# Clone the e-Paper repository with robust logic
+# Command execution with retry logic
+retry sudo apt-get update --fix-missing &&
+retry sudo apt-get install -y git python3-pip libjpeg-dev libopenjp2-7 libopenblas-base libopenblas-dev
+
+# Package installations with verification
+packages_to_install=(
+  "Pillow https://files.pythonhosted.org/packages/58/b7/ece20939f84f3a4f9d6b344df82d30e0ed4b35a5e58e9a4b7b15c7870c2b/Pillow-8.1.2.tar.gz"
+  "pytz https://files.pythonhosted.org/packages/41/aa/0b509ee60282b11d6a09c218beeb24c8f2281a2e8d7b708d9d44bb2dfdeb/pytz-2024.1.tar.gz"
+  "bs4 https://files.pythonhosted.org/packages/91/f7/5e1a6e20b7edc17219f3fd1c10fc8c1708a80c867b09f2e2f5aaf8d03b65/beautifulsoup4-4.12.3.tar.gz"
+  "praw https://files.pythonhosted.org/packages/2d/49/1f8ea5e875cf1a31c4b9d4f0e293c1e2c64c98a0f85ed19fd0f0c4f4ff8e/praw-7.7.1.tar.gz"
+  "crontab https://files.pythonhosted.org/packages/fb/35/5a63ea0ed7c91f2a0c71e62a7f85edff6ef0efb99f8954781a3429cbfb69/python-crontab-2.5.1.tar.gz"
+  "RPi.GPIO https://files.pythonhosted.org/packages/fd/57/3a2a4b1dc42b55c01e2b82ddda12e3b0e7ecb9ffb9f1c54e4785e89a6f6b/RPi.GPIO-0.7.1.tar.gz"
+  "spidev https://files.pythonhosted.org/packages/6b/2e/60a5e29b8e1cb8d7e6b8cfc8a1251156a2b8f5b8c6cbe5cbdf979117f143/spidev-3.5.tar.gz"
+  "timezonefinder https://files.pythonhosted.org/packages/2b/f7/10e278b8ef145da2e7f1480d7180b296ec53535985dc3bc5844f7191d9a0/timezonefinder-6.5.0.tar.gz"
+)
+
+for pkg_info in "${packages_to_install[@]}"; do
+  pkg_name=$(echo $pkg_info | cut -d ' ' -f 1)
+  pkg_url=$(echo $pkg_info | cut -d ' ' -f 2)
+  install_package $pkg_name "python3 -m pip install --no-cache-dir $pkg_name" $pkg_url
+done
+
+# Cloning necessary repositories
 echo "Cloning e-Paper repository..."
 clone_repo "https://github.com/waveshare/e-Paper.git" "e-Paper"
 
@@ -180,43 +153,14 @@ echo "Starting the Raspberry Pi Connect service for the current user..."
 systemctl --user enable rpi-connect
 systemctl --user start rpi-connect
 
-# Configure USB access
-echo "Configuring device for USB access..."
-sudo modprobe libcomposite
-sudo mkdir -p /sys/kernel/config/usb_gadget/g1
-cd /sys/kernel/config/usb_gadget/g1 || exit
-echo 0x1d6b | sudo tee idVendor # Linux Foundation
-echo 0x0104 | sudo tee idProduct # Multifunction Composite Gadget
-echo 0x0100 | sudo tee bcdDevice # v1.0.0
-echo 0x0200 | sudo tee bcdUSB # USB2
-
-sudo mkdir -p strings/0x409
-echo "fedcba9876543210" | sudo tee strings/0x409/serialnumber
-echo "Manufacturer" | sudo tee strings/0x409/manufacturer
-echo "Product" | sudo tee strings/0x409/product
-
-sudo mkdir -p configs/c.1/strings/0x409
-echo "Config 1: ECM network" | sudo tee configs/c.1/strings/0x409/configuration
-echo 250 | sudo tee configs/c.1/MaxPower
-
-sudo mkdir -p functions/ecm.usb0
-echo "DE:AD:BE:EF:00:01" | sudo tee functions/ecm.usb0/host_addr || echo "Skipping host_addr configuration as it is busy."
-echo "DE:AD:BE:EF:00:02" | sudo tee functions/ecm.usb0/dev_addr || echo "Skipping dev_addr configuration as it is busy."
-
-if [ ! -L configs/c.1/ecm.usb0 ]; then
-  sudo ln -s functions/ecm.usb0 configs/c.1/
-else
-  echo "Symbolic link 'configs/c.1/ecm.usb0' already exists. Skipping link creation."
-fi
-
-echo "Initial Setup Complete. Initiating configuration scripts..."
-sleep 5
-
 # Move back to the multimode-epaper-frame directory
 cd "$HOME/multimode-epaper-frame" || exit
 
 # Make sure the configuration scripts are executable
 chmod +x config/*.py
+
+# Final checks and completion messages
+log "Installation script completed. Check $LOG_FILE for details."
 
 echo "Initial Setup Complete. Please run the configuration scripts by entering the following in the terminal:"
 echo ""
