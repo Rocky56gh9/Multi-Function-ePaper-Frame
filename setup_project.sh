@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Setup basic logging
-LOG_FILE="/var/log/install_script.log"
+# Setup basic logging in the user's home directory
+LOG_FILE="$HOME/install_script.log"
 exec 3>&1 1>>${LOG_FILE} 2>&1
 
 # Function to log messages
@@ -77,22 +77,10 @@ clone_repo() {
 
   if retry git clone $repo_url $repo_dir; then
     return 0
+  else
+    log "Failed to clone the repository."
+    exit 1
   fi
-
-  local ssh_url=${repo_url/https:\/\/github.com\//git@github.com:}
-  log "Trying to clone using SSH: $ssh_url"
-  if retry git clone $ssh_url $repo_dir; then
-    return 0
-  fi
-
-  local zip_url=${repo_url}/archive/main.zip
-  log "Trying to download and unzip: $zip_url"
-  if retry wget $zip_url -O ${repo_dir}.zip && unzip ${repo_dir}.zip && mv ${repo_dir}-main $repo_dir; then
-    return 0
-  fi
-
-  log "Failed to clone the repository."
-  return 1
 }
 
 # Verify package installation
@@ -114,6 +102,9 @@ check_network
 # Command execution with retry logic
 retry sudo apt-get update --fix-missing &&
 retry sudo apt-get install -y git python3-pip libjpeg-dev libopenjp2-7 libopenblas-base libopenblas-dev
+
+# Add the user local bin to PATH to ensure scripts installed via pip are accessible
+PATH="$HOME/.local/bin:$PATH"
 
 # Package installations with verification
 packages_to_install=(
@@ -141,23 +132,28 @@ clone_repo "https://github.com/waveshare/e-Paper.git" "e-Paper"
 echo "Enabling SPI interface..."
 retry sudo raspi-config nonint do_spi 0
 
-# Install Raspberry Pi Connect
-echo "Installing Raspberry Pi Connect..."
-retry sudo apt-get install -y rpi-connect
+# Attempt to install rpi-connect if available
+if ! retry sudo apt-get install -y rpi-connect; then
+  log "Unable to install rpi-connect. Please verify if it is necessary or available for your system."
+fi
 
 # Enable user lingering
 loginctl enable-linger $USER
 
-# Start the Raspberry Pi Connect service for the current user
-echo "Starting the Raspberry Pi Connect service for the current user..."
-systemctl --user enable rpi-connect
-systemctl --user start rpi-connect
+# Start the Raspberry Pi Connect service for the current user, if available
+if systemctl --user enable rpi-connect; then
+  systemctl --user start rpi-connect
+else
+  log "Failed to start rpi-connect service. Check installation and service status."
+fi
 
-# Move back to the multimode-epaper-frame directory
-cd "$HOME/multimode-epaper-frame" || exit
-
-# Make sure the configuration scripts are executable
-chmod +x config/*.py
+# Move back to the multimode-epaper-frame directory, if it exists
+if cd "$HOME/multimode-epaper-frame"; then
+  # Make sure the configuration scripts are executable
+  chmod +x config/*.py
+else
+  log "Failed to locate the multimode-epaper-frame directory. Check the cloning process."
+fi
 
 # Final checks and completion messages
 log "Installation script completed. Check $LOG_FILE for details."
