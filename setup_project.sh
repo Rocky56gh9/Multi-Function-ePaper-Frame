@@ -44,7 +44,7 @@ check_network
 
 # System update and package installation
 retry sudo apt-get update --fix-missing
-retry sudo apt-get install -y git python3-pip libjpeg-dev libopenjp2-7 libopenblas-base libopenblas-dev
+retry sudo apt-get install -y git python3-pip libjpeg-dev libopenjp2-7 libopenblas-dev
 
 # Add the user local bin to PATH to ensure scripts installed via pip are accessible
 export PATH="$HOME/.local/bin:$PATH"
