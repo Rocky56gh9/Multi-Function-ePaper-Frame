@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# Enhanced echo function for debugging
+log() {
+  echo "$(date '+%Y-%m-%d %H:%M:%S') - $1"
+}
+
+log "Starting installation script..."
+
 # Retry function with exponential backoff
 retry() {
   local n=1
@@ -32,14 +39,24 @@ check_network() {
   fi
 }
 
-# Manual package installation
+# Start checking network before proceeding
+check_network
+
+# System update and package installation
+retry sudo apt-get update --fix-missing
+retry sudo apt-get install -y git python3-pip libjpeg-dev libopenjp2-7 libopenblas-base libopenblas-dev
+
+# Add the user local bin to PATH to ensure scripts installed via pip are accessible
+export PATH="$HOME/.local/bin:$PATH"
+
+# Manual package installation function
 manual_install_package() {
   local package_name="$1"
   local package_url="$2"
   log "Manually downloading and installing $package_name..."
   wget $package_url -O ${package_name}.tar.gz
   tar -xzf ${package_name}.tar.gz
-  python3 -m pip install --no-cache-dir ${package_name}*
+  sudo python3 -m pip install --no-cache-dir ${package_name}*
   check_package_installation "$package_name"
 }
 
@@ -56,24 +73,6 @@ install_package() {
   check_package_installation "$package_name"
 }
 
-# Clone the repository with retries and fallbacks
-clone_repo() {
-  local repo_url="$1"
-  local repo_dir="$2"
-  log "Cloning repository: $repo_url into $repo_dir"
-  if [ -d "$repo_dir" ]; then
-    log "Directory '$repo_dir' already exists. Skipping clone."
-    return 0
-  fi
-
-  if retry git clone $repo_url $repo_dir; then
-    return 0
-  else
-    log "Failed to clone the repository."
-    exit 1
-  fi
-}
-
 # Verify package installation
 check_package_installation() {
   local package_name="$1"
@@ -85,17 +84,6 @@ check_package_installation() {
     return 1
   fi
 }
-
-# Initialize script
-log "Starting installation script..."
-check_network
-
-# Command execution with retry logic
-retry sudo apt-get update --fix-missing &&
-retry sudo apt-get install -y git python3-pip libjpeg-dev libopenjp2-7 libopenblas-base libopenblas-dev
-
-# Add the user local bin to PATH to ensure scripts installed via pip are accessible
-PATH="$HOME/.local/bin:$PATH"
 
 # Package installations with verification
 packages_to_install=(
@@ -112,15 +100,18 @@ packages_to_install=(
 for pkg_info in "${packages_to_install[@]}"; do
   pkg_name=$(echo $pkg_info | cut -d ' ' -f 1)
   pkg_url=$(echo $pkg_info | cut -d ' ' -f 2)
-  install_package $pkg_name "python3 -m pip install --no-cache-dir $pkg_name" $pkg_url
+  install_package $pkg_name "sudo python3 -m pip install --no-cache-dir $pkg_name" $pkg_url
 done
 
 # Cloning necessary repositories
-echo "Cloning e-Paper repository..."
-clone_repo "https://github.com/waveshare/e-Paper.git" "e-Paper"
+log "Cloning e-Paper repository..."
+retry git clone https://github.com/waveshare/e-Paper.git "$HOME/e-Paper"
+
+log "Cloning multimode-epaper-frame repository..."
+retry git clone https://github.com/Rocky56gh9/multimode-epaper-frame.git "$HOME/multimode-epaper-frame"
 
 # Enable SPI interface
-echo "Enabling SPI interface..."
+log "Enabling SPI interface..."
 retry sudo raspi-config nonint do_spi 0
 
 # Attempt to install rpi-connect if available
@@ -145,6 +136,8 @@ if cd "$HOME/multimode-epaper-frame"; then
 else
   log "Failed to locate the multimode-epaper-frame directory. Check the cloning process."
 fi
+
+log "Installation script completed. Check for any errors reported above."
 
 echo "Initial Setup Complete. Please run the configuration scripts by entering the following in the terminal:"
 echo ""
