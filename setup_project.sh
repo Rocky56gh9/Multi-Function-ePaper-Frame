@@ -1,14 +1,5 @@
 #!/bin/bash
 
-# Setup basic logging in the user's home directory
-LOG_FILE="$HOME/install_script.log"
-exec 3>&1 1>>${LOG_FILE} 2>&1
-
-# Function to log messages
-log() {
-  echo "$(date '+%Y-%m-%d %H:%M:%S') - $1"
-}
-
 # Retry function with exponential backoff
 retry() {
   local n=1
