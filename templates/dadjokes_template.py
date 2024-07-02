@@ -10,7 +10,7 @@ import time
 from PIL import Image, ImageDraw, ImageFont
 
 # Path to the waveshare_epd library
-libdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'e-Paper/RaspberryPi_JetsonNano/python/lib')
+libdir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'e-Paper', 'RaspberryPi_JetsonNano', 'python', 'lib'))
 if os.path.exists(libdir):
     sys.path.append(libdir)
 
