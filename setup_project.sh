@@ -56,7 +56,7 @@ manual_install_package() {
   log "Manually downloading and installing $package_name..."
   wget $package_url -O ${package_name}.tar.gz
   tar -xzf ${package_name}.tar.gz
-  sudo python3 -m pip install --no-cache-dir ${package_name}*
+  python3 -m pip install --no-cache-dir --user ${package_name}*
   check_package_installation "$package_name"
 }
 
@@ -66,7 +66,7 @@ install_package() {
   local pip_command="$2"
   local manual_url="$3"
   log "Attempting to install $package_name..."
-  if ! retry $pip_command; then
+  if ! retry $pip_command --user; then
     log "$package_name installation failed via pip. Attempting manual installation..."
     manual_install_package "$package_name" "$manual_url"
   fi
@@ -100,7 +100,7 @@ packages_to_install=(
 for pkg_info in "${packages_to_install[@]}"; do
   pkg_name=$(echo $pkg_info | cut -d ' ' -f 1)
   pkg_url=$(echo $pkg_info | cut -d ' ' -f 2)
-  install_package $pkg_name "sudo python3 -m pip install --no-cache-dir $pkg_name" $pkg_url
+  install_package $pkg_name "python3 -m pip install --no-cache-dir $pkg_name --user" $pkg_url
 done
 
 # Cloning necessary repositories
