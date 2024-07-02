@@ -146,9 +146,6 @@ else
   log "Failed to locate the multimode-epaper-frame directory. Check the cloning process."
 fi
 
-# Final checks and completion messages
-log "Installation script completed. Check $LOG_FILE for details."
-
 echo "Initial Setup Complete. Please run the configuration scripts by entering the following in the terminal:"
 echo ""
 echo "cd ~/multimode-epaper-frame && chmod +x run_all_configs.py && ./run_all_configs.py"
