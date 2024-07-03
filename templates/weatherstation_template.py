@@ -4,6 +4,7 @@ import sys
 import os
 import requests
 import pytz
+import logging
 from PIL import Image, ImageDraw, ImageFont
 from datetime import datetime as dt
 from timezonefinder import TimezoneFinder
@@ -14,6 +15,9 @@ if os.path.exists(libdir):
     sys.path.append(libdir)
 
 from waveshare_epd import epd7in5b_V2
+
+# Logging setup
+logging.basicConfig(level=logging.DEBUG)
 
 # OpenWeather API configuration
 api_key = "{api_key}"
