@@ -39,7 +39,7 @@ I have set up Amazon referral links to all of the components I used, which were 
 
 2. **Configure SD Card:**
    - Use the Raspberry Pi Imager.
-   - Install RaspberryPi OS (Legacy, 64-bit) Lite
+   - Install RaspberryPi OS <b>(Legacy, 32-bit Lite) Bullseye</b>. NOTE: For the time being, I've only been able to replicate successful installs with this setup.
    - Set a hostname, ID, and unique password.
    - Add your network SSID and password.
    - Enable SSH on the second tab.
