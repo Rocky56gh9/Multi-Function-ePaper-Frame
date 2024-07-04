@@ -52,7 +52,7 @@ I have set up Amazon referral links to all of the components I used, which were 
 4. **SSH Login:**
    - Open Terminal and run:
    ```
-   ssh [unit name]@[IP address]
+   ssh {unit name}@{IP address}
    ```
    - Enter the password and follow prompts.
    - If necessary, reset the SSH keys with:
@@ -96,7 +96,7 @@ When you're ready, initiate the configuration scripts by entering this in the te
 ```bash
 cd ~/multimode-epaper-frame && chmod +x run_all_configs.py && ./run_all_configs.py
 ```
-To change configurations after initial setup, navigate to the `config` folder to access the inidividual scripts. For example, if you want to change the location for the Weatherstation, run that configuration script to change the zip code.
+To change configurations after initial setup, navigate to the `config` folder to access the inidividual scripts. For example, if you want to change the location for the Weatherstation, run that configuration script to change the zip code. Or, simply edit the generated script directly from the `scripts` folder. 
 
 # Physical Assembly
 The 7.5" screen fits well in the frame with paper mat listed in the equipment list, but requires modifying the size of the paper mat. Here are the measurements for the size of the mat needed to cover the non-display parts of the e-paper screen. These are measured from the exterior edge of the mat:<br>
