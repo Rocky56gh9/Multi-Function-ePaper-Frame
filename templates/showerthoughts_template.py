@@ -65,9 +65,33 @@ try:
                          client_secret='{client_secret}',
                          user_agent='{user_agent}')
 
-    subreddit = reddit.subreddit("Showerthoughts")
-    top_post = next(subreddit.top(time_filter='hour', limit=1))
-    logging.info("Fetched post: " + top_post.title)
+    # Subreddit name
+    subreddit_name = "Showerthoughts"
+    subreddit = reddit.subreddit(subreddit_name)
+
+    def fetch_top_post(subreddit, time_filter):
+        try:
+            top_post = next(subreddit.top(time_filter=time_filter, limit=1))
+            logging.info("Fetched post: " + top_post.title)
+            return top_post
+        except StopIteration:
+            logging.info(f"No posts found in subreddit {subreddit_name} for the time filter '{time_filter}'.")
+            return None
+
+    # Try to fetch the top post from the last hour
+    top_post = fetch_top_post(subreddit, 'hour')
+
+    # If no post is found, try to fetch the top post from today
+    if top_post is None:
+        top_post = fetch_top_post(subreddit, 'day')
+
+    # If still no post is found, handle it accordingly
+    if top_post is not None:
+        print(f"Title: {top_post.title}")
+        print(f"Score: {top_post.score}")
+        print(f"URL: {top_post.url}")
+    else:
+        print("No posts found for the specified time filters.")
 
     black_image = Image.new('1', (800, 480), 255)
     red_image = Image.new('1', (800, 480), 255)
