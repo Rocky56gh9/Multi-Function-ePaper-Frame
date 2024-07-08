@@ -75,7 +75,7 @@ try:
             logging.info("Fetched post: " + top_post.title)
             return top_post
         except StopIteration:
-            logging.info(f"No posts found in subreddit {subreddit_name} for the time filter '{time_filter}'.")
+            logging.info(f"No posts found in subreddit {subreddit.display_name} for the time filter '{time_filter}'.")
             return None
 
     # Try to fetch the top post from the last hour
