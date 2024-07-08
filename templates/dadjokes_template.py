@@ -66,8 +66,15 @@ try:
                          user_agent='{user_agent}')
 
     subreddit = reddit.subreddit("dadjokes")
-    top_post = next(subreddit.top(time_filter='hour', limit=1))
-    logging.info("Fetched post: " + top_post.title)
+    # Try to fetch the top post from the last hour
+    top_post = fetch_top_post(subreddit, 'hour')
+
+    # If no post is found, try to fetch the top post from today
+    if top_post is None:
+        top_post = fetch_top_post(subreddit, 'day')
+
+    # If still no post is found, handle it accordingly
+    if top_post is not None:
 
     # Create images for drawing
     black_image = Image.new('1', (800, 480), 255)
