@@ -53,6 +53,15 @@ def wrap_text(text, font, max_width):
     lines.append(current_line.strip())
     return lines
 
+def fetch_top_post(subreddit, time_filter):
+    try:
+        top_post = next(subreddit.top(time_filter=time_filter, limit=1))
+        logging.info("Fetched post: " + top_post.title)
+        return top_post
+    except StopIteration:
+        logging.info(f"No posts found in subreddit {subreddit.display_name} for the time filter '{time_filter}'.")
+        return None
+
 # Main script
 try:
     # e-Paper display initialization
@@ -66,6 +75,7 @@ try:
                          user_agent='{user_agent}')
 
     subreddit = reddit.subreddit("dadjokes")
+    
     # Try to fetch the top post from the last hour
     top_post = fetch_top_post(subreddit, 'hour')
 
@@ -76,80 +86,82 @@ try:
     # If still no post is found, handle it accordingly
     if top_post is not None:
 
-    # Create images for drawing
-    black_image = Image.new('1', (800, 480), 255)
-    red_image = Image.new('1', (800, 480), 255)
-    draw_black = ImageDraw.Draw(black_image)
-    draw_red = ImageDraw.Draw(red_image)
+        # Create images for drawing
+        black_image = Image.new('1', (800, 480), 255)
+        red_image = Image.new('1', (800, 480), 255)
+        draw_black = ImageDraw.Draw(black_image)
+        draw_red = ImageDraw.Draw(red_image)
 
-    # Load and paste header image
-    header_image_path = f"{home_dir}/multimode-epaper-frame/images/laughingdad.bmp"
-    header_image = Image.open(header_image_path)
-    header_image = header_image.resize((80, 80))
+        # Load and paste header image
+        header_image_path = f"{home_dir}/multimode-epaper-frame/images/laughingdad.bmp"
+        header_image = Image.open(header_image_path)
+        header_image = header_image.resize((80, 80))
 
-    # Create a horizontally mirrored image
-    mirrored_header_image = header_image.transpose(Image.FLIP_LEFT_RIGHT)
+        # Create a horizontally mirrored image
+        mirrored_header_image = header_image.transpose(Image.FLIP_LEFT_RIGHT)
 
-    # Define positions for the images
-    positions = [(25, 0), (695, 0), (25, 400), (695, 400)]  # Top left, top right, bottom left, bottom right
+        # Define positions for the images
+        positions = [(25, 0), (695, 0), (25, 400), (695, 400)]  # Top left, top right, bottom left, bottom right
 
-    # Paste the original image at top left and bottom left positions
-    for pos in [positions[0], positions[2]]:
-        black_image.paste(header_image, pos)
+        # Paste the original image at top left and bottom left positions
+        for pos in [positions[0], positions[2]]:
+            black_image.paste(header_image, pos)
 
-    # Paste the mirrored image at top right and bottom right positions
-    for pos in [positions[1], positions[3]]:
-        black_image.paste(mirrored_header_image, pos)
+        # Paste the mirrored image at top right and bottom right positions
+        for pos in [positions[1], positions[3]]:
+            black_image.paste(mirrored_header_image, pos)
 
-    # Font paths
-    title_font_path = '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
-    body_font_path = '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
-    footer_font_path = '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
+        # Font paths
+        title_font_path = '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
+        body_font_path = '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
+        footer_font_path = '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
 
-    # Title setup
-    title_font_size = 50  # Starting font size for title
-    title_text = "Reddit Dad Jokes"
-    title_font = ImageFont.truetype(title_font_path, title_font_size)
+        # Title setup
+        title_font_size = 50  # Starting font size for title
+        title_text = "Reddit Dad Jokes"
+        title_font = ImageFont.truetype(title_font_path, title_font_size)
 
-    # Footer setup
-    footer_text = datetime.datetime.now().strftime("%A, %B %-d, %Y")
-    footer_font = ImageFont.truetype(footer_font_path, 32)
+        # Footer setup
+        footer_text = datetime.datetime.now().strftime("%A, %B %-d, %Y")
+        footer_font = ImageFont.truetype(footer_font_path, 32)
 
-    # Draw title and footer
-    title_width, title_height = calculate_text_size(title_text, title_font)
-    title_x = (800 - title_width) // 2
-    title_y = 15
-    draw_red.text((title_x, title_y), title_text, font=title_font, fill=0)
+        # Draw title and footer
+        title_width, title_height = calculate_text_size(title_text, title_font)
+        title_x = (800 - title_width) // 2
+        title_y = 15
+        draw_red.text((title_x, title_y), title_text, font=title_font, fill=0)
 
-    footer_width, footer_height = calculate_text_size(footer_text, footer_font)
-    footer_x = (800 - footer_width) // 2
-    footer_y = 415
-    draw_red.text((footer_x, footer_y), footer_text, font=footer_font, fill=0)
+        footer_width, footer_height = calculate_text_size(footer_text, footer_font)
+        footer_x = (800 - footer_width) // 2
+        footer_y = 415
+        draw_red.text((footer_x, footer_y), footer_text, font=footer_font, fill=0)
 
-    # Calculate areas for post title and body
-    text_area_start = title_y + title_height + 10
-    text_area_end = footer_y - 10
-    max_text_height = text_area_end - text_area_start
-    max_text_width = 780
+        # Calculate areas for post title and body
+        text_area_start = title_y + title_height + 10
+        text_area_end = footer_y - 10
+        max_text_height = text_area_end - text_area_start
+        max_text_width = 780
 
-    # Adjust post title and body font sizes and wrap text
-    post_title_font, wrapped_post_title = adjust_font_size_and_wrap(top_post.title, title_font_path, max_text_width, max_text_height // 3, title_font_size)
-    post_body_font, wrapped_post_body = adjust_font_size_and_wrap(top_post.selftext, body_font_path, max_text_width, max_text_height * 2 // 3, post_title_font.size)
+        # Adjust post title and body font sizes and wrap text
+        post_title_font, wrapped_post_title = adjust_font_size_and_wrap(top_post.title, title_font_path, max_text_width, max_text_height // 3, title_font_size)
+        post_body_font, wrapped_post_body = adjust_font_size_and_wrap(top_post.selftext, body_font_path, max_text_width, max_text_height * 2 // 3, post_title_font.size)
 
-    # Draw post title and body
-    y = text_area_start
-    for line in wrapped_post_title:
-        draw_black.text((20, y), line, font=post_title_font, fill=0)
-        y += post_title_font.getsize(line)[1] + 5
+        # Draw post title and body
+        y = text_area_start
+        for line in wrapped_post_title:
+            draw_black.text((20, y), line, font=post_title_font, fill=0)
+            y += post_title_font.getsize(line)[1] + 5
 
-    y += 10  # Space between title and body
-    for line in wrapped_post_body:
-        draw_black.text((20, y), line, font=post_body_font, fill=0)
-        y += post_body_font.getsize(line)[1] + 5
+        y += 10  # Space between title and body
+        for line in wrapped_post_body:
+            draw_black.text((20, y), line, font=post_body_font, fill=0)
+            y += post_body_font.getsize(line)[1] + 5
 
-    # Display the images
-    epd.display(epd.getbuffer(black_image), epd.getbuffer(red_image))
-    time.sleep(2)
+        # Display the images
+        epd.display(epd.getbuffer(black_image), epd.getbuffer(red_image))
+        time.sleep(2)
+    else:
+        logging.info("No posts found for the specified time filters.")
 
 except IOError as e:
     logging.error(e)
