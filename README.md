@@ -1,4 +1,4 @@
-# Multimode e-Paper Frame
+# Multi-Function e-Paper Frame
 This e-paper multi-function display project uses a number of techniques for retrieving, formatting, and displaying content on a low-power e-Paper display.
 
 On a pre-programmed schedule, each of these will be displayed:
