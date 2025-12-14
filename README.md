@@ -34,7 +34,7 @@ I have set up Amazon referral links to all of the components I used, which were 
 # New Build Guide
 
 1. **Obtain APIs**
-   - Go to the respective websites for Reddit and OpenWeather and create an account.
+   - Go to the respective websites for Reddit, OpenWeather, and API Ninjas and create an account.
    - Follow the instructions to obtain your API keys.
 
 2. **Configure SD Card:**
@@ -78,6 +78,7 @@ Gather the following information before running the configuration scripts. Once 
    - API keys
       - Reddit: client_id, client_secret, and user_agent
       - OpenWeather: API Key
+      - API Ninjas: API Key
     
    - Zip Code for Weather
 
