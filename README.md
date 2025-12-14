@@ -94,6 +94,8 @@ Gather the following information before running the configuration scripts. Once 
       - What time to stop running scripts and display the sleep image (24-hour, HH:MM)
       - The e-Paper screen will refresh at the top of the hour, at 15 after the hour, at 30 after the hour, and at 45 after the hour, between the start and end times you enter. You can customize the order of what (e.g., Dad Jokes, Shower Thoughts, Horoscope, Weatherstation) displays at each milestone time.
 
+<b>NOTE:</b> Daily horoscopes are fetched once per sign per day and cached locally, allowing multiple horoscope displays per day without excessive API usage.
+
 When you're ready, initiate the configuration scripts by entering this in the terminal:
 ```bash
 cd ~/multimode-epaper-frame && chmod +x run_all_configs.py && ./run_all_configs.py
