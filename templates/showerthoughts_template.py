@@ -75,7 +75,7 @@ try:
             logging.info("Fetched post: " + top_post.title)
             return top_post
         except StopIteration:
-            logging.info(f"No posts found in subreddit {subreddit.display_name} for the time filter '{time_filter}'.")
+            logging.info(f"No posts found in subreddit {{subreddit.display_name}} for the time filter '{{time_filter}}'.")
             return None
 
     # Try to fetch the top post from the last hour
@@ -87,9 +87,9 @@ try:
 
     # If still no post is found, handle it accordingly
     if top_post is not None:
-        print(f"Title: {top_post.title}")
-        print(f"Score: {top_post.score}")
-        print(f"URL: {top_post.url}")
+        print(f"Title: {{top_post.title}}")
+        print(f"Score: {{top_post.score}}")
+        print(f"URL: {{top_post.url}}")
     else:
         print("No posts found for the specified time filters.")
 

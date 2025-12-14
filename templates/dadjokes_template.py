@@ -59,7 +59,7 @@ def fetch_top_post(subreddit, time_filter):
         logging.info("Fetched post: " + top_post.title)
         return top_post
     except StopIteration:
-        logging.info(f"No posts found in subreddit {subreddit.display_name} for the time filter '{time_filter}'.")
+        logging.info(f"No posts found in subreddit {{subreddit.display_name}} for the time filter '{{time_filter}}'.")
         return None
 
 # Main script
@@ -161,7 +161,7 @@ try:
         epd.display(epd.getbuffer(black_image), epd.getbuffer(red_image))
         time.sleep(2)
     else:
-        logging.info("No posts found for the specified time filters.")
+        logging.info(f"No posts found in subreddit {{subreddit.display_name}} for the time filter '{{time_filter}}'.")
 
 except IOError as e:
     logging.error(e)
