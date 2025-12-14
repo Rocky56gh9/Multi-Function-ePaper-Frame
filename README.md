@@ -1,4 +1,7 @@
 # Multi-Function e-Paper Frame
+
+<b>UPDATED: December 2025</b>
+
 This e-paper multi-function display project uses a number of techniques for retrieving, formatting, and displaying content on a low-power e-Paper display.
 
 On a pre-programmed schedule, each of these will be displayed:
@@ -34,7 +37,7 @@ I have set up Amazon referral links to all of the components I used, which were 
 # New Build Guide
 
 1. **Obtain APIs**
-   - Go to the respective websites for Reddit, OpenWeather, and API Ninjas and create an account.
+   - Go to the respective websites for Reddit (Dad Jokes, Shower Thoughts), OpenWeather (Weather Station), and API Ninjas (Horoscopes) and create an account.
    - Follow the instructions to obtain your API keys.
 
 2. **Configure SD Card:**
@@ -78,7 +81,7 @@ Gather the following information before running the configuration scripts. Once 
    - API keys
       - Reddit: client_id, client_secret, and user_agent
       - OpenWeather: API Key
-      - API Ninjas: API Key
+      - API Ninjas (Horoscopes): API Key
     
    - Zip Code for Weather
 
@@ -90,8 +93,6 @@ Gather the following information before running the configuration scripts. Once 
       - What time to start running scripts (24-hour, HH:MM)
       - What time to stop running scripts and display the sleep image (24-hour, HH:MM)
       - The e-Paper screen will refresh at the top of the hour, at 15 after the hour, at 30 after the hour, and at 45 after the hour, between the start and end times you enter. You can customize the order of what (e.g., Dad Jokes, Shower Thoughts, Horoscope, Weatherstation) displays at each milestone time.
-
-<b>NOTE</b>: For the horoscopes, you can add as many as you'd like. The script will ask you for the one or more zodiac signs to include. The cron job will automatically distribute them across the day. For example, if you entered two zodiac signs and specified the horoscope to run at half past the hour, they would alternate every other hour throughout the day between your defined start and end times.
 
 When you're ready, initiate the configuration scripts by entering this in the terminal:
 ```bash
