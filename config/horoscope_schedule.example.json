@@ -1,0 +1,5 @@
+{
+  "mode": "rotation",
+  "start_hour": 7,
+  "signs": ["scorpio", "aries", "taurus"]
+}

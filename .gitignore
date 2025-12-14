@@ -1,0 +1,17 @@
+# Secrets and local config
+config/secrets.json
+config/horoscope_schedule.json
+
+# Runtime cache and temp files
+cache/
+new_crontab
+
+# Editor / OS cruft
+*.swp
+*.swo
+.DS_Store
+
+# Generated scripts (if your config scripts generate these)
+scripts/dadjokes.py
+scripts/showerthoughts.py
+scripts/weatherstation.py

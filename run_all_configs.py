@@ -3,14 +3,13 @@
 import os
 import subprocess
 
-# Get the directory of the current script
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
-# List of configuration scripts
 scripts = [
     os.path.join(script_dir, "config/dadjokes_showerthoughts_config.py"),
     os.path.join(script_dir, "config/weatherstation_config.py"),
-    os.path.join(script_dir, "config/crontab_config.py")
+    os.path.join(script_dir, "config/horoscope_config.py"),
+    os.path.join(script_dir, "config/crontab_config.py"),
 ]
 
 def run_script(script_path):
