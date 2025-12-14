@@ -1,6 +1,6 @@
 # Multi-Function e-Paper Frame
 
-<b>UPDATED: December 2025</b>
+<b>UPDATED: December 2025</b><br>
 Changes:
    1. Updated weatherstation to use OpenWeather 3.0 API
    2. Updated horoscopes to use API Ninja instead of web scraping
