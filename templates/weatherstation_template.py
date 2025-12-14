@@ -26,7 +26,10 @@ country_code = "{country_code}"
 
 def fetch_weather_data():
     current_url = f"https://api.openweathermap.org/data/2.5/weather?zip={zip_code},{country_code}&appid={api_key}&units=imperial"
-    forecast_url = f"https://api.openweathermap.org/data/2.5/onecall?lat={{lat}}&lon={{lon}}&exclude=minutely,alerts&appid={api_key}&units=imperial"
+
+    # One Call API migrated from 2.5 -> 3.0 (endpoint change)
+    # Keep {lat}/{lon} placeholders for .format(...) below.
+    forecast_url = "https://api.openweathermap.org/data/3.0/onecall?lat={lat}&lon={lon}&exclude=minutely,alerts&appid={api_key}&units=imperial"
 
     current_response = requests.get(current_url)
     if current_response.status_code == 200:
@@ -36,10 +39,10 @@ def fetch_weather_data():
 
         # Determine the time zone based on latitude and longitude
         tf = TimezoneFinder()
-        time_zone_str = tf.timezone_at(lat=lat, lng=lon)
+        time_zone_str = tf.timezone_at(lat=lat, lng=lon) or "UTC"
         timezone = pytz.timezone(time_zone_str)
 
-        forecast_response = requests.get(forecast_url.format(lat=lat, lon=lon))
+        forecast_response = requests.get(forecast_url.format(lat=lat, lon=lon, api_key=api_key))
         sunrise_time, sunset_time = None, None
 
         if forecast_response.status_code == 200:
@@ -149,9 +152,8 @@ def draw_on_display(epd, current_data, forecast_texts, font, sunrise_time, sunse
     sunrise_start_y = current_y + 100
     sunset_start_y = current_y + 150
 
-    # Define the y-axis offsets for the sunrise and sunset times
-    sunrise_time_y_offset = 5  # Adjust as needed
-    sunset_time_y_offset = 5   # Adjust as needed
+    sunrise_time_y_offset = 5
+    sunset_time_y_offset = 5
 
     draw_red.text((10, sunrise_start_y), "Sunrise: ", font=sunrise_sunset_title_font, fill=0)
     sunrise_time_x = 7 + draw_black.textsize("Sunrise: ", font=sunrise_sunset_title_font)[0]
@@ -176,16 +178,14 @@ def main():
         left_column_width = epd.width // 3 - 10
         right_column_start = left_column_width + 20
 
-        # Calculate the maximum width for the right column
-        max_width = epd.width - right_column_start - 5  # Subtract 5 pixels for the buffer
-
-        initial_font_size = 24  # Adjust this as needed for the starting font size
+        max_width = epd.width - right_column_start - 5
+        initial_font_size = 24
 
         forecast_texts, adjusted_font = calculate_fit_text(
-            forecast_weather_data, 
-            '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', 
-            initial_font_size, 
-            max_width, 
+            forecast_weather_data,
+            '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',
+            initial_font_size,
+            max_width,
             max_forecast_height,
             additional_line_spacing
         )
