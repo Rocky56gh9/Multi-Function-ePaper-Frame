@@ -1,6 +1,10 @@
 # Multi-Function e-Paper Frame
 
 <b>UPDATED: December 2025</b>
+Changes:
+   1. Updated weatherstation to use OpenWeather 3.0 API
+   2. Updated horoscopes to use API Ninja instead of web scraping
+   3. Adjusted configuration files to adjust for changes
 
 This e-paper multi-function display project uses a number of techniques for retrieving, formatting, and displaying content on a low-power e-Paper display.
 
