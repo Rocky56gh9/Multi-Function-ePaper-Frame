@@ -15,3 +15,6 @@ new_crontab
 scripts/dadjokes.py
 scripts/showerthoughts.py
 scripts/weatherstation.py
+
+# local runtime logs
+logs/
