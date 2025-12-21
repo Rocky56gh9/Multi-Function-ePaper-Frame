@@ -32,8 +32,8 @@ CACHE_KEEP_DAYS = 30
 TZ_NAME = "America/New_York"
 
 VALID_SIGNS = {
-    "aries","taurus","gemini","cancer","leo","virgo","libra","scorpio",
-    "sagittarius","capricorn","aquarius","pisces"
+    "aries", "taurus", "gemini", "cancer", "leo", "virgo", "libra", "scorpio",
+    "sagittarius", "capricorn", "aquarius", "pisces"
 }
 
 # -----------------------------
@@ -79,7 +79,6 @@ def _load_json(path: str) -> Dict[str, Any]:
         return {}
 
 def _get_api_key() -> str:
-    # Prefer env var if set
     env_key = os.getenv("API_NINJAS_KEY", "").strip()
     if env_key:
         return env_key
@@ -97,12 +96,10 @@ def _pick_sign_from_schedule(now: datetime) -> str:
 
     Mode A (rotation):
       {"mode":"rotation","signs":["scorpio","sagittarius","taurus"]}
-
       Uses hour-of-day modulo len(signs).
 
     Mode B (hour_map):
       {"mode":"hour_map","hours":{"0":"scorpio","1":"sagittarius","2":"taurus",...}}
-
       Uses local hour directly; if missing, falls back to "default" if present.
     """
     cfg = _load_json(SCHEDULE_PATH)
@@ -110,12 +107,10 @@ def _pick_sign_from_schedule(now: datetime) -> str:
 
     if mode == "hour_map":
         hours = cfg.get("hours") or {}
-        # keys might be strings
         h = str(now.hour)
         sign = (hours.get(h) or hours.get(int(now.hour), None) or hours.get("default"))
         if isinstance(sign, str) and sign.lower() in VALID_SIGNS:
             return sign.lower()
-        # fall back to rotation if misconfigured
         mode = "rotation"
 
     signs = cfg.get("signs") or []
@@ -123,7 +118,6 @@ def _pick_sign_from_schedule(now: datetime) -> str:
     signs = [s for s in signs if s in VALID_SIGNS]
 
     if not signs:
-        # safe default if nothing configured
         return "scorpio"
 
     return signs[now.hour % len(signs)]
@@ -245,7 +239,7 @@ def fetch_horoscope_cached(sign: str) -> str:
         raise
 
 # -----------------------------
-# Text layout helpers
+# Text measurement + layout
 # -----------------------------
 def _text_width(font: ImageFont.FreeTypeFont, s: str) -> int:
     bbox = font.getbbox(s)
@@ -271,8 +265,15 @@ def wrap_text_pixels(text: str, font: ImageFont.FreeTypeFont, max_width_px: int)
         lines.append(current)
     return lines
 
-def fit_text_to_box(text: str, font_path: str, max_size: int, min_size: int,
-                    box_w: int, box_h: int, line_spacing: int = 3):
+def fit_text_to_box(
+    text: str,
+    font_path: str,
+    max_size: int,
+    min_size: int,
+    box_w: int,
+    box_h: int,
+    line_spacing: int = 3
+):
     for size in range(max_size, min_size - 1, -1):
         font = ImageFont.truetype(font_path, size)
         lines = wrap_text_pixels(text, font, box_w)
@@ -281,7 +282,6 @@ def fit_text_to_box(text: str, font_path: str, max_size: int, min_size: int,
         if total_h <= box_h:
             return font, lines
 
-    # Truncate at min size with ellipsis
     font = ImageFont.truetype(font_path, min_size)
     lh = _line_height(font)
     max_lines = max(1, (box_h + line_spacing) // (lh + line_spacing))
@@ -297,22 +297,43 @@ def fit_text_to_box(text: str, font_path: str, max_size: int, min_size: int,
     lines[-1] = (last + ell) if last else ell
     return font, lines
 
+def _fit_one_line_font(text: str, font_path: str, max_size: int, min_size: int, max_width_px: int) -> ImageFont.FreeTypeFont:
+    for size in range(max_size, min_size - 1, -1):
+        f = ImageFont.truetype(font_path, size)
+        if _text_width(f, text) <= max_width_px:
+            return f
+    return ImageFont.truetype(font_path, min_size)
+
+def _truncate_one_line(text: str, font: ImageFont.FreeTypeFont, max_width_px: int) -> str:
+    if _text_width(font, text) <= max_width_px:
+        return text
+    ell = "…"
+    if _text_width(font, ell) > max_width_px:
+        return ""
+    s = text.rstrip()
+    while s and _text_width(font, s + ell) > max_width_px:
+        s = s[:-1].rstrip()
+    return (s + ell) if s else ell
+
 def resize_image(image, target_width, target_height):
     original_width, original_height = image.size
     ratio = min(target_width / original_width, target_height / original_height)
     new_width = int(original_width * ratio)
     new_height = int(original_height * ratio)
-    return image.resize((new_width, new_height), Image.ANTIALIAS)
+    # Pillow deprecates ANTIALIAS; keep compatible across versions
+    try:
+        resample = Image.Resampling.LANCZOS
+    except Exception:
+        resample = Image.ANTIALIAS
+    return image.resize((new_width, new_height), resample)
 
 # -----------------------------
 # Rendering
 # -----------------------------
 def draw_on_display(sign: str, zodiac_image, horoscope_text: str, epd):
     header_font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
-    header_font_size = 50
     header_color = "red"
     header_y_position = 5
-    header_font = ImageFont.truetype(header_font_path, header_font_size)
 
     date_font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
     date_font_size = 35
@@ -322,7 +343,7 @@ def draw_on_display(sign: str, zodiac_image, horoscope_text: str, epd):
 
     body_font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
 
-    # Layout tuned for 800x400
+    # Layout tuned for 800x480
     image_width = epd.width // 3
     image_y_position = 160
 
@@ -337,12 +358,23 @@ def draw_on_display(sign: str, zodiac_image, horoscope_text: str, epd):
     draw_black = ImageDraw.Draw(image_black)
     draw_red = ImageDraw.Draw(image_red)
 
+    # ---- Title (autosize, one line only, ellipsis fallback) ----
     title = f"Daily Horoscope - {sign.capitalize()}"
-    title_x = (epd.width - draw_black.textsize(title, font=header_font)[0]) // 2
+    title_max_w = epd.width - 20  # 10px margin each side
+
+    header_font = _fit_one_line_font(
+        title, header_font_path,
+        max_size=50, min_size=24,
+        max_width_px=title_max_w
+    )
+    title = _truncate_one_line(title, header_font, title_max_w)
+    title_x = (epd.width - _text_width(header_font, title)) // 2
+
     (draw_red if header_color == "red" else draw_black).text(
         (title_x, header_y_position), title, font=header_font, fill=0
     )
 
+    # ---- Date ----
     try:
         current_date = _now_local().strftime("%A, %B %-d, %Y")
     except Exception:
@@ -352,14 +384,19 @@ def draw_on_display(sign: str, zodiac_image, horoscope_text: str, epd):
         (date_x, date_y_position), current_date, font=date_font, fill=0
     )
 
+    # ---- Zodiac image ----
     zodiac_resized = resize_image(zodiac_image, image_width, epd.height - image_y_position)
     image_red.paste(zodiac_resized, (0, image_y_position))
 
+    # ---- Body text ----
     body_font, lines = fit_text_to_box(
-        horoscope_text, body_font_path,
-        max_size=25, min_size=14,
-        box_w=text_box_w, box_h=text_box_h,
-        line_spacing=3
+        horoscope_text,
+        body_font_path,
+        max_size=25,
+        min_size=14,
+        box_w=text_box_w,
+        box_h=text_box_h,
+        line_spacing=3,
     )
 
     y = text_start_y
@@ -388,10 +425,8 @@ def main():
     else:
         sign = _pick_sign_from_schedule(_now_local())
 
-    # Fetch horoscope (cached daily per sign)
     horoscope_text = fetch_horoscope_cached(sign)
 
-    # Init display
     epd = epd7in5b_V2.EPD()
     epd.init()
 
@@ -400,7 +435,6 @@ def main():
         raise SystemExit(f"Missing zodiac image: {zodiac_image_path}")
 
     zodiac_image = Image.open(zodiac_image_path)
-
     draw_on_display(sign, zodiac_image, horoscope_text, epd)
 
 if __name__ == "__main__":
